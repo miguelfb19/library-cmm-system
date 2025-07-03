@@ -14,9 +14,13 @@ export default async function DashboardLayout({
   return (
     <div className="flex min-h-dvh relative">
       <Sidebar />
-      <div className="flex flex-col flex-1">
+      <div className="flex flex-col flex-1 h-dvh">
         <TopMenu />
-        <div className="p-5 h-full">{children}</div>
+        <div className="flex-1 p-5 bg-secondary overflow-hidden">
+          <div className="rounded bg-white shadow-lg max-h-full min-h-full p-3 overflow-auto">
+            {children}
+          </div>
+        </div>
       </div>
       <LoadingOnCloseSession />
     </div>

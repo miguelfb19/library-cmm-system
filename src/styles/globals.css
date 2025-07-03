@@ -99,6 +99,7 @@
 body {
   font-family: var(--font-lato);
   letter-spacing: .5px;
+  scrollbar-color: var(--color-primary) var(--color-secondary);
 }
 
 .btn-blue{

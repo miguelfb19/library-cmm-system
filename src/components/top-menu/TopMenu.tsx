@@ -11,11 +11,12 @@ import {
   MenubarSeparator,
   MenubarTrigger,
 } from "../ui/menubar";
+import Link from "next/link";
 
 export const TopMenu = () => {
   const { openMenu } = useMenuStore();
   return (
-    <div className="w-full bg-primary/90 shadow-lg h-16 text-white flex items-center px-5">
+    <nav className="w-full bg-primary/90 shadow-lg h-16 text-white flex items-center px-5">
       <MenuIcon className="block md:hidden" onClick={() => openMenu()} />
       <div className="flex flex-1 items-center justify-end gap-5">
         <Menubar>
@@ -25,8 +26,10 @@ export const TopMenu = () => {
             </MenubarTrigger>
             <MenubarContent>
               <MenubarItem>
-                <User className="text-primary" />
-                Mi Cuenta
+                <Link href="/dashboard/my-account" className="flex items-center gap-2">
+                  <User className="text-primary" />
+                  Mi Cuenta
+                </Link>
               </MenubarItem>
               <MenubarSeparator />
               <MenubarItem variant="destructive">
@@ -49,6 +52,6 @@ export const TopMenu = () => {
           </MenubarMenu>
         </Menubar>
       </div>
-    </div>
+    </nav>
   );
 };

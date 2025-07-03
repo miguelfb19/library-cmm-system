@@ -49,7 +49,7 @@ export const Sidebar = () => {
           <div className="flex flex-col">
             {status === "loading" ? (
               <>
-                <Skeleton className="w-full h-5" />
+                <Skeleton className="w-full h-7" />
               </>
             ) : (
               <>
