@@ -103,15 +103,15 @@ body {
 }
 
 .btn-blue{
-  @apply bg-primary text-white font-bold py-2 px-4 w-full min-h-10 rounded-full cursor-pointer hover:bg-primary/90 transition-colors duration-200;
+  @apply bg-primary text-white font-bold py-2 px-4 w-full min-h-10 rounded-full cursor-pointer hover:bg-primary/90 transition-colors duration-200 shadow-lg;
 }
 
 .btn-green {
-  @apply bg-green-600 text-white font-bold py-2 px-4 w-full min-h-10 rounded-full cursor-pointer hover:bg-green-500/90 transition-colors duration-200;
+  @apply bg-green-600 text-white font-bold py-2 px-4 w-full min-h-10 rounded-full cursor-pointer hover:bg-green-500/90 transition-colors duration-200 shadow-lg;
 }
 
 .btn-red {
-  @apply bg-red-500 text-white font-bold py-2 px-4 w-full min-h-10 rounded-full cursor-pointer hover:bg-red-400/90 transition-colors duration-200;
+  @apply bg-red-500 text-white font-bold py-2 px-4 w-full min-h-10 rounded-full cursor-pointer hover:bg-red-400/90 transition-colors duration-200 shadow-lg;
 }
 
 .spin-reverse{

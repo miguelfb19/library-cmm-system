@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Lato } from "next/font/google";
 import "@/styles/globals.css";
 import { SessionProvider } from "next-auth/react";
+import { Toaster } from "@/components/ui/sonner";
 
 const lato = Lato({
   variable: "--font-lato",
@@ -25,6 +26,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${lato.variable} antialiased`}>
         <SessionProvider>{children}</SessionProvider>
+        <Toaster position="top-center" richColors closeButton theme="light" />
       </body>
     </html>
   );

@@ -21,7 +21,7 @@ export const Sidebar = () => {
   }, []);
   return (
     <aside
-      className={`fixed md:relative z-10 h-[100dvh] w-full md:w-3/12 flex flex-col p-5  bg-secondary text-primary overflow-y-auto overflow-x-hidden shadow-lg ${
+      className={`fixed md:relative z-10 h-[100dvh] w-full md:w-3/12 md:min-w-3/12 flex flex-col p-5  bg-secondary text-primary overflow-y-auto overflow-x-hidden shadow-lg ${
         isOpen ? "translate-x-0" : "-translate-x-full"
       } transition-all duration-300 md:translate-x-0`}
     >
@@ -40,6 +40,7 @@ export const Sidebar = () => {
               src="/logo-azul.avif"
               className="w-full"
               alt="logo de cafe jardin de paraíso"
+              priority
             />
           </Link>
         </div>

@@ -8,14 +8,16 @@ interface AlertOptions {
   title: string;
   icon: SweetAlertIcon;
   showCancelButton?: boolean;
+  confirmButtonText?: string;
+  cancelButtonText?: string;
 }
 
 export const submitAlert = (options: AlertOptions) => {
   const Toast = Swal.mixin({
     showConfirmButton: true,
     confirmButtonColor: "#0050b3",
-    confirmButtonText: "Aceptar",
-    cancelButtonText: "Cancelar",
+    confirmButtonText: options.confirmButtonText ?? "Aceptar",
+    cancelButtonText: options.cancelButtonText ?? "Cancelar",
     cancelButtonColor: "#fb2c36",
     showCancelButton: options.showCancelButton ?? false,
     showCloseButton: true,
@@ -23,7 +25,7 @@ export const submitAlert = (options: AlertOptions) => {
     text: options.text,
   });
 
-  Toast.fire({
+  return Toast.fire({
     ...options,
   });
 };

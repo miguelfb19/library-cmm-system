@@ -62,7 +62,7 @@ export async function middleware(req: NextRequest) {
     const path = req.nextUrl.pathname;
 
     // Rutes only admins
-    const adminOnlyPaths = ["/dashboard/admin-codes", "/dashboard/raffles"];
+    const adminOnlyPaths = ["/dashboard/admin-users"];
 
     // Check actual route is only to admins
     if (adminOnlyPaths.some((route) => path.startsWith(route))) {

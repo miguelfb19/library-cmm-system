@@ -1,18 +1,44 @@
-"use client"
+"use client";
 
-import { ColumnDef } from "@tanstack/react-table"
-import { ArrowUpDown } from "lucide-react"
+import { deleteUser } from "@/actions/users/delete-user";
+import { submitAlert } from "@/utils/submitAlert";
+import { ColumnDef } from "@tanstack/react-table";
+import { ArrowUpDown, Trash, Loader2 } from "lucide-react";
+import { useState } from "react";
 
-// This type is used to define the shape of our data.
-// You can use a Zod schema here if you want.
 export type User = {
-  id: string
-  name: string
-  email: string
-  phone: string
-  city: string
-  role: "admin" | "user"
-}
+  id: string;
+  name: string;
+  email: string;
+  phone: string;
+  city: string;
+  role: "admin" | "user";
+};
+
+const handleDeleteUser = async (id: string, setLoading: (id: string | null) => void) => {
+  setLoading(id);
+
+  try {
+    const result = await submitAlert({
+      title: "¿Estás seguro?",
+      text: "Esta acción eliminará al usuario permanentemente.",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Sí, eliminar",
+    });
+
+    if (result.isConfirmed) {
+      const { ok, message } = await deleteUser(id);
+      if (!ok) {
+        submitAlert({ title: message, icon: "error" });
+        return;
+      }
+      submitAlert({ title: message, icon: "success" });
+    }
+  } finally {
+    setLoading(null);
+  }
+};
 
 export const columns: ColumnDef<User>[] = [
   {
@@ -24,26 +50,50 @@ export const columns: ColumnDef<User>[] = [
           className="flex items-center gap-2 text-left cursor-pointer font-bold"
         >
           Nombre
-          <ArrowUpDown size={15}/>
+          <ArrowUpDown size={15} />
         </button>
-      )
+      );
     },
-    cell: ({ row }) => <div className="lowercase">{row.getValue("email")}</div>,
+    cell: ({ row }) => <div>{row.getValue("name")}</div>,
   },
   {
     accessorKey: "role",
-    header: () => (<div className="font-bold">Rol</div>),
+    header: () => <div className="font-bold">Rol</div>,
   },
   {
     accessorKey: "email",
-    header: () => (<div className="font-bold">Correo electrónico</div>),
+    header: () => <div className="font-bold">Correo electrónico</div>,
   },
   {
     accessorKey: "phone",
-    header: () => (<div className="font-bold">Teléfono</div>),
+    header: () => <div className="font-bold">Teléfono</div>,
   },
   {
     accessorKey: "city",
-    header: () => (<div className="font-bold">Ciudad</div>),
+    header: () => <div className="font-bold">Ciudad</div>,
   },
-]
+  {
+    id: "actions",
+    header: () => <div className="font-bold">Acciones</div>,
+    cell: ({ row }) => {
+      const [loadingId, setLoadingId] = useState<string | null>(null);
+      const isLoading = loadingId === row.original.id;
+
+      return (
+        <div className="flex items-center justify-center gap-2">
+          <button
+            onClick={() => handleDeleteUser(row.original.id, setLoadingId)}
+            disabled={isLoading}
+            className="text-red-500 cursor-pointer bg-red-500/20 rounded p-1 hover:bg-red-500/10 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {isLoading ? (
+              <Loader2 size={20} className="animate-spin" />
+            ) : (
+              <Trash size={20} />
+            )}
+          </button>
+        </div>
+      );
+    },
+  },
+];

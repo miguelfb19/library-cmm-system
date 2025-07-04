@@ -18,16 +18,22 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Input } from "../ui/input";
+import { Fragment } from "react";
+import { DialogTrigger } from "../ui/dialog";
+import { changeRole } from "@/actions/users/change-role";
+import { toast } from "sonner";
+import { useSession } from "next-auth/react";
 
-interface UsersTableProps<TData, TValue> {
+interface UsersTableProps<TData extends { id: string }, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
 }
 
-export function UsersTable<TData, TValue>({
+export function UsersTable<TData extends { id: string }, TValue>({
   columns,
   data,
 }: UsersTableProps<TData, TValue>) {
+  const { update } = useSession();
   const table = useReactTable({
     data,
     columns,
@@ -47,9 +53,11 @@ export function UsersTable<TData, TValue>({
           }
           className="md:max-w-sm"
         />
-        <button className="btn-blue md:!w-56">Crear Nuevo Usuario</button>
+        <DialogTrigger className="btn-blue md:!w-56">
+          Crear Nuevo Usuario
+        </DialogTrigger>
       </div>
-      <div className="rounded border border-primary/30 overflow-auto max-w-[calc(100vw-7rem)]">
+      <div className="rounded border border-primary/30 overflow-auto max-w-[calc(100vw-7rem)] ">
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
@@ -77,12 +85,48 @@ export function UsersTable<TData, TValue>({
                   data-state={row.getIsSelected() && "selected"}
                 >
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext()
+                    <Fragment key={cell.id}>
+                      {cell.column.id === "role" ? (
+                        <TableCell>
+                          <select
+                            name="role"
+                            className="border border-primary/40 rounded focus-visible:outline-primary/50 p-1"
+                            defaultValue={cell.getValue() as string}
+                            onChange={async (event) => {
+                              const select = event.target;
+                              const originalValue = cell.getValue() as string;
+                              const newRole = select.value;
+
+                              const res = await changeRole(
+                                row.original.id,
+                                newRole as "admin" | "user"
+                              );
+                              if (!res.ok) {
+                                select.value = originalValue; // Restaurar el valor original
+                                toast.error(res.message);
+                                return;
+                              }
+                              toast.success(
+                                `Rol del usuario ${row.getValue(
+                                  "name"
+                                )} cambiado a ${newRole}`
+                              );
+                              update();
+                            }}
+                          >
+                            <option value="admin">admin</option>
+                            <option value="user">user</option>
+                          </select>
+                        </TableCell>
+                      ) : (
+                        <TableCell>
+                          {flexRender(
+                            cell.column.columnDef.cell,
+                            cell.getContext()
+                          )}
+                        </TableCell>
                       )}
-                    </TableCell>
+                    </Fragment>
                   ))}
                 </TableRow>
               ))
