@@ -23,6 +23,7 @@ import { DialogTrigger } from "../ui/dialog";
 import { changeRole } from "@/actions/users/change-role";
 import { toast } from "sonner";
 import { useSession } from "next-auth/react";
+import { Role } from "@/generated/prisma";
 
 interface UsersTableProps<TData extends { id: string }, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -41,6 +42,8 @@ export function UsersTable<TData extends { id: string }, TValue>({
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
   });
+
+  const roles = Object.values(Role)
 
   return (
     <>
@@ -114,8 +117,11 @@ export function UsersTable<TData extends { id: string }, TValue>({
                               update();
                             }}
                           >
-                            <option value="admin">admin</option>
-                            <option value="user">user</option>
+                            {roles.map((role) => (
+                              <option key={role} value={role}>
+                                {role}
+                              </option>
+                            ))}
                           </select>
                         </TableCell>
                       ) : (
