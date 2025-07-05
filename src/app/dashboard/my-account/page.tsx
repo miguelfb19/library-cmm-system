@@ -16,7 +16,7 @@ export default async function MyAccountPage() {
   };
   return (
     <div className="h-full flex flex-col gap-10 justify-center">
-      <Title title="Mi Cuenta" className="text-primary"></Title>
+      <Title title="Mi Cuenta" />
       <EditBasicInformationForm user={user} />
       <EditPasswordForm userId={user.id} />
     </div>

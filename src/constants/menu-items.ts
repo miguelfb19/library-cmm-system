@@ -27,12 +27,12 @@ export const menuItems = [
 export const AdminMenuItems = [
   {
     name: "Usuarios",
-    path: "/dashboard/admin-users",
+    path: "/dashboard/admin/users",
     icon: Users,
   },
   {
     name: "Inventario",
-    path: "/dashboard/admin-inventory",
+    path: "/dashboard/admin/inventory",
     icon: Warehouse,
   },
   // {

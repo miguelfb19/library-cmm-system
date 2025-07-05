@@ -5,7 +5,6 @@ import { DialogContent, DialogHeader, DialogTitle } from "../ui/dialog";
 import { Input } from "../ui/input";
 import { useForm } from "react-hook-form";
 import { createUser } from "@/actions/users/create-user";
-import { submitAlert } from "@/utils/submitAlert";
 import { LoadingSpinner } from "../ui/LoadingSpinner";
 import { toast } from "sonner";
 

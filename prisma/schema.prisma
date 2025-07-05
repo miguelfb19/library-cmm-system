@@ -19,12 +19,46 @@ enum Role {
   user
 }
 
+enum Category {
+  seminario_sanacion
+  seminario_armadura
+  seminario_como_vivir
+  cartilla
+  libro
+}
+
 model User {
-  id              String    @id @unique @default(uuid())
-  name            String
-  email           String    @unique
-  phone           String    @unique
-  password        String
-  city            String
-  role            Role      @default(user)
+  id       String @id @unique @default(uuid())
+  name     String
+  email    String @unique
+  phone    String @unique
+  password String
+  city     String
+  role     Role   @default(user)
+}
+
+model Sede {
+  id          String      @id @default(uuid())
+  city        String      @unique
+  leader      String      @unique
+  inventory   Inventory[]
+  isPrincipal Boolean     @default(false)
+}
+
+model Book {
+  id        String      @id @unique @default(uuid())
+  name      String      @unique
+  category  Category    
+  inventory Inventory[]
+}
+
+model Inventory {
+  id     String @id @default(uuid())
+  sede   Sede   @relation(fields: [sedeId], references: [id], onDelete: Cascade)
+  sedeId String
+
+  book   Book   @relation(fields: [bookId], references: [id], onDelete: Cascade)
+  bookId String
+
+  stock Int
 }

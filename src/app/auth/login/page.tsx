@@ -30,7 +30,7 @@ export default function LoginPage() {
       className="flex flex-col items-center justify-center gap-5"
     >
       <Title title="Gestión de librería" />
-      <Title title="Inicio de Sesión" className="!text-3xl text" />
+      <Title title="Inicio de Sesión" className="!text-3xl" />
       {/* email */}
       <Input
         id="email"
