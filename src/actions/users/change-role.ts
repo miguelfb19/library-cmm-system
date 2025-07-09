@@ -3,9 +3,12 @@
 import prisma from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 
-export const changeRole = async (userId: string, newRole: "admin" | "user") => {
+export const changeRole = async (
+  userId: string,
+  newRole: "admin" | "productor" | "leader"
+) => {
   try {
-    const { ok, message, status } = await verifyRoles(newRole);
+    const { ok, message, status } = await verifyRoles(userId, newRole);
 
     if (!ok) {
       return {
@@ -19,7 +22,6 @@ export const changeRole = async (userId: string, newRole: "admin" | "user") => {
       where: { id: userId },
       data: { role: newRole },
     });
-
 
     revalidatePath("/dashboard");
 
@@ -38,20 +40,26 @@ export const changeRole = async (userId: string, newRole: "admin" | "user") => {
   }
 };
 
-const verifyRoles = async (newRole: string) => {
+const verifyRoles = async (userId: string, newRole: string) => {
   try {
-    const users = await prisma.user.findMany({
-      select: {
-        role: true,
-      },
+    const currentUser = await prisma.user.findUnique({
+      where: { id: userId },
+      select: { role: true },
     });
 
-    if (users.filter((user) => user.role === "admin").length === 1 && newRole === "user") {
-      return {
-        ok: false,
-        message: "No puedes eliminar el último administrador",
-        status: 400,
-      };
+    // Si el usuario actual es admin y se intenta cambiar a otro rol
+    if (currentUser?.role === "admin") {
+      const adminCount = await prisma.user.count({
+        where: { role: "admin" }
+      });
+
+      if (newRole !== "admin" && adminCount <= 1) {
+        return {
+          ok: false,
+          message: "Debe quedar al menos un administrador en el sistema",
+          status: 400,
+        };
+      }
     }
 
     return {

@@ -7,7 +7,7 @@ import { revalidatePath } from "next/cache";
 
 export const createUser = async (data: Omit<User, "id" | "password">) => {
   try {
-    const { ok, message, status } = await verifyNewUser(data.email);
+    const { ok, message, status } = await verifyNewUser(data.email, data.phone);
     if (!ok) {
       return {
         ok: false,
@@ -38,15 +38,24 @@ export const createUser = async (data: Omit<User, "id" | "password">) => {
   }
 };
 
-const verifyNewUser = async (email: string) => {
-  const existingUser = await prisma.user.findUnique({
+const verifyNewUser = async (email: string, phone: string) => {
+  const existingEmail = await prisma.user.findUnique({
     where: { email },
   });
-
-  if (existingUser) {
+  const existingPhone = await prisma.user.findUnique({
+    where: { phone },
+  });
+  if (existingEmail) {
     return {
       ok: false,
       message: "El correo electrónico ya está en uso",
+      status: 400,
+    };
+  }
+  if (existingPhone) {
+    return {
+      ok: false,
+      message: "El número de teléfono ya está en uso",
       status: 400,
     };
   }

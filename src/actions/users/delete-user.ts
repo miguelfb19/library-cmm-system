@@ -54,7 +54,7 @@ const validateUserId = async (id: string) => {
     if( user.role === "admin") {
       return {
         ok: false,
-        message: "No puedes eliminar a un usuario administrador",
+        message: "No puedes eliminar a un usuario superadministrador",
         status: 403,
       };
     }

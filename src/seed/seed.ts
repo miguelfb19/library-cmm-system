@@ -1,6 +1,7 @@
 import prisma from "../lib/prisma";
-import { books, sedes, users } from "./seed-data";
-import bcrypt from 'bcryptjs';
+import { sedes, users } from "./seed-data";
+import bcrypt from "bcryptjs";
+import { books, seedInventory } from '../constants/initial-inventory';
 
 async function main() {
   //   Borrar registros previos
@@ -14,6 +15,7 @@ async function main() {
 
   await prisma.book.createMany({
     data: books,
+    
   });
   await prisma.user.createMany({
     data: users.map((user) => ({
@@ -23,8 +25,10 @@ async function main() {
   });
 
   // ? Iniciar los inventarios en 0
-  
-  seedInventory()
+
+  const existingSedes = await prisma.sede.findMany();
+  const existingBooks = await prisma.book.findMany();
+  seedInventory(existingSedes, existingBooks);
 
   console.log("Seed successful executed");
 }
@@ -35,27 +39,4 @@ async function main() {
   main();
 })();
 
-const seedInventory = async () => {
-  const sedes = await prisma.sede.findMany();
-  const books = await prisma.book.findMany();
 
-  const inventoryData = [];
-
-  for (const sede of sedes) {
-    for (const book of books) {
-
-      inventoryData.push({
-        sedeId: sede.id,
-        bookId: book.id,
-        stock: 0,
-      });
-    }
-  }
-
-  // Inserta todos los registros de inventario
-  await prisma.inventory.createMany({
-    data: inventoryData,    
-  });
-
-  console.log("Inventario creado con éxito en todas las sedes.");
-};

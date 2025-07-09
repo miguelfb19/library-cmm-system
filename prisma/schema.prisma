@@ -15,8 +15,9 @@ datasource db {
 }
 
 enum Role {
+  leader
   admin
-  user
+  productor
 }
 
 enum Category {
@@ -34,7 +35,7 @@ model User {
   phone    String @unique
   password String
   city     String
-  role     Role   @default(user)
+  role     Role   @default(leader)
 }
 
 model Sede {
@@ -59,6 +60,8 @@ model Inventory {
 
   book   Book   @relation(fields: [bookId], references: [id], onDelete: Cascade)
   bookId String
+
+  @@unique([sedeId, bookId])
 
   stock Int
 }

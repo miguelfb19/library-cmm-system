@@ -5,7 +5,9 @@ interface Props {
 export const Status = ({ color }: Props) => {
   return (
     <div
-      className={`h-3 w-3 rounded-full ${
+      className={`h-2 w-2 rounded-full ${
+        color === "red" ? "animate-ping" : "animate-pulse"
+      } ${
         color === "green"
           ? "bg-green-500"
           : color === "red"

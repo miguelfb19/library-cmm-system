@@ -34,7 +34,7 @@ export function UsersTable<TData extends { id: string }, TValue>({
   columns,
   data,
 }: UsersTableProps<TData, TValue>) {
-  const { update } = useSession();
+  const { update, data: session } = useSession();
   const table = useReactTable({
     data,
     columns,
@@ -43,7 +43,7 @@ export function UsersTable<TData extends { id: string }, TValue>({
     getFilteredRowModel: getFilteredRowModel(),
   });
 
-  const roles = Object.values(Role)
+  const roles = Object.values(Role);
 
   return (
     <>
@@ -56,9 +56,14 @@ export function UsersTable<TData extends { id: string }, TValue>({
           }
           className="md:max-w-sm"
         />
-        <DialogTrigger className="btn-blue md:!w-56">
-          Crear Nuevo Usuario
-        </DialogTrigger>
+        {session?.user.role === "admin" && (
+          <DialogTrigger
+            className="btn-blue md:!w-56"
+            disabled={session?.user.role !== "admin"}
+          >
+            Crear Nuevo Usuario
+          </DialogTrigger>
+        )}
       </div>
       <div className="rounded border border-primary/30 overflow-auto max-w-[calc(100vw-7rem)] ">
         <Table>
@@ -93,7 +98,11 @@ export function UsersTable<TData extends { id: string }, TValue>({
                         <TableCell>
                           <select
                             name="role"
-                            className="border border-primary/40 rounded focus-visible:outline-primary/50 p-1"
+                            className={`border ${
+                              session?.user.role === "admin"
+                                ? "border-primary/40"
+                                : "border-white"
+                            } rounded focus-visible:outline-primary/50 p-1`}
                             defaultValue={cell.getValue() as string}
                             onChange={async (event) => {
                               const select = event.target;
@@ -102,7 +111,7 @@ export function UsersTable<TData extends { id: string }, TValue>({
 
                               const res = await changeRole(
                                 row.original.id,
-                                newRole as "admin" | "user"
+                                newRole as "admin" | "productor" | "leader"
                               );
                               if (!res.ok) {
                                 select.value = originalValue; // Restaurar el valor original

@@ -8,8 +8,8 @@ export const menuItems = [
     icon: House,
   },
   {
-    name: "Solicitar Material",
-    path: "/dashboard/request-material",
+    name: "Inventario",
+    path: "/dashboard/leader/inventory",
     icon: BookCopy,
   },
   // {
@@ -30,14 +30,17 @@ export const AdminMenuItems = [
     path: "/dashboard/admin/users",
     icon: Users,
   },
-  {
-    name: "Inventario",
-    path: "/dashboard/admin/inventory",
-    icon: Warehouse,
-  },
   // {
   //   name: "Mensaje a clientes",
   //   path: "/dashboard/customers-message",
   //   icon: FaWhatsapp,
   // },
+];
+
+export const ProductorMenuItems = [
+  {
+    name: "Bodega",
+    path: "/dashboard/customers-message",
+    icon: Warehouse,
+  },
 ];

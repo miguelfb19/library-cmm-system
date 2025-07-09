@@ -1,0 +1,97 @@
+"use client";
+
+import { useState } from "react";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "../ui/dialog";
+import { Input } from "../ui/input";
+import { submitAlert } from "@/utils/submitAlert";
+import { toast } from "sonner";
+import { createNewSede } from "@/actions/inventory/create-new-sede";
+import { capitalizeWord, capitalizeWords } from "@/utils/capitalize";
+import { LoadingSpinner } from "../ui/LoadingSpinner";
+
+export const CreateSede = () => {
+  const [sedeCity, setsedeCity] = useState("");
+  const [sedeLeader, setsedeLeader] = useState("");
+  const [isCreating, setIsCreating] = useState(false);
+
+  const onCreateSede = async () => {
+    setIsCreating(true);
+
+    const result = await submitAlert({
+      title: "Crear sede",
+      html: `¿Estás seguro de que quieres crear la sede <b>${sedeCity}</b>?`,
+      icon: "warning",
+      confirmButtonText: "Crear",
+      showCancelButton: true,
+    });
+
+    if (result.isDenied || result.isDismissed) {
+      toast.info("Creación de sede cancelada");
+      setsedeCity("");
+      setsedeLeader("");
+      setIsCreating(false);
+      return;
+    }
+
+    const data = {
+      city: capitalizeWord(sedeCity),
+      leader: capitalizeWords(sedeLeader),
+    };
+
+    const { ok, message, sede } = await createNewSede(data);
+    if (!ok) {
+      toast.error(message);
+      setsedeCity("");
+      return;
+    }
+
+    toast.success(`Sede ${sede?.city} creada correctamente`);
+    setsedeCity("");
+    setsedeLeader("");
+    setIsCreating(false);
+  };
+
+  return (
+    <>
+      <Dialog>
+        <DialogTrigger className="btn-blue mt-5">Agregar sede</DialogTrigger>
+
+        <DialogContent aria-describedby={undefined} className="!max-w-3xl">
+          <DialogHeader>
+            <DialogTitle className="text-primary mb-5">
+              Crear una sede
+            </DialogTitle>
+          </DialogHeader>
+          <form className="flex flex-col gap-4">
+            <div className="flex max-md:flex-col gap-2">
+              <Input
+                placeholder="Ciudad de la sede"
+                value={sedeCity}
+                onChange={(e) => setsedeCity(e.target.value)}
+              />
+              <Input
+                placeholder="Nombre del líder o responsable"
+                value={sedeLeader}
+                onChange={(e) => setsedeLeader(e.target.value)}
+              />
+            </div>
+            <button
+              type="button"
+              className={`btn-blue ${isCreating ? "pointer-events-none opacity-50" : ""}`}
+              onClick={onCreateSede}
+              disabled={isCreating}
+            >
+              {isCreating ? <LoadingSpinner size={10} /> : "Crear sede"}
+            </button>
+          </form>
+        </DialogContent>
+      </Dialog>
+    </>
+  );
+};

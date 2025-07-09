@@ -4,6 +4,7 @@ import { deleteUser } from "@/actions/users/delete-user";
 import { submitAlert } from "@/utils/submitAlert";
 import { ColumnDef } from "@tanstack/react-table";
 import { ArrowUpDown, Trash, Loader2 } from "lucide-react";
+import { useSession } from "next-auth/react";
 import { useState } from "react";
 
 export type User = {
@@ -12,10 +13,13 @@ export type User = {
   email: string;
   phone: string;
   city: string;
-  role: "admin" | "user";
+  role: "admin" | "productor" | "leader";
 };
 
-const handleDeleteUser = async (id: string, setLoading: (id: string | null) => void) => {
+const handleDeleteUser = async (
+  id: string,
+  setLoading: (id: string | null) => void
+) => {
   setLoading(id);
 
   try {
@@ -78,20 +82,22 @@ export const columns: ColumnDef<User>[] = [
     cell: ({ row }) => {
       const [loadingId, setLoadingId] = useState<string | null>(null);
       const isLoading = loadingId === row.original.id;
+      const { data: session } = useSession();
 
       return (
         <div className="flex items-center justify-center gap-2">
-          <button
-            onClick={() => handleDeleteUser(row.original.id, setLoadingId)}
-            disabled={isLoading}
-            className="text-red-500 cursor-pointer bg-red-500/20 rounded p-1 hover:bg-red-500/10 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            {isLoading ? (
-              <Loader2 size={20} className="animate-spin" />
-            ) : (
-              <Trash size={20} />
-            )}
-          </button>
+          {session?.user.role === "admin" && (
+            <button
+              onClick={() => handleDeleteUser(row.original.id, setLoadingId)}
+              className="text-red-500 cursor-pointer bg-red-500/20 rounded p-1 hover:bg-red-500/10 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {isLoading ? (
+                <Loader2 size={20} className="animate-spin" />
+              ) : (
+                <Trash size={20} />
+              )}
+            </button>
+          )}
         </div>
       );
     },
