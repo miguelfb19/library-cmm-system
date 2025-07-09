@@ -19,9 +19,11 @@ export const CreateSede = () => {
   const [sedeCity, setsedeCity] = useState("");
   const [sedeLeader, setsedeLeader] = useState("");
   const [isCreating, setIsCreating] = useState(false);
+  const [openModal, setOpenModal] = useState(false);
 
   const onCreateSede = async () => {
     setIsCreating(true);
+    setOpenModal(false);
 
     const result = await submitAlert({
       title: "Crear sede",
@@ -48,6 +50,8 @@ export const CreateSede = () => {
     if (!ok) {
       toast.error(message);
       setsedeCity("");
+      setsedeLeader("");
+      setIsCreating(false);
       return;
     }
 
@@ -59,8 +63,13 @@ export const CreateSede = () => {
 
   return (
     <>
-      <Dialog>
-        <DialogTrigger className="btn-blue mt-5">Agregar sede</DialogTrigger>
+      <Dialog open={openModal} onOpenChange={setOpenModal}>
+        <DialogTrigger
+          className="btn-blue mt-5"
+          onClick={() => setOpenModal(true)}
+        >
+          Agregar sede
+        </DialogTrigger>
 
         <DialogContent aria-describedby={undefined} className="!max-w-3xl">
           <DialogHeader>
@@ -83,7 +92,9 @@ export const CreateSede = () => {
             </div>
             <button
               type="button"
-              className={`btn-blue ${isCreating ? "pointer-events-none opacity-50" : ""}`}
+              className={`btn-blue ${
+                isCreating ? "pointer-events-none opacity-50" : ""
+              }`}
               onClick={onCreateSede}
               disabled={isCreating}
             >

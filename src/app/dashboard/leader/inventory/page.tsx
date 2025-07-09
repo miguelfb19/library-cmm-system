@@ -18,11 +18,13 @@ export default async function InventoryPage() {
             {/* CREAR SEDE */}
             <CreateSede />
             <h3 className="text-primary text-xl font-bold">Sede principal</h3>
-            {sedes
-              .filter((sede) => sede.isPrincipal)
-              .map((sede) => (
-                <SedeCard sede={sede} key={sede.id} />
-              ))}{" "}
+            <div className="flex gap-5 w-full">
+              {sedes
+                .filter((sede) => sede.isPrincipal)
+                .map((sede) => (
+                  <SedeCard sede={sede} key={sede.id} />
+                ))}
+            </div>
           </>
         )}
 

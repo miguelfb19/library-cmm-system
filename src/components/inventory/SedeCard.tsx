@@ -42,7 +42,7 @@ export const SedeCard = ({ sede }: Props) => {
     <div
       className={`${
         sede.isPrincipal && "self-center"
-      } rounded shadow-lg bg-secondary flex justify-center items-center flex-col hover:scale-[102%] transition-all duration-200 overflow-auto`}
+      } w-full rounded shadow-lg bg-secondary flex justify-center items-center flex-col hover:scale-[102%] transition-all duration-200 overflow-auto`}
     >
       <Link
         href={`/dashboard/leader/inventory/sede/${sede.id}`}
