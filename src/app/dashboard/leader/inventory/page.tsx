@@ -1,8 +1,8 @@
 import { getSedesWithInventory } from "@/actions/inventory/get-sedes-with-inventory";
 import { auth } from "@/auth.config";
 import { SedeCard } from "@/components/inventory/SedeCard";
+import { CreateSede } from "@/components/inventory/ui/CreateSede";
 import { Title } from "@/components/ui/Title";
-import { CreateSede } from "@/components/inventory/CreateSede";
 
 export default async function InventoryPage() {
   const { sedes, ok } = await getSedesWithInventory();

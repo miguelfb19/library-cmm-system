@@ -1,0 +1,1 @@
+export type InventoryStatus = "red" | "yellow" | "green";

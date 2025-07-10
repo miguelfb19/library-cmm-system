@@ -2,6 +2,7 @@
 
 import { editSingleBookStock } from "@/actions/inventory/edit-single-book-stock";
 import { Category } from "@/generated/prisma";
+import { ShortSede } from "@/interfaces/Sede";
 import { capitalizeWords } from "@/utils/capitalize";
 import { formatBookName } from "@/utils/format-book-name";
 import { submitAlert } from "@/utils/submitAlert";
@@ -9,22 +10,6 @@ import { Check, X } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { useState } from "react";
 import { toast } from "sonner";
-
-interface Sede {
-  id: string;
-  city: string;
-  leader: string;
-  isPrincipal: boolean;
-  inventory: {
-    id: string;
-    stock: number;
-    book: {
-      id: string;
-      name: string;
-      category: Category;
-    };
-  }[];
-}
 
 interface Props {
   inventory: {
@@ -38,7 +23,7 @@ interface Props {
     criticalStock: number;
     lowStock: number;
   }[];
-  sede: Sede;
+  sede: ShortSede;
 }
 
 export const SedeInventoryDetails = ({ inventory, sede }: Props) => {
@@ -85,8 +70,8 @@ export const SedeInventoryDetails = ({ inventory, sede }: Props) => {
         <table className="table-auto border-collapse">
           <thead className="bg-secondary/70 border-b">
             <tr>
-              <th className="font-bold text-start">Libro</th>
-              <th className="font-bold text-start">Stock</th>
+              <th className="font-extrabold text-start">Libro</th>
+              <th className="font-extrabold text-start">Stock</th>
             </tr>
           </thead>
           <tbody>

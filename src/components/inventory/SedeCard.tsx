@@ -1,52 +1,16 @@
 import { SedeWithInventory } from "@/interfaces/Sede";
 import { Title } from "../ui/Title";
 import Link from "next/link";
-import { Category } from "@/generated/prisma";
-import { InventoryStatus, StatusItem } from "./StatusItem";
-import { DeleteSedeButton } from "./DeleteSedeButton";
+import { StatusItem } from "./ui/StatusItem";
+import { DeleteSedeButton } from "./ui/DeleteSedeButton";
 import { auth } from "@/auth.config";
+import { getStockLevels } from "./utils/get-stock-levels";
+import { getInventoryStatus } from "./utils/get-inventory-status";
 
 interface Props {
   sede: SedeWithInventory;
   className?: string;
 }
-
-// FUNCIONES AUXILIARES
-
-const getStockLevels = (
-  inventory: SedeWithInventory["inventory"],
-  category: Category
-) => {
-  // Selecciono categoria
-  const items = inventory.filter((item) => item.book.category === category);
-
-  // Escojo los niveles de criticalStock y lowStock mas bajos por categoria, buscando en cada libro
-  const criticalLevel =
-    items.sort((a, b) => a.criticalStock - b.criticalStock)[0].criticalStock ||
-    0;
-  const warningLevel =
-    items.sort((a, b) => a.lowStock - b.lowStock)[0].lowStock || 0;
-
-  return { criticalLevel, warningLevel };
-};
-
-const getInventoryStatus = (
-  inventory: SedeWithInventory["inventory"],
-  category: Category,
-  criticalLevel: number,
-  warningLevel: number
-): InventoryStatus => {
-  const categoryItems = inventory.filter(
-    (item) => item.book.category === category
-  );
-
-  // Muestro el status de cierto color si existe al menos un libro de la categoria con stock menor a los niveles criticos o de advertencia
-  if (categoryItems.some((item) => item.stock < criticalLevel)) return "red";
-  if (categoryItems.some((item) => item.stock < warningLevel)) return "yellow";
-  return "green";
-};
-
-// COMPONENTE
 
 export const SedeCard = async ({ sede, className }: Props) => {
   const session = await auth();

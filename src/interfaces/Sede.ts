@@ -30,3 +30,21 @@ export interface Sede {
   leader: string;
   isPrincipal: boolean;
 }
+
+export interface ShortSede {
+  id: string;
+  city: string;
+  leader: string;
+  isPrincipal: boolean;
+  inventory: {
+    id: string;
+    stock: number;
+    criticalStock: number;
+    lowStock: number;
+    book: {
+      id: string;
+      name: string;
+      category: Category;
+    };
+  }[];
+}

@@ -7,13 +7,13 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "../ui/dialog";
-import { Input } from "../ui/input";
+} from "../../ui/dialog";
+import { Input } from "../../ui/input";
 import { submitAlert } from "@/utils/submitAlert";
 import { toast } from "sonner";
 import { createNewSede } from "@/actions/inventory/create-new-sede";
 import { capitalizeWord, capitalizeWords } from "@/utils/capitalize";
-import { LoadingSpinner } from "../ui/LoadingSpinner";
+import { LoadingSpinner } from "../../ui/LoadingSpinner";
 
 export const CreateSede = () => {
   const [sedeCity, setsedeCity] = useState("");
