@@ -3,9 +3,12 @@ import { Title } from "../ui/Title";
 import Link from "next/link";
 import { Category } from "@/generated/prisma";
 import { InventoryStatus, StatusItem } from "./StatusItem";
+import { DeleteSedeButton } from "./DeleteSedeButton";
+import { auth } from "@/auth.config";
 
 interface Props {
   sede: SedeWithInventory;
+  className?: string;
 }
 
 const getInventoryStatus = (
@@ -23,7 +26,13 @@ const getInventoryStatus = (
   return "green";
 };
 
-export const SedeCard = ({ sede }: Props) => {
+export const SedeCard = async ({ sede, className }: Props) => {
+  const session = await auth();
+
+  if (!session || !session.user) {
+    return null; // or handle unauthenticated state
+  }
+
   const sanacionStatus = getInventoryStatus(
     sede.inventory,
     "seminario_sanacion"
@@ -41,9 +50,13 @@ export const SedeCard = ({ sede }: Props) => {
   return (
     <div
       className={`${
-        sede.isPrincipal && "self-center"
-      } w-full rounded shadow-lg bg-secondary flex justify-center items-center flex-col hover:scale-[102%] transition-all duration-200 overflow-auto`}
+        sede.isPrincipal ? "self-center" : ""
+      } ${className} w-full rounded shadow-lg bg-secondary flex justify-center items-center flex-col hover:scale-[102%] transition-all duration-200 overflow-auto relative`}
     >
+      <DeleteSedeButton
+        userRole={session.user.role as "admin" | "productor" | "leader"}
+        sedeId={sede.id}
+      />
       <Link
         href={`/dashboard/leader/inventory/sede/${sede.id}`}
         key={sede.id}
