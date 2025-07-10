@@ -20,12 +20,12 @@ const getStockLevels = (
   // Selecciono categoria
   const items = inventory.filter((item) => item.book.category === category);
 
-  // Escojo los niveles de criticalStock y lowStock mas altos por categoria, buscando en cada libro
+  // Escojo los niveles de criticalStock y lowStock mas bajos por categoria, buscando en cada libro
   const criticalLevel =
-    items.sort((a, b) => b.criticalStock - a.criticalStock)[0].criticalStock ||
+    items.sort((a, b) => a.criticalStock - b.criticalStock)[0].criticalStock ||
     0;
   const warningLevel =
-    items.sort((a, b) => b.lowStock - a.lowStock)[0].lowStock || 0;
+    items.sort((a, b) => a.lowStock - b.lowStock)[0].lowStock || 0;
 
   return { criticalLevel, warningLevel };
 };
