@@ -11,20 +11,42 @@ interface Props {
   className?: string;
 }
 
+// FUNCIONES AUXILIARES
+
+const getStockLevels = (
+  inventory: SedeWithInventory["inventory"],
+  category: Category
+) => {
+  // Selecciono categoria
+  const items = inventory.filter((item) => item.book.category === category);
+
+  // Escojo los niveles de criticalStock y lowStock mas altos por categoria, buscando en cada libro
+  const criticalLevel =
+    items.sort((a, b) => b.criticalStock - a.criticalStock)[0].criticalStock ||
+    0;
+  const warningLevel =
+    items.sort((a, b) => b.lowStock - a.lowStock)[0].lowStock || 0;
+
+  return { criticalLevel, warningLevel };
+};
+
 const getInventoryStatus = (
   inventory: SedeWithInventory["inventory"],
   category: Category,
-  criticalLevel: number = 50,
-  warningLevel: number = 150
+  criticalLevel: number,
+  warningLevel: number
 ): InventoryStatus => {
   const categoryItems = inventory.filter(
     (item) => item.book.category === category
   );
 
+  // Muestro el status de cierto color si existe al menos un libro de la categoria con stock menor a los niveles criticos o de advertencia
   if (categoryItems.some((item) => item.stock < criticalLevel)) return "red";
   if (categoryItems.some((item) => item.stock < warningLevel)) return "yellow";
   return "green";
 };
+
+// COMPONENTE
 
 export const SedeCard = async ({ sede, className }: Props) => {
   const session = await auth();
@@ -33,17 +55,31 @@ export const SedeCard = async ({ sede, className }: Props) => {
     return null; // or handle unauthenticated state
   }
 
+  const sanacionLevels = getStockLevels(sede.inventory, "seminario_sanacion");
   const sanacionStatus = getInventoryStatus(
     sede.inventory,
-    "seminario_sanacion"
+    "seminario_sanacion",
+    sanacionLevels.criticalLevel,
+    sanacionLevels.warningLevel
   );
+
+  const aramduraLevels = getStockLevels(sede.inventory, "seminario_armadura");
   const aramduraStatus = getInventoryStatus(
     sede.inventory,
-    "seminario_armadura"
+    "seminario_armadura",
+    aramduraLevels.criticalLevel,
+    aramduraLevels.warningLevel
+  );
+
+  const comoVivirLevels = getStockLevels(
+    sede.inventory,
+    "seminario_como_vivir"
   );
   const ComoVivirStatus = getInventoryStatus(
     sede.inventory,
-    "seminario_como_vivir"
+    "seminario_como_vivir",
+    comoVivirLevels.criticalLevel,
+    comoVivirLevels.warningLevel
   );
   // const CartillasStatus = getInventoryStatus(sede.inventory, "cartilla");
 

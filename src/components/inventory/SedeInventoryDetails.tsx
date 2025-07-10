@@ -35,6 +35,8 @@ interface Props {
       category: Category;
     };
     stock: number;
+    criticalStock: number;
+    lowStock: number;
   }[];
   sede: Sede;
 }
@@ -44,7 +46,7 @@ export const SedeInventoryDetails = ({ inventory, sede }: Props) => {
   const [newStocks, setNewStocks] = useState<Record<string, string>>({});
   const { data: session } = useSession();
 
-  if(!session?.user) return null;
+  if (!session?.user) return null;
 
   const handleStockChange = (bookId: string, value: string) => {
     setEditingItem(bookId);
@@ -70,7 +72,8 @@ export const SedeInventoryDetails = ({ inventory, sede }: Props) => {
     setEditingItem(null);
   };
 
-  const enableEditing = session.user.role === "admin" || session.user.name!.includes(sede.leader);
+  const enableEditing =
+    session.user.role === "admin" || session.user.name!.includes(sede.leader);
 
   return (
     <div>
@@ -78,65 +81,83 @@ export const SedeInventoryDetails = ({ inventory, sede }: Props) => {
         <h3 className="font-bold text-primary text-xl">
           {capitalizeWords(inventory[0]?.book.category.replaceAll("_", " "))}
         </h3>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
-          {inventory
-            .sort((a, b) => a.book.name.localeCompare(b.book.name))
-            .map(({ stock, book, id }) => (
-              <div key={id} className="shadow-lg rounded p-2 bg-secondary/70">
-                <h4 className="font-bold text-sm">
-                  {formatBookName(book.name)}
-                </h4>
-                <div
-                  className={`text-sm ${
-                    stock >= 150
-                      ? "text-primary"
-                      : stock >= 50
-                      ? "text-yellow-500"
-                      : "text-red-500"
-                  }`}
+
+        <table className="table-auto border-collapse">
+          <thead className="bg-secondary/70 border-b">
+            <tr>
+              <th className="font-bold text-start">Libro</th>
+              <th className="font-bold text-start">Stock</th>
+            </tr>
+          </thead>
+          <tbody>
+            {inventory
+              .sort((a, b) => a.book.name.localeCompare(b.book.name))
+              .map(({ stock, criticalStock, lowStock, book, id }) => (
+                <tr
+                  key={id}
+                  className="hover:bg-secondary/50 transition-colors"
                 >
-                  <div className="flex items-center justify-between px-2">
-                    <div className="flex items-center gap-2">
-                      <span>Stock:</span>
-                      <input
-                        // defaultValue={stock}
-                        className="border-none rounded p-1 w-16"
-                        type="number"
-                        value={
-                          editingItem === book.id ? newStocks[book.id] : stock
-                        }
-                        onChange={(e) => {
-                          handleStockChange(book.id, e.target.value);
-                        }}
-                        disabled={!enableEditing}
-                      />
-                    </div>
+                  <td className="border-b">
+                    <h4 className="text-sm">{formatBookName(book.name)}</h4>
+                  </td>
+
+                  {/* STOCK CELL */}
+                  <td className="border-b relative w-44">
                     <div
-                      className="flex items-center gap-2"
-                      hidden={editingItem !== book.id}
+                      className={`text-sm ${
+                        stock >= lowStock
+                          ? "text-primary"
+                          : stock >= criticalStock
+                          ? "text-yellow-500"
+                          : "text-red-500"
+                      }`}
                     >
-                      <button
-                        className="p-1 bg-green-500 rounded hover:bg-green-300 transition-colors text-white cursor-pointer"
-                        onClick={() => {
-                          handleChangeStock(book.id, book.name);
-                        }}
-                      >
-                        <Check size={20} />
-                      </button>
-                      <button
-                        className="p-1 bg-red-500 rounded hover:bg-red-300 transition-colors text-white cursor-pointer"
-                        onClick={() => {
-                          setEditingItem(null);
-                        }}
-                      >
-                        <X size={20} />
-                      </button>
+                      <div className="flex items-center px-2">
+                        <div className="flex items-center gap-2">
+                          <span>Stock:</span>
+                          <input
+                            // defaultValue={stock}
+                            className="border-none rounded p-1 w-16"
+                            type="number"
+                            value={
+                              editingItem === book.id
+                                ? newStocks[book.id]
+                                : stock
+                            }
+                            onChange={(e) => {
+                              handleStockChange(book.id, e.target.value);
+                            }}
+                            disabled={!enableEditing}
+                          />
+                        </div>
+                        <div
+                          className="flex items-center gap-1 absolute right-0"
+                          hidden={editingItem !== book.id}
+                        >
+                          <button
+                            className="p-1 bg-green-500 rounded hover:bg-green-300 transition-colors text-white cursor-pointer"
+                            onClick={() => {
+                              handleChangeStock(book.id, book.name);
+                            }}
+                          >
+                            <Check size={15} />
+                          </button>
+                          <button
+                            className="p-1 bg-red-500 rounded hover:bg-red-300 transition-colors text-white cursor-pointer"
+                            onClick={() => {
+                              setEditingItem(null);
+                            }}
+                          >
+                            <X size={15} />
+                          </button>
+                        </div>
+                      </div>
                     </div>
-                  </div>
-                </div>
-              </div>
-            ))}
-        </div>
+                  </td>
+                </tr>
+              ))}
+          </tbody>
+        </table>
       </div>
     </div>
   );

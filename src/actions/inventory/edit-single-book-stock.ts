@@ -32,6 +32,7 @@ export const editSingleBookStock = async (
     }
 
     revalidatePath(`/dashboard/admin/inventory/sede/${sedeId}`);
+    revalidatePath(`/dashboard/leader/inventory`);
     return {
       ok: true,
       message: "Stock del libro editado correctamente",

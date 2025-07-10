@@ -36,9 +36,11 @@ export default async function SedeDetailsPage({ params }: Props) {
         <h3 className="font-bold text-2xl text-primary">{sede.leader}</h3>
       </div>
 
-      {getAllCategoriesInventory(sede).map((inventory, index) => (
-        <SedeInventoryDetails inventory={inventory} sede={sede} key={index} />
-      ))}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+        {getAllCategoriesInventory(sede).map((inventory, index) => (
+          <SedeInventoryDetails inventory={inventory} sede={sede} key={index} />
+        ))}
+      </div>
     </div>
   );
 }
@@ -51,6 +53,8 @@ interface Sede {
   inventory: {
     id: string;
     stock: number;
+    criticalStock: number;
+    lowStock: number;
     book: {
       id: string;
       name: string;

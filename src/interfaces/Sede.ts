@@ -19,6 +19,8 @@ export interface SedeWithInventory {
     sedeId: string;
     bookId: string;
     stock: number;
+    criticalStock: number;
+    lowStock: number;
   })[];
 }
 

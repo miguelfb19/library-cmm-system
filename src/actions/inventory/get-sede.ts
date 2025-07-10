@@ -13,6 +13,8 @@ export const getSede = async (id: string) => {
           select: {
             id: true,
             stock: true,
+            criticalStock: true,
+            lowStock: true,
             book: {
               select: {
                 id: true,

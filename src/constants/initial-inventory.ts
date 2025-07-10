@@ -40,27 +40,27 @@ export const books: {name: string, category: Category}[] = [
   { name: "tomo_8_bautismo_en_el_espiritu_santo", category: "seminario_sanacion" },
   { name: "tomo_9_heridas_de_vientre_materno", category: "seminario_sanacion" },
 
-  // seminario_como_vivir
-  { name: "tomo_1_el_espiritu_santo_en_la_oracion", category: "seminario_como_vivir" },
-  { name: "tomo_2_la_alabanza", category: "seminario_como_vivir" },
-  { name: "tomo_3_armas_espirituales_autoridad", category: "seminario_como_vivir" },
-  { name: "tomo_4_armas_espirituales_sangre", category: "seminario_como_vivir" },
-  { name: "tomo_5_armas_espirituales_palabra", category: "seminario_como_vivir" },
-  { name: "tomo_6_jesus_y_la_oracion", category: "seminario_como_vivir" },
-  { name: "tomo_7_tu_puedes_sanar", category: "seminario_como_vivir" },
-  { name: "tomo_8_la_intercesion", category: "seminario_como_vivir" },
-  { name: "tomo_9_las_promesas_de_dios_son_para_ti", category: "seminario_como_vivir" },
-
   // seminario_armadura
-  { name: "tomo_1_maneras_de_vivir", category: "seminario_armadura" },
-  { name: "tomo_2_la_bendicion_a_traves_del_trabajo", category: "seminario_armadura" },
-  { name: "tomo_3_que_es_la_bendicion", category: "seminario_armadura" },
-  { name: "tomo_4_maneras_como_dios_bendice_provision", category: "seminario_armadura" },
-  { name: "tomo_5_maneras_como_dios_bendice_promocion", category: "seminario_armadura" },
-  { name: "tomo_6_maneras_como_dios_bendice_proteccion", category: "seminario_armadura" },
-  { name: "tomo_7_viviendo_bajo_el_poder_extraordinario_de_dios", category: "seminario_armadura" },
-  { name: "tomo_8_el_poder_de_la_bendicion", category: "seminario_armadura" },
-  { name: "tomo_9_dar_principio_de_bendicion", category: "seminario_armadura" },
+  { name: "tomo_1_el_espiritu_santo_en_la_oracion", category: "seminario_armadura" },
+  { name: "tomo_2_la_alabanza", category: "seminario_armadura" },
+  { name: "tomo_3_armas_espirituales_autoridad", category: "seminario_armadura" },
+  { name: "tomo_4_armas_espirituales_sangre", category: "seminario_armadura" },
+  { name: "tomo_5_armas_espirituales_palabra", category: "seminario_armadura" },
+  { name: "tomo_6_jesus_y_la_oracion", category: "seminario_armadura" },
+  { name: "tomo_7_tu_puedes_sanar", category: "seminario_armadura" },
+  { name: "tomo_8_la_intercesion", category: "seminario_armadura" },
+  { name: "tomo_9_las_promesas_de_dios_son_para_ti", category: "seminario_armadura" },
+
+  // seminario_como_vivir
+  { name: "tomo_1_maneras_de_vivir", category: "seminario_como_vivir" },
+  { name: "tomo_2_la_bendicion_a_traves_del_trabajo", category: "seminario_como_vivir" },
+  { name: "tomo_3_que_es_la_bendicion", category: "seminario_como_vivir" },
+  { name: "tomo_4_maneras_como_dios_bendice_provision", category: "seminario_como_vivir" },
+  { name: "tomo_5_maneras_como_dios_bendice_promocion", category: "seminario_como_vivir" },
+  { name: "tomo_6_maneras_como_dios_bendice_proteccion", category: "seminario_como_vivir" },
+  { name: "tomo_7_viviendo_bajo_el_poder_extraordinario_de_dios", category: "seminario_como_vivir" },
+  { name: "tomo_8_el_poder_de_la_bendicion", category: "seminario_como_vivir" },
+  { name: "tomo_9_dar_principio_de_bendicion", category: "seminario_como_vivir" },
 
   // Cartillas
   { name: "liderazgo_lider", category: "cartilla" },
