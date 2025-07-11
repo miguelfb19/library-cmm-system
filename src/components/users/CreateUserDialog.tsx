@@ -51,7 +51,7 @@ export const CreateUserDialog = () => {
   return (
     <DialogContent aria-describedby={undefined} className="!max-w-3xl">
       <DialogHeader>
-        <DialogTitle className="text-primary mb-5">
+        <DialogTitle className="text-primary text-2xl mb-5">
           Crear un nuevo usuario
         </DialogTitle>
       </DialogHeader>

@@ -5,6 +5,7 @@ import { getAllCategoriesInventory } from "@/components/inventory/utils/get-all-
 import { Title } from "@/components/ui/Title";
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
+import { EditSedeLeader } from "@/components/inventory/ui/EditSedeLeader";
 
 interface Props {
   params: Promise<{ id: string }>;
@@ -35,9 +36,12 @@ export default async function SedeDetailsPage({ params }: Props) {
         </Link>
         <UpdateStockLevelsBySede sede={sede} />
       </div>
-      <div className="bg-gradient-to-br from-slate-300 via-white via-70% to-slate-300 rounded p-5 flex max-md:flex-col md:items-end gap-2 px-5 shadow-lg overflow-auto">
-        <h2 className="text-3xl font-bold">Responsable: </h2>
-        <h3 className="font-bold text-2xl text-primary">{sede.leader}</h3>
+      <div className="flex items-center justify-between bg-gradient-to-br from-slate-300 via-white via-70% to-slate-300 rounded p-5 shadow-lg overflow-auto">
+        <div className="flex max-md:flex-col md:items-end gap-2">
+          <h2 className="text-3xl font-bold">Responsable: </h2>
+          <h3 className="font-bold text-2xl text-primary">{sede.leader}</h3>
+        </div>
+        <EditSedeLeader sedeId={sede.id}/>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-5">

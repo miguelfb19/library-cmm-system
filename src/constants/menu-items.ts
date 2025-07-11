@@ -40,7 +40,7 @@ export const AdminMenuItems = [
 export const ProductorMenuItems = [
   {
     name: "Bodega",
-    path: "/dashboard/customers-message",
+    path: "/dashboard/productor/store",
     icon: Warehouse,
   },
 ];

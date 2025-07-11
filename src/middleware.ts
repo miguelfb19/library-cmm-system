@@ -65,6 +65,9 @@ export async function middleware(req: NextRequest) {
     // Rutes only leaders
     const leaderOnlyPaths = ["/dashboard/leader/:path*"];
 
+    // Rutes only productors
+    const productorOnlyPaths = ["/dashboard/productor/:path*"];
+
 
     // Check actual route is only to leaders
     if (leaderOnlyPaths.some((route) => path.startsWith(route))) {
@@ -78,6 +81,14 @@ export async function middleware(req: NextRequest) {
     if (adminOnlyPaths.some((route) => path.startsWith(route))) {
       // If not admin, redirect to dashboard
       if (data.role !== "admin") {
+        return NextResponse.redirect(new URL("/dashboard", req.url));
+      }
+    }
+
+    // Check actual route is only to productors
+    if (productorOnlyPaths.some((route) => path.startsWith(route))) {
+      // If not productor, redirect to dashboard
+      if (data.role !== "productor" && data.role !== "admin") {
         return NextResponse.redirect(new URL("/dashboard", req.url));
       }
     }

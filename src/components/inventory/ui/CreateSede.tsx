@@ -14,6 +14,7 @@ import { toast } from "sonner";
 import { createNewSede } from "@/actions/inventory/create-new-sede";
 import { capitalizeWord, capitalizeWords } from "@/utils/capitalize";
 import { LoadingSpinner } from "../../ui/LoadingSpinner";
+import { CustomDialog } from "../../ui/CustomDialog";
 
 export const CreateSede = () => {
   const [sedeCity, setsedeCity] = useState("");
@@ -62,47 +63,42 @@ export const CreateSede = () => {
   };
 
   return (
-    <>
-      <Dialog open={openModal} onOpenChange={setOpenModal}>
-        <DialogTrigger
-          className="btn-blue mt-5"
-          onClick={() => setOpenModal(true)}
-        >
+    <CustomDialog
+      trigger={
+        <button className="btn-blue mt-5" onClick={() => setOpenModal(true)}>
           Agregar sede
-        </DialogTrigger>
-
-        <DialogContent aria-describedby={undefined} className="!max-w-3xl">
-          <DialogHeader>
-            <DialogTitle className="text-primary mb-5">
-              Crear una sede
-            </DialogTitle>
-          </DialogHeader>
-          <form className="flex flex-col gap-4">
-            <div className="flex max-md:flex-col gap-2">
-              <Input
-                placeholder="Ciudad de la sede"
-                value={sedeCity}
-                onChange={(e) => setsedeCity(e.target.value)}
-              />
-              <Input
-                placeholder="Nombre del líder o responsable"
-                value={sedeLeader}
-                onChange={(e) => setsedeLeader(e.target.value)}
-              />
-            </div>
-            <button
-              type="button"
-              className={`btn-blue ${
-                isCreating ? "pointer-events-none opacity-50" : ""
-              }`}
-              onClick={onCreateSede}
-              disabled={isCreating}
-            >
-              {isCreating ? <LoadingSpinner size={10} /> : "Crear sede"}
-            </button>
-          </form>
-        </DialogContent>
-      </Dialog>
-    </>
+        </button>
+      }
+      title="Crear una sede"
+      open={openModal}
+      onOpenChange={setOpenModal}
+      footer={
+        <button
+          type="button"
+          className={`btn-blue ${
+            isCreating ? "pointer-events-none opacity-50" : ""
+          }`}
+          onClick={onCreateSede}
+          disabled={isCreating}
+        >
+          {isCreating ? <LoadingSpinner size={10} /> : "Crear sede"}
+        </button>
+      }
+    >
+      <form className="flex flex-col gap-4">
+        <div className="flex max-md:flex-col gap-2">
+          <Input
+            placeholder="Ciudad de la sede"
+            value={sedeCity}
+            onChange={(e) => setsedeCity(e.target.value)}
+          />
+          <Input
+            placeholder="Nombre del líder o responsable"
+            value={sedeLeader}
+            onChange={(e) => setsedeLeader(e.target.value)}
+          />
+        </div>
+      </form>
+    </CustomDialog>
   );
 };
