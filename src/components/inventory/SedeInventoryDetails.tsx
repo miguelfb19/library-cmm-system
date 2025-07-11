@@ -41,7 +41,7 @@ export const SedeInventoryDetails = ({ inventory, sede }: Props) => {
   const handleChangeStock = async (bookId: string, bookName: string) => {
     const result = await submitAlert({
       title: "Cambiar stock",
-      html: `¿Estás seguro de que quieres cambiar el stock de <b>${bookName}</b>?`,
+      html: `¿Estás seguro de que quieres cambiar el stock de <b>${capitalizeWords(bookName.replaceAll("_", " "))}</b>?`,
       icon: "warning",
       confirmButtonText: "Cambiar stock",
       showCancelButton: true,

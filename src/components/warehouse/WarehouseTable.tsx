@@ -13,6 +13,7 @@ interface Props {
 
 export const WarehouseTable = ({ warehouse, userRole }: Props) => {
   const [searchTerm, setSearchTerm] = useState("");
+  const [searchTerm2, setSearchTerm2] = useState("");
 
   const filteredInventory = warehouse.inventory.filter((item) =>
     item.book.name
@@ -20,21 +21,34 @@ export const WarehouseTable = ({ warehouse, userRole }: Props) => {
       .replaceAll("_", " ")
       .includes(searchTerm.toLowerCase())
   );
+  const filteredInventoryByCategory = filteredInventory.filter((item) =>
+    item.book.category
+      .toLowerCase()
+      .replaceAll("_", " ")
+      .includes(searchTerm2.toLowerCase())
+  );
 
   return (
     <>
-      <div className="flex items-center justify-between">
-        <Input
-          type="text"
-          placeholder="Buscar libro..."
-          className="md:w-1/2"
-          onChange={(e) => setSearchTerm(e.target.value)}
-          value={searchTerm}
-        />
+      <div className="flex max-md:flex-col-reverse items-center justify-between gap-2">
+        <div className="flex flex-col items-center gap-2 w-full md:w-1/2">
+          <Input
+            type="text"
+            placeholder="Buscar libro..."
+            onChange={(e) => setSearchTerm(e.target.value)}
+            value={searchTerm}
+          />
+          <Input
+            type="text"
+            placeholder="Buscar categoría..."
+            onChange={(e) => setSearchTerm2(e.target.value)}
+            value={searchTerm2}
+          />
+        </div>
         {userRole === "admin" && (
           <Link
             href={`/dashboard/leader/inventory/sede/${warehouse.id}`}
-            className="btn-blue !w-auto"
+            className="btn-blue md:!w-auto text-center"
           >
             Modificar inventario de bodega
           </Link>
@@ -53,7 +67,7 @@ export const WarehouseTable = ({ warehouse, userRole }: Props) => {
             </tr>
           </thead>
           <tbody>
-            {filteredInventory.map((item) => (
+            {filteredInventoryByCategory.map((item) => (
               <tr
                 key={item.id}
                 className="text-center border-b hover:bg-secondary h-7"

@@ -8,8 +8,6 @@ export const editSingleBookStock = async (
   bookId: string,
   newStock: string | number
 ) => {
-
-    console.log("console en server action: ", { sedeId, bookId, newStock });
   try {
     const updatedInventory = await prisma.inventory.update({
       where: {

@@ -13,6 +13,11 @@ export const getWarehouse = async () => {
           include: {
             book: true,
           },
+          orderBy: {
+            book: {
+              name: "asc",
+            },
+          },
         },
       },
     });
