@@ -60,13 +60,13 @@ export async function middleware(req: NextRequest) {
     const path = req.nextUrl.pathname;
 
     // Rutes only admins
-    const adminOnlyPaths = ["/dashboard/admin/:path*"];
+    const adminOnlyPaths = ["/dashboard/admin"];
 
     // Rutes only leaders
-    const leaderOnlyPaths = ["/dashboard/leader/:path*"];
+    const leaderOnlyPaths = ["/dashboard/leader"];
 
     // Rutes only productors
-    const productorOnlyPaths = ["/dashboard/productor/:path*"];
+    const productorOnlyPaths = ["/dashboard/productor"];
 
 
     // Check actual route is only to leaders
@@ -109,10 +109,11 @@ export async function middleware(req: NextRequest) {
 
 export const config = {
   matcher: [
-    // Protected routes
-    "/dashboard/:path*",
+    // specific protected routes first
     "/dashboard/admin/:path*",
     "/dashboard/leader/:path*",
     "/dashboard/productor/:path*",
+    // general dashboard route
+    "/dashboard/:path*",
   ],
 };
