@@ -3,6 +3,7 @@ import { auth } from "@/auth.config";
 import { SedeCard } from "@/components/inventory/SedeCard";
 import { CreateSede } from "@/components/inventory/ui/CreateSede";
 import { Title } from "@/components/ui/Title";
+import { Fragment } from "react";
 
 export default async function InventoryPage() {
   const { sedes, ok } = await getSedesWithInventory();
@@ -22,7 +23,11 @@ export default async function InventoryPage() {
               {sedes
                 .filter((sede) => sede.isPrincipal)
                 .map((sede) => (
-                  <SedeCard sede={sede} key={sede.id} />
+                  <Fragment key={sede.id}>
+                    {sede.city.toLowerCase() === "bodega" ? null : (
+                      <SedeCard sede={sede} />
+                    )}
+                  </Fragment>
                 ))}
             </div>
           </>
@@ -33,7 +38,11 @@ export default async function InventoryPage() {
           {sedes
             .filter((sede) => !sede.isPrincipal)
             .map((sede) => (
-              <SedeCard sede={sede} key={sede.id} />
+              <Fragment key={sede.id}>
+                {sede.city.toLowerCase() === "bodega" ? null : (
+                  <SedeCard sede={sede} />
+                )}
+              </Fragment>
             ))}
         </div>
       </div>
