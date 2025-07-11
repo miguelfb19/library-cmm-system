@@ -36,7 +36,7 @@ export const CustomDialog = ({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogTrigger>{trigger}</DialogTrigger>
+      <DialogTrigger asChild>{trigger}</DialogTrigger>
       <DialogContent className={defineSize}>
         <DialogHeader>
           <DialogTitle className="text-primary text-2xl">{title}</DialogTitle>

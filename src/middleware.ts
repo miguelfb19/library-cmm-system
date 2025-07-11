@@ -111,6 +111,8 @@ export const config = {
   matcher: [
     // Protected routes
     "/dashboard/:path*",
-    // Auth routes here,
+    "/dashboard/admin/:path*",
+    "/dashboard/leader/:path*",
+    "/dashboard/productor/:path*",
   ],
 };

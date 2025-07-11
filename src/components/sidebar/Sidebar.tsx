@@ -7,7 +7,7 @@ import { useSession } from "next-auth/react";
 import { useMenuStore } from "@/store/menu-store";
 import { CircleX } from "lucide-react";
 import { Skeleton } from "../ui/skeleton";
-import { AdminMenuItems, menuItems, ProductorMenuItems } from "@/constants/menu-items";
+import { AdminMenuItems, LeaderMenuItems, menuItems, ProductorMenuItems } from "@/constants/menu-items";
 import { SidebarItem } from "./SidebarItem";
 
 export const Sidebar = () => {
@@ -79,6 +79,27 @@ export const Sidebar = () => {
               ))}
             </ul>
           )}
+          {session?.user.role === "admin" || session?.user.role === "leader" ? (
+            status === "loading" ? (
+              <div className="flex flex-col gap-3 my-3">
+                <Skeleton className="w-full h-12" />
+                <Skeleton className="w-full h-12" />
+              </div>
+            ) : (
+              <div className="pb-6">
+                <ul className="space-y-2">
+                  {LeaderMenuItems.map(({ name, path, icon }) => (
+                    <SidebarItem
+                      key={name}
+                      title={name}
+                      path={path}
+                      icon={createElement(icon)}
+                    />
+                  ))}
+                </ul>
+              </div>
+            )
+          ) : null}
           {session?.user.role === "admin" ? (
             status === "loading" ? (
               <div className="flex flex-col gap-3 my-3">

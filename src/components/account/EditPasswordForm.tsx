@@ -125,12 +125,12 @@ export const EditPasswordForm = ({ userId }: Props) => {
         <button
           type="submit"
           className={`btn-blue flex-1/2 self-start relative min-h-10 ${
-            isLoading && "pointer-events-none"
+            isLoading && "pointer-events-none opacity-50"
           }`}
           disabled={isLoading}
         >
           {isLoading ? (
-            <LoadingSpinner size={20} />
+            <LoadingSpinner size={10} />
           ) : (
             "Guardar"
           )}

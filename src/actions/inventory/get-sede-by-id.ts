@@ -2,7 +2,7 @@
 
 import prisma from "@/lib/prisma";
 
-export const getSede = async (id: string) => {
+export const getSedeById = async (id: string) => {
   try {
     const sede = await prisma.sede.findUnique({
       where: {

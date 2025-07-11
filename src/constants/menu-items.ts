@@ -7,21 +7,24 @@ export const menuItems = [
     path: "/dashboard",
     icon: House,
   },
+  // {
+    //   name: "Invitar referido",
+  //   path: "/dashboard",
+  //   icon: FaUserEdit,
+  // },
+  // {
+    //   name: "Mi cuenta",
+  //   path: "/dashboard",
+  //   icon: RiAccountPinCircleFill,
+  // },
+];
+
+export const LeaderMenuItems = [
   {
     name: "Inventario",
     path: "/dashboard/leader/inventory",
     icon: BookCopy,
   },
-  // {
-  //   name: "Invitar referido",
-  //   path: "/dashboard",
-  //   icon: FaUserEdit,
-  // },
-  // {
-  //   name: "Mi cuenta",
-  //   path: "/dashboard",
-  //   icon: RiAccountPinCircleFill,
-  // },
 ];
 
 export const AdminMenuItems = [
@@ -40,7 +43,7 @@ export const AdminMenuItems = [
 export const ProductorMenuItems = [
   {
     name: "Bodega",
-    path: "/dashboard/productor/store",
+    path: "/dashboard/productor/warehouse",
     icon: Warehouse,
   },
 ];

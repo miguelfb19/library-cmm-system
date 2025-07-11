@@ -1,4 +1,4 @@
-import { getSede } from "@/actions/inventory/get-sede";
+import { getSedeById } from "@/actions/inventory/get-sede-by-id";
 import { SedeInventoryDetails } from "@/components/inventory/SedeInventoryDetails";
 import { UpdateStockLevelsBySede } from "@/components/inventory/UpdateStockLevelsBySede";
 import { getAllCategoriesInventory } from "@/components/inventory/utils/get-all-categories-inventory";
@@ -14,7 +14,7 @@ interface Props {
 export default async function SedeDetailsPage({ params }: Props) {
   const { id } = await params;
 
-  const { sede, ok, message } = await getSede(id);
+  const { sede, ok, message } = await getSedeById(id);
 
   if (!ok || !sede) {
     return (
@@ -29,7 +29,11 @@ export default async function SedeDetailsPage({ params }: Props) {
     <div className="flex flex-col gap-5">
       <div className="flex items-center justify-between">
         <Link
-          href="/dashboard/leader/inventory"
+          href={
+            sede.city.toLowerCase() === "bodega"
+              ? "/dashboard/productor/warehouse"
+              : "/dashboard/leader/inventory"
+          }
           className="flex items-center gap-2 text-primary bg-primary/10 rounded !self-start p-2 hover:bg-primary/20 transition-colors"
         >
           <ArrowLeft />
@@ -41,7 +45,7 @@ export default async function SedeDetailsPage({ params }: Props) {
           <h2 className="text-3xl font-bold">Responsable: </h2>
           <h3 className="font-bold text-2xl text-primary">{sede.leader}</h3>
         </div>
-        <EditSedeLeader sedeId={sede.id}/>
+        <EditSedeLeader sedeId={sede.id} />
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
