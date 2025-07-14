@@ -1,10 +1,10 @@
 "use client";
 
 import { Book } from "@/interfaces/Book";
-import { capitalizeWords } from "@/utils/capitalize";
 import { Input } from "../ui/input";
 import { useState } from "react";
 import { Title } from "../ui/Title";
+import { PopoverEditBookName } from "./PopoverEditBookName";
 
 interface Props {
   books: Book[] | undefined;
@@ -35,13 +35,14 @@ export const AllBooks = ({ books }: Props) => {
         value={searchTerm}
         onChange={(e) => setSearchTerm(e.target.value)}
       />
-      <ul className="list-disc list-inside space-y-2 mt-5 pl-3 grid grid-cols-1 md:grid-cols-2">
+      <div className="mt-5 grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-2">
         {filteredBooks.map((book) => (
-          <li key={book.id}>
-            {capitalizeWords(book.name.replaceAll("_", " "))}
-          </li>
+          <div key={book.id} className="flex items-center gap-2">
+            <div className="w-2 h-2 bg-primary rounded-full" />
+            <PopoverEditBookName book={book} />
+          </div>
         ))}
-      </ul>
+      </div>
     </div>
   );
 };

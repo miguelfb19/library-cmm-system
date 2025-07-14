@@ -8,7 +8,7 @@ export default async function AddProductPage() {
 
   return (
     <div>
-      <Title title="Crear Producto" />
+      <Title title="Crear Libro" />
       <p className="text-gray-500 text-center">
         Se creará un nuevo producto en el inventario y se agregará a bodega y
         todas las sedes

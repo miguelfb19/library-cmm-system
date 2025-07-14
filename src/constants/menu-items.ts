@@ -1,4 +1,4 @@
-import { BookCopy, Boxes, FilePlus, House, Users, Warehouse } from "lucide-react";
+import { BookCopy, Boxes, House, LibraryBig, Users, Warehouse } from "lucide-react";
 
 
 export const menuItems = [
@@ -29,9 +29,9 @@ export const AdminMenuItems = [
     icon: Boxes,
   },
   {
-    name: "Crear producto",
-    path: "/dashboard/admin/add-product",
-    icon: FilePlus,
+    name: "Libros",
+    path: "/dashboard/admin/books",
+    icon: LibraryBig,
   },
 ];
 
