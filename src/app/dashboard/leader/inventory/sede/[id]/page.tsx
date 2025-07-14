@@ -6,6 +6,8 @@ import { Title } from "@/components/ui/Title";
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { EditSedeLeader } from "@/components/inventory/ui/EditSedeLeader";
+import { auth } from "@/auth.config";
+import { redirect } from "next/navigation";
 
 interface Props {
   params: Promise<{ id: string }>;
@@ -13,13 +15,29 @@ interface Props {
 
 export default async function SedeDetailsPage({ params }: Props) {
   const { id } = await params;
+  const session = await auth();
+
+  if (!session || !session.user) redirect("/auth/login");
 
   const { sede, ok, message } = await getSedeById(id);
 
+  // Restringir acceso a la sede "Bodega" solo para administradores
+  if (sede?.city.toLocaleLowerCase() === "bodega" && session.user.role !== "admin") {
+    return (
+      <div className="flex flex-col h-[calc(100vh-8rem)] items-center justify-center">
+        <Title title="Acceso Denegado" className="text-red-500" />
+        <p className="text-center">
+          No tienes permiso para acceder a esta página.
+        </p>
+      </div>
+    );
+  }
+
+  // Si no se encuentra la sede o hay un error, mostrar mensaje de error
   if (!ok || !sede) {
     return (
-      <div className="flex flex-col items-center justify-center h-[calc(100vh - 4rem)]">
-        <Title title="Error" />
+      <div className="flex flex-col h-[calc(100vh-8rem)] items-center justify-center">
+        <Title title="Error" className="text-red-500" />
         <p className="text-center">{message}</p>
       </div>
     );

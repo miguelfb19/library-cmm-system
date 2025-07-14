@@ -54,7 +54,7 @@ export const NewProductoForm = () => {
 
   return (
     <form
-      className="flex flex-col gap-5 mt-10 md:px-10"
+      className="flex flex-col gap-5 mt-10"
       onSubmit={handleSubmit}
     >
       <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
