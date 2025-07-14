@@ -64,35 +64,20 @@ export const Sidebar = () => {
             )}
           </div>
         </div>
+
+        {/* LISTA DE MENU */}
+
         <div id="menu-list" className="text-[0.9rem]">
           {status === "loading" ? (
-            <div className="flex flex-col gap-3">
-              <Skeleton className="w-full h-12" />
-              <Skeleton className="w-full h-12" />
-              <Skeleton className="w-full h-12" />
-              <Skeleton className="w-full h-12" />
+            <div className="flex flex-col gap-3 mb-3">
+              {Array.from({ length: 5 }).map((_, index) => (
+                <Skeleton className="w-full h-12" key={index}/>
+              ))}
             </div>
           ) : (
-            <ul className="space-y-2 pb-1">
-              {menuItems.map(({ name, path, icon }) => (
-                <SidebarItem
-                  key={name}
-                  title={name}
-                  path={path}
-                  icon={createElement(icon)}
-                />
-              ))}
-            </ul>
-          )}
-          {session?.user.role === "admin" || session?.user.role === "leader" ? (
-            status === "loading" ? (
-              <div className="flex flex-col gap-3">
-                <Skeleton className="w-full h-12" />
-                <Skeleton className="w-full h-12" />
-              </div>
-            ) : (
-              <ul className="space-y-2">
-                {LeaderMenuItems.map(({ name, path, icon }) => (
+            <>
+              <ul className="space-y-2 pb-1">
+                {menuItems.map(({ name, path, icon }) => (
                   <SidebarItem
                     key={name}
                     title={name}
@@ -101,23 +86,10 @@ export const Sidebar = () => {
                   />
                 ))}
               </ul>
-            )
-          ) : null}
-          {session?.user.role === "admin" ||
-          session?.user.role === "productor" ? (
-            status === "loading" ? (
-              <div className="flex flex-col gap-3 my-3">
-                <Skeleton className="w-full h-12" />
-                <Skeleton className="w-full h-12" />
-              </div>
-            ) : (
-              <div>
-                <div>
-                  <hr />
-                  <div className="font-bold py-2 text-base">Producción</div>
-                </div>
+              {session?.user.role === "admin" ||
+              session?.user.role === "leader" ? (
                 <ul className="space-y-2">
-                  {ProductorMenuItems.map(({ name, path, icon }) => (
+                  {LeaderMenuItems.map(({ name, path, icon }) => (
                     <SidebarItem
                       key={name}
                       title={name}
@@ -126,34 +98,49 @@ export const Sidebar = () => {
                     />
                   ))}
                 </ul>
-              </div>
-            )
-          ) : null}
-          {session?.user.role === "admin" ? (
-            status === "loading" ? (
-              <div className="flex flex-col gap-3 my-3">
-                <Skeleton className="w-full h-12" />
-                <Skeleton className="w-full h-12" />
-              </div>
-            ) : (
-              <div>
-                <div>
-                  <hr />
-                  <div className="font-bold py-2 text-base">Administrador</div>
-                </div>
-                <ul className="space-y-2">
-                  {AdminMenuItems.map(({ name, path, icon }) => (
-                    <SidebarItem
-                      key={name}
-                      title={name}
-                      path={path}
-                      icon={createElement(icon)}
-                    />
-                  ))}
-                </ul>
-              </div>
-            )
-          ) : null}
+              ) : null}
+              {session?.user.role === "admin" ||
+              session?.user.role === "productor" ? (
+                <>
+                  <div>
+                    <hr />
+                    <div className="font-bold py-2 text-base">Producción</div>
+                  </div>
+                  <ul className="space-y-2">
+                    {ProductorMenuItems.map(({ name, path, icon }) => (
+                      <SidebarItem
+                        key={name}
+                        title={name}
+                        path={path}
+                        icon={createElement(icon)}
+                      />
+                    ))}
+                  </ul>
+                </>
+              ) : null}
+
+              {session?.user.role === "admin" ? (
+                <>
+                  <div>
+                    <hr />
+                    <div className="font-bold py-2 text-base">
+                      Administrador
+                    </div>
+                  </div>
+                  <ul className="space-y-2">
+                    {AdminMenuItems.map(({ name, path, icon }) => (
+                      <SidebarItem
+                        key={name}
+                        title={name}
+                        path={path}
+                        icon={createElement(icon)}
+                      />
+                    ))}
+                  </ul>
+                </>
+              ) : null}
+            </>
+          )}
         </div>
       </div>
     </aside>

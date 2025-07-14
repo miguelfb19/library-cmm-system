@@ -19,7 +19,7 @@ export const LoadingOnCloseSession = () => {
   }
 
   return (
-    <div className="h-full w-full absolute bg-secondary/20 z-20 flex items-center justify-center">
+    <div className="h-full w-full absolute bg-secondary/50 z-20 flex items-center justify-center">
       <LoadingSpinner className="absolute inset-0 m-auto text-primary" />
     </div>
   );

@@ -7,16 +7,6 @@ export const menuItems = [
     path: "/dashboard",
     icon: House,
   },
-  // {
-    //   name: "Invitar referido",
-  //   path: "/dashboard",
-  //   icon: FaUserEdit,
-  // },
-  // {
-    //   name: "Mi cuenta",
-  //   path: "/dashboard",
-  //   icon: RiAccountPinCircleFill,
-  // },
 ];
 
 export const LeaderMenuItems = [
@@ -43,11 +33,6 @@ export const AdminMenuItems = [
     path: "/dashboard/admin/add-product",
     icon: FilePlus,
   },
-  // {
-  //   name: "Mensaje a clientes",
-  //   path: "/dashboard/customers-message",
-  //   icon: FaWhatsapp,
-  // },
 ];
 
 export const ProductorMenuItems = [
