@@ -22,7 +22,10 @@ export default async function SedeDetailsPage({ params }: Props) {
   const { sede, ok, message } = await getSedeById(id);
 
   // Restringir acceso a la sede "Bodega" solo para administradores
-  if (sede?.city.toLocaleLowerCase() === "bodega" && session.user.role !== "admin") {
+  if (
+    sede?.city.toLocaleLowerCase() === "bodega" &&
+    session.user.role !== "admin"
+  ) {
     return (
       <div className="flex flex-col h-[calc(100vh-8rem)] items-center justify-center">
         <Title title="Acceso Denegado" className="text-red-500" />
@@ -56,7 +59,10 @@ export default async function SedeDetailsPage({ params }: Props) {
         >
           <ArrowLeft />
         </Link>
-        <UpdateStockLevelsBySede sede={sede} />
+        {(session.user.role === "admin" ||
+          session.user.name!.includes(sede.leader)) && (
+          <UpdateStockLevelsBySede sede={sede} />
+        )}
       </div>
       <div className="flex items-center justify-between bg-gradient-to-br from-slate-300 via-white via-70% to-slate-300 rounded p-5 shadow-lg overflow-auto">
         <div className="flex max-md:flex-col md:items-end gap-2">

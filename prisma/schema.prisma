@@ -30,6 +30,7 @@ enum Category {
 
 enum OrderState {
   pending
+  in_progress
   completed
   cancelled
 }
@@ -86,6 +87,7 @@ model Order {
   detail       BookOrder[]
   createdAt    DateTime    @default(now())
   updatedAt    DateTime?   @updatedAt
+  limitDate    DateTime?
   isProduction Boolean     @default(false)
   state        OrderState  @default(pending)
 }

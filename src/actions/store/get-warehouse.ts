@@ -15,7 +15,7 @@ export const getWarehouse = async () => {
           },
           orderBy: {
             book: {
-              name: "asc",
+              category: "asc",
             },
           },
         },
