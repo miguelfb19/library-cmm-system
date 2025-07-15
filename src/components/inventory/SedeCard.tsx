@@ -6,6 +6,7 @@ import { DeleteSedeButton } from "./ui/DeleteSedeButton";
 import { auth } from "@/auth.config";
 import { getStockLevels } from "./utils/get-stock-levels";
 import { getInventoryStatus } from "./utils/get-inventory-status";
+import { capitalizeWords } from "@/utils/capitalize";
 
 interface Props {
   sede: SedeWithInventory;
@@ -62,7 +63,7 @@ export const SedeCard = async ({ sede, className }: Props) => {
         key={sede.id}
         className="flex flex-col justify-center items-center p-5 gap-3 w-full"
       >
-        <Title title={sede.city} />
+        <Title title={capitalizeWords(sede.city)} />
         <div className="text-xs grid grid-cols-2 gap-2">
           {/* STATUS POR SEMINARIOS */}
           <StatusItem status={sanacionStatus} category="Sanacion" />

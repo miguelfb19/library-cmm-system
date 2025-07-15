@@ -6,7 +6,7 @@ export const getWarehouse = async () => {
   try {
     const warehouse = await prisma.sede.findFirst({
       where: {
-        city: "Bodega",
+        city: "bodega",
       },
       include: {
         inventory: {

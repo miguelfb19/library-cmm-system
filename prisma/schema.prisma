@@ -28,14 +28,21 @@ enum Category {
   libro
 }
 
+enum OrderState {
+  pending
+  completed
+  cancelled
+}
+
 model User {
-  id       String @id @unique @default(uuid())
+  id       String  @id @unique @default(uuid())
   name     String
-  email    String @unique
-  phone    String @unique
+  email    String  @unique
+  phone    String  @unique
   password String
   city     String
-  role     Role   @default(leader)
+  role     Role    @default(leader)
+  Order    Order[]
 }
 
 model Sede {
@@ -44,6 +51,7 @@ model Sede {
   leader      String      @unique
   inventory   Inventory[]
   isPrincipal Boolean     @default(false)
+  Order       Order[]
 }
 
 model Book {
@@ -51,6 +59,7 @@ model Book {
   name      String      @unique
   category  Category
   inventory Inventory[]
+  BookOrder BookOrder[]
 }
 
 model Inventory {
@@ -66,4 +75,26 @@ model Inventory {
   stock         Int
 
   @@unique([sedeId, bookId])
+}
+
+model Order {
+  id           String      @id @default(uuid())
+  origin       Sede        @relation(fields: [originId], references: [id], onDelete: Cascade)
+  originId     String
+  user         User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId       String
+  detail       BookOrder[]
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime?   @updatedAt
+  isProduction Boolean     @default(false)
+  state        OrderState  @default(pending)
+}
+
+model BookOrder {
+  id       String @id @default(uuid())
+  quantity Int
+  book     Book   @relation(fields: [bookId], references: [id], onDelete: Cascade)
+  bookId   String
+  order    Order  @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  orderId  String
 }

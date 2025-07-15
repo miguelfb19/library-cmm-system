@@ -26,7 +26,7 @@ export const Sidebar = () => {
   }, []);
   return (
     <aside
-      className={`fixed md:relative z-10 h-[100dvh] w-full md:w-3/12 md:min-w-3/12 flex flex-col p-5  bg-secondary text-primary overflow-y-auto overflow-x-hidden shadow-lg ${
+      className={`fixed md:relative z-10 h-[100dvh] w-full md:w-[20%] md:min-w-[20%] flex flex-col p-5  bg-secondary text-primary overflow-y-auto overflow-x-hidden shadow-lg ${
         isOpen ? "translate-x-0" : "-translate-x-full"
       } transition-all duration-300 md:translate-x-0`}
     >
@@ -67,7 +67,7 @@ export const Sidebar = () => {
 
         {/* LISTA DE MENU */}
 
-        <div id="menu-list" className="text-[0.9rem]">
+        <div id="menu-list" className="md:text-[0.9rem]">
           {status === "loading" ? (
             <div className="flex flex-col gap-3 mb-3">
               {Array.from({ length: 5 }).map((_, index) => (
@@ -103,7 +103,7 @@ export const Sidebar = () => {
               session?.user.role === "productor" ? (
                 <>
                   <div>
-                    <hr />
+                    <hr className="mt-2" />
                     <div className="font-bold py-2 text-base">Producción</div>
                   </div>
                   <ul className="space-y-2">
@@ -122,7 +122,7 @@ export const Sidebar = () => {
               {session?.user.role === "admin" ? (
                 <>
                   <div>
-                    <hr />
+                    <hr className="mt-2" />
                     <div className="font-bold py-2 text-base">
                       Administrador
                     </div>

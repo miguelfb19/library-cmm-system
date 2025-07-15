@@ -8,10 +8,9 @@ import Link from "next/link";
 
 interface Props {
   warehouse: Warehouse;
-  userRole: string;
 }
 
-export const WarehouseTable = ({ warehouse, userRole }: Props) => {
+export const WarehouseTable = ({ warehouse }: Props) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [searchTerm2, setSearchTerm2] = useState("");
 
@@ -31,28 +30,18 @@ export const WarehouseTable = ({ warehouse, userRole }: Props) => {
   return (
     <>
       <div className="flex max-md:flex-col-reverse items-center justify-between gap-2">
-        <div className="flex flex-col items-center gap-2 w-full md:w-1/2">
-          <Input
-            type="text"
-            placeholder="Buscar libro..."
-            onChange={(e) => setSearchTerm(e.target.value)}
-            value={searchTerm}
-          />
-          <Input
-            type="text"
-            placeholder="Buscar categoría..."
-            onChange={(e) => setSearchTerm2(e.target.value)}
-            value={searchTerm2}
-          />
-        </div>
-        {userRole === "admin" && (
-          <Link
-            href={`/dashboard/leader/inventory/sede/${warehouse.id}`}
-            className="btn-blue md:!w-auto text-center"
-          >
-            Modificar inventario de bodega
-          </Link>
-        )}
+        <Input
+          type="text"
+          placeholder="Buscar libro..."
+          onChange={(e) => setSearchTerm(e.target.value)}
+          value={searchTerm}
+        />
+        <Input
+          type="text"
+          placeholder="Buscar categoría..."
+          onChange={(e) => setSearchTerm2(e.target.value)}
+          value={searchTerm2}
+        />
       </div>
       <div className="overflow-x-auto">
         <table className="min-w-[50rem] md:min-w-full text-sm">

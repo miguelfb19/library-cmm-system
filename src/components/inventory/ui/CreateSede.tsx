@@ -1,13 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "../../ui/dialog";
 import { Input } from "../../ui/input";
 import { submitAlert } from "@/utils/submitAlert";
 import { toast } from "sonner";
@@ -22,7 +15,17 @@ export const CreateSede = () => {
   const [isCreating, setIsCreating] = useState(false);
   const [openModal, setOpenModal] = useState(false);
 
+  const regex = /^[a-z]+(_[a-z]+)*$/;
+
   const onCreateSede = async () => {
+    
+    if(regex.test(sedeCity) === false) {
+      toast.error(
+        "El nombre de la sede debe estar en minúsculas y separado por guiones bajos (_)."
+      );
+      return;
+    }
+    
     setIsCreating(true);
     setOpenModal(false);
 
@@ -36,8 +39,6 @@ export const CreateSede = () => {
 
     if (result.isDenied || result.isDismissed) {
       toast.info("Creación de sede cancelada");
-      setsedeCity("");
-      setsedeLeader("");
       setIsCreating(false);
       return;
     }
@@ -70,6 +71,7 @@ export const CreateSede = () => {
         </button>
       }
       title="Crear una sede"
+      description="El nombre de la sede debe ser único, escrito en minúsculas y espacios separados por guión bajo (_)."
       open={openModal}
       onOpenChange={setOpenModal}
       footer={

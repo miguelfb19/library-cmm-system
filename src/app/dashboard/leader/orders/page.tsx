@@ -1,8 +1,9 @@
+import { Title } from "@/components/ui/Title";
 
 export default function ProductionOrdersPage() {
   return (
     <div>
-      <h1>Pedidos de Producción</h1>
+      <Title title="Pedidos" />
     </div>
   );
 }

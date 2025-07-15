@@ -1,4 +1,4 @@
-import { BookCopy, Boxes, House, LibraryBig, Users, Warehouse } from "lucide-react";
+import { BookCopy, House, LibraryBig, Package, Users, Warehouse } from "lucide-react";
 
 
 export const menuItems = [
@@ -15,6 +15,11 @@ export const LeaderMenuItems = [
     path: "/dashboard/leader/inventory",
     icon: BookCopy,
   },
+  {
+    name: "Pedidos",
+    path: "/dashboard/leader/orders",
+    icon: Package,
+  },
 ];
 
 export const AdminMenuItems = [
@@ -22,11 +27,6 @@ export const AdminMenuItems = [
     name: "Usuarios",
     path: "/dashboard/admin/users",
     icon: Users,
-  },
-  {
-    name: "Pedidos Producción",
-    path: "/dashboard/admin/production-orders",
-    icon: Boxes,
   },
   {
     name: "Libros",
