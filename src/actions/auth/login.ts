@@ -14,7 +14,6 @@ export async function authenticate(
   formData: FormData
 ) {
   try {
-    console.log({formData})
     if( !formData || !formData.get("email") || !formData.get("password") ) {
       return { status: 400, message: "Datos inválidos o incompletos.", ok: false };
     }
