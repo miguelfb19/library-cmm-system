@@ -86,6 +86,7 @@ export const CreateSede = () => {
           {isCreating ? <LoadingSpinner size={10} /> : "Crear sede"}
         </button>
       }
+      size="lg"
     >
       <form className="flex flex-col gap-4">
         <div className="flex max-md:flex-col gap-2">

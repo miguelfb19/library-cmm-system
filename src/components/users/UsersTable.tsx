@@ -24,6 +24,8 @@ import { changeRole } from "@/actions/users/change-role";
 import { toast } from "sonner";
 import { useSession } from "next-auth/react";
 import { Role } from "@/generated/prisma";
+import { UserPlus } from "lucide-react";
+import { CustomTooltip } from '../ui/CustomTooltip';
 
 interface UsersTableProps<TData extends { id: string }, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -58,10 +60,12 @@ export function UsersTable<TData extends { id: string }, TValue>({
         />
         {session?.user.role === "admin" && (
           <DialogTrigger
-            className="btn-blue md:!w-56"
+            className="btn-blue !w-auto"
             disabled={session?.user.role !== "admin"}
           >
-            Crear Nuevo Usuario
+            <CustomTooltip text="Crear Nuevo Usuario">
+              <UserPlus />
+            </CustomTooltip>
           </DialogTrigger>
         )}
       </div>

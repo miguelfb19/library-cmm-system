@@ -31,19 +31,21 @@ enum Category {
 enum OrderState {
   pending
   in_progress
-  completed
+  approved
   cancelled
+  modified
 }
 
 model User {
-  id       String  @id @unique @default(uuid())
-  name     String
-  email    String  @unique
-  phone    String  @unique
-  password String
-  city     String
-  role     Role    @default(leader)
-  Order    Order[]
+  id           String         @id @unique @default(uuid())
+  name         String
+  email        String         @unique
+  phone        String         @unique
+  password     String
+  city         String
+  role         Role           @default(leader)
+  Order        Order[]
+  Notification Notification[]
 }
 
 model Sede {
@@ -99,4 +101,13 @@ model BookOrder {
   bookId   String
   order    Order  @relation(fields: [orderId], references: [id], onDelete: Cascade)
   orderId  String
+}
+
+model Notification {
+  id        String   @id @default(uuid())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String
+  message   String
+  createdAt DateTime @default(now())
+  read      Boolean  @default(false)
 }

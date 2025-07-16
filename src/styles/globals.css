@@ -115,6 +115,10 @@ body {
   @apply bg-red-500 text-white font-bold py-2 px-4 w-full min-h-10 rounded-full cursor-pointer hover:bg-red-400/90 transition-colors duration-200 shadow-lg;
 }
 
+.custom-select {
+  @apply rounded-full border border-primary focus:outline-none focus-visible:border-primary focus-visible:ring-primary/50 focus-visible:ring-[3px] p-2
+}
+
 .spin-reverse{
   animation: spin-reverse 1s linear infinite;
 }

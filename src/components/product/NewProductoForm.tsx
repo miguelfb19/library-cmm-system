@@ -69,7 +69,7 @@ export const NewProductoForm = () => {
         <div className="flex flex-col gap-2">
           <span>Categoría:</span>
           <select
-            className="rounded-full border border-primary focus:outline-none focus-visible:border-primary focus-visible:ring-primary/50 focus-visible:ring-[3px] p-2"
+            className="custom-select"
             value={product.category}
             onChange={(e) =>
               setProduct({ ...product, category: e.target.value })

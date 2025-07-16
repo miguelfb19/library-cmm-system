@@ -59,6 +59,8 @@ export default async function SedeDetailsPage({ params }: Props) {
         >
           <ArrowLeft />
         </Link>
+
+        {/* EDITAR NIVELES DE STOCK */}
         {(session.user.role === "admin" ||
           session.user.name!.includes(sede.leader)) && (
           <UpdateStockLevelsBySede sede={sede} />

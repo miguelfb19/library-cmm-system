@@ -6,7 +6,7 @@ export const getAllBooks = async () => {
   try {
     const books = await prisma.book.findMany({
       orderBy:{
-        name: "asc",
+        category: "asc",
       }
     });
 

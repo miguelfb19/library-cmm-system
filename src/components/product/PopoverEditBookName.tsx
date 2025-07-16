@@ -9,6 +9,7 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { editProductName } from "@/actions/product/edit-product-name";
 import { LoadingSpinner } from "../ui/LoadingSpinner";
+import { CustomTooltip } from "../ui/CustomTooltip";
 
 interface Props {
   book: Book;
@@ -36,14 +37,14 @@ export const PopoverEditBookName = ({ book }: Props) => {
       return;
     }
 
-    console.log(newName)
+    console.log(newName);
 
     const res = await editProductName(book.id, newName);
 
-    if(!res.ok) {
-        toast.error(res.message);
-        setIsLoading(false);
-        return;
+    if (!res.ok) {
+      toast.error(res.message);
+      setIsLoading(false);
+      return;
     }
 
     toast.success(res.message);
@@ -53,9 +54,11 @@ export const PopoverEditBookName = ({ book }: Props) => {
   return (
     <Popover>
       <PopoverTrigger>
-        <div className="cursor-pointer hover:underline text-start">
-          {capitalizeWords(book.name.replaceAll("_", " "))}
-        </div>
+        <CustomTooltip text="Editar nombre del libro">
+          <div className="cursor-pointer hover:underline text-start">
+            {capitalizeWords(book.name.replaceAll("_", " "))}
+          </div>
+        </CustomTooltip>
       </PopoverTrigger>
       <PopoverContent className="flex flex-col gap-2">
         <h3 className="text-primary font-bold text-center">
@@ -64,13 +67,18 @@ export const PopoverEditBookName = ({ book }: Props) => {
             "{capitalizeWords(book.name.replaceAll("_", " "))}"
           </span>
         </h3>
-        <Input type="text" placeholder="Nuevo nombre" value={newName} onChange={(e) => setNewName(e.target.value)} />
+        <Input
+          type="text"
+          placeholder="Nuevo nombre"
+          value={newName}
+          onChange={(e) => setNewName(e.target.value)}
+        />
         <button
           className="btn-blue"
           onClick={() => onEditName(newName)}
           disabled={isLoading}
         >
-          {isLoading ? <LoadingSpinner size={10}/> : "Editar nombre"}
+          {isLoading ? <LoadingSpinner size={10} /> : "Editar nombre"}
         </button>
       </PopoverContent>
     </Popover>

@@ -1,10 +1,5 @@
 "use client";
 
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
 import { Pencil } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { CustomDialog } from "../../ui/CustomDialog";
@@ -13,6 +8,7 @@ import { useState } from "react";
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 import { editSedeLeaderName } from "@/actions/inventory/edit-sede-leader-name";
 import { toast } from "sonner";
+import { CustomTooltip } from '../../ui/CustomTooltip';
 
 interface Props {
   sedeId: string;
@@ -49,14 +45,15 @@ export const EditSedeLeader = ({ sedeId }: Props) => {
     <CustomDialog
       title="Editar nombre de líder de sede"
       trigger={
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <button className="bg-slate-200 text-primary p-1 rounded cursor-pointer hover:brightness-105 transition-all">
+        <CustomTooltip text="Editar nombre de líder de sede">
+          <button
+              type="button"
+              onClick={() => setIsOpen(true)}
+              className="bg-slate-200 text-primary p-1 rounded cursor-pointer hover:brightness-105 transition-all"
+            >
               <Pencil size={20} />
             </button>
-          </TooltipTrigger>
-          <TooltipContent>Editar nombre de líder de sede</TooltipContent>
-        </Tooltip>
+        </CustomTooltip>
       }
       footer={
         <button
