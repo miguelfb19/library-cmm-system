@@ -12,9 +12,9 @@ import {
 
 interface Props {
   title: string;
-  description?: string;
   children: React.ReactNode;
   trigger: React.ReactNode;
+  description?: string;
   footer?: React.ReactNode;
   open?: boolean;
   onOpenChange?: (open: boolean) => void;
@@ -36,7 +36,7 @@ export const CustomDialog = ({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogTrigger asChild>{trigger}</DialogTrigger>
+      <DialogTrigger asChild><span>{trigger}</span></DialogTrigger>
       <DialogContent className={defineSize} aria-describedby={undefined}>
         <DialogHeader>
           <DialogTitle className="text-primary text-2xl">{title}</DialogTitle>

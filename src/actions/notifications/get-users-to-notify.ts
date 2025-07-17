@@ -8,7 +8,7 @@ export const getUsersToNotify = async (notificationType: NotificationType) => {
   try {
     const usersIds = await prisma.user.findMany({
       where: {
-        role: notificationType === "ToProductor" ? "productor" : "admin",
+        role: notificationType === "ToProductor" ? "productor" : notificationType === "ToAdmin" ? "admin" : "leader",
       },
       select: {
         id: true,

@@ -1,25 +1,26 @@
 import { getOrders } from "@/actions/orders/get-orders";
 import { Title } from "@/components/ui/Title";
 import { OrderList } from "@/components/orders/OrderList";
-import { Order } from "@/interfaces/Order";
 import { auth } from "@/auth.config";
 import { redirect } from "next/navigation";
 import { getOrdersByUser } from "@/actions/orders/get-orders-by-user";
 import { NewOrder } from "@/components/orders/NewOrder";
 import { getSedes } from "@/actions/inventory/get-sedes";
 import { getAllBooks } from "@/actions/product/get-all-books";
+import { getUsers } from "@/actions/users/get-users";
 
 export default async function ProductionOrdersPage() {
   const session = await auth();
 
   if (!session || !session.user) redirect("/auth/login");
 
-  const [ordersRes, sedesRes, booksRes] = await Promise.all([
+  const [ordersRes, sedesRes, booksRes, usersRes] = await Promise.all([
     session.user.role === "admin"
       ? await getOrders()
       : await getOrdersByUser(session.user.id),
     getSedes(),
-    getAllBooks()
+    getAllBooks(),
+    getUsers()
   ]);
   const sedes = sedesRes.sedes?.map((sede) => ({
     id: sede.id,
@@ -38,8 +39,9 @@ export default async function ProductionOrdersPage() {
   return (
     <div>
       <Title title="Pedidos" />
-      <NewOrder sedes={sedes || []} books={booksRes.books || []} />
-      <OrderList orders={ordersRes.orders} />
+      <NewOrder sedes={sedes || []} books={booksRes.books || []} userId={session.user.id} />
+      <hr className="my-4" />
+      <OrderList orders={ordersRes.orders} books={booksRes.books || []} users={usersRes.data || []} />
     </div>
   );
 }

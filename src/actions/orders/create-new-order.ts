@@ -3,6 +3,7 @@
 import prisma from "@/lib/prisma";
 import { createNewNotification } from "../notifications/create-new-notification";
 import { getUsersToNotify } from "../notifications/get-users-to-notify";
+import { revalidatePath } from "next/cache";
 
 interface OrderData {
   origin: {
@@ -13,22 +14,13 @@ interface OrderData {
   isProduction: boolean;
   detail: {
     quantity: number;
-    book: string;
+    bookId: string;
   }[];
   userId: string;
 }
 
 export const createNewOrder = async (data: OrderData) => {
   try {
-    const { ok, message, status, details } = await formatDetails(data.detail);
-
-    if (!ok) {
-      return {
-        ok: false,
-        message: message,
-        status: status,
-      };
-    }
 
     const res = await prisma.order.create({
       data: {
@@ -40,7 +32,7 @@ export const createNewOrder = async (data: OrderData) => {
         limitDate: data.limitDate,
         isProduction: data.isProduction,
         detail: {
-          create: details,
+          create: data.detail,
         },
         user: {
           connect: {
@@ -68,8 +60,11 @@ export const createNewOrder = async (data: OrderData) => {
       userToNotify.users,
       data.isProduction
         ? "Se ha creado un nuevo pedido para producción, click para ver más detalles"
-        : `Se ha creado un nuevo pedido para ${data.origin.city}, click para ver más detalles`
+        : `Se ha creado un nuevo pedido para ${data.origin.city.toUpperCase()}, click para ver más detalles`,
+      data.isProduction ? "productor" : "admin"
     );
+
+    revalidatePath("/dashboard");
 
     return {
       ok: true,
@@ -82,47 +77,6 @@ export const createNewOrder = async (data: OrderData) => {
     return {
       ok: false,
       message: "Error al crear el pedido",
-      status: 500,
-    };
-  }
-};
-
-// Funcion para formatear los detalles del pedido cambiando el nombre del libro por su ID
-
-const formatDetails = async (
-  details: {
-    quantity: number;
-    book: string;
-  }[]
-) => {
-  try {
-    const formattedDetailsPromises = details.map(async (detail) => {
-      const book = await prisma.book.findUnique({
-        where: { name: detail.book },
-        select: { id: true },
-      });
-
-      if (!book?.id) {
-        throw new Error(`Libro no encontrado: ${detail.book}`);
-      }
-
-      return {
-        quantity: detail.quantity,
-        bookId: book.id,
-      };
-    });
-
-    return {
-      ok: true,
-      message: "Detalles del pedido formateados correctamente",
-      status: 200,
-      details: await Promise.all(formattedDetailsPromises),
-    };
-  } catch (error) {
-    console.error(error);
-    return {
-      ok: false,
-      message: "Error al formatear los detalles del pedido",
       status: 500,
     };
   }

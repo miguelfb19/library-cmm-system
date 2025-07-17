@@ -4,12 +4,14 @@ import prisma from "@/lib/prisma";
 
 export const createNewNotification = async (
   userIds: string[],
-  message: string
+  message: string,
+  to: "admin" | "productor" | "leader" = "admin"
 ) => {
   try {
     const notificationsToCreate = userIds.map((userId) => ({
       userId,
       message,
+      to,
     }));
 
     await prisma.notification.createMany({

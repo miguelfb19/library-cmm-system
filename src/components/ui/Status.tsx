@@ -1,5 +1,5 @@
 interface Props {
-  color: "green" | "red" | "yellow" | "blue";
+  color: "green" | "red" | "yellow" | "blue" | "purple" | "orange";
 }
 
 export const Status = ({ color }: Props) => {
@@ -14,7 +14,11 @@ export const Status = ({ color }: Props) => {
           ? "bg-red-500"
           : color === "yellow"
           ? "bg-yellow-500"
-          : "bg-blue-500"
+          : color === "purple"
+          ? "bg-purple-500"
+          : color === "blue"
+          ? "bg-blue-500"
+          : "bg-orange-500"
       }`}
     ></div>
   );
