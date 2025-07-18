@@ -7,6 +7,8 @@ export const createNewNotification = async (
   message: string,
   to: "admin" | "productor" | "leader" = "admin"
 ) => {
+
+  console.log(userIds)
   try {
     const notificationsToCreate = userIds.map((userId) => ({
       userId,

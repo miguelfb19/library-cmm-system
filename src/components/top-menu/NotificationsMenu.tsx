@@ -1,6 +1,6 @@
 "use client";
 
-import { Bell, Mail, MailOpen, MailX } from "lucide-react";
+import { Bell, Mail, MailOpen, MailX, Trash } from "lucide-react";
 import {
   MenubarContent,
   MenubarItem,
@@ -13,25 +13,28 @@ import { readNotification } from "@/actions/notifications/read-notification";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { markAsReadAll } from "@/actions/notifications/mark-as-read-all";
+import { CustomTooltip } from "../ui/CustomTooltip";
+import { deleteNotification } from "@/actions/notifications/delete-notification";
 
 interface Props {
   notifications: Notification[];
+  userSessionId: string;
 }
 
-export const NotificationsMenu = ({ notifications }: Props) => {
+export const NotificationsMenu = ({ notifications, userSessionId }: Props) => {
   const router = useRouter();
 
   const someNotificationsUnread = notifications.some(
     (notification) => !notification.read
   );
 
-  const clickOnNotification = async (id: string, to: string) => {
+  const clickOnNotification = async (id: string, userId: string, to: string) => {
     router.push(
       to === "admin"
         ? "/dashboard/leader/orders"
         : "/dashboard/productor/production"
     );
-    const res = await readNotification(id);
+    const res = await readNotification(id, userId);
 
     if (!res.ok) {
       console.error(res.message);
@@ -41,10 +44,17 @@ export const NotificationsMenu = ({ notifications }: Props) => {
   };
 
   const onMarkAllAsRead = async () => {
-    const { ok, message } = await markAsReadAll();
+    const { ok, message } = await markAsReadAll(userSessionId);
 
     if (!ok) {
       toast.error(message);
+    }
+  };
+
+  const onDeleteNotification = async (id: string) => {
+    const res = await deleteNotification(id);
+    if (!res.ok) {
+      toast.error(res.message);
     }
   };
 
@@ -61,7 +71,7 @@ export const NotificationsMenu = ({ notifications }: Props) => {
       <MenubarContent>
         <div
           id="title"
-          className="flex items-center justify-between text-primary text-sm px-2"
+          className="flex items-center justify-between gap-5 text-primary text-sm px-2"
         >
           <div className="flex items-center gap-2">
             <Bell />
@@ -69,7 +79,7 @@ export const NotificationsMenu = ({ notifications }: Props) => {
           </div>
           <button
             className="hover:underline cursor-pointer"
-            onClick={onMarkAllAsRead}
+            onClick={() => onMarkAllAsRead()}
           >
             Marcar como leídas
           </button>
@@ -83,25 +93,40 @@ export const NotificationsMenu = ({ notifications }: Props) => {
         ) : (
           <div className="max-w-80 max-h-72 overflow-y-auto">
             {notifications.map((notification) => (
-              <MenubarItem
+              <div
+                className="relative p-2 hover:bg-gray-100"
                 key={notification.id}
-                className={`text-black ${
-                  notification.read ? "" : "font-extrabold"
-                }`}
               >
-                <button
-                  onClick={() =>
-                    clickOnNotification(
-                      notification.id,
-                      notification.to as string
-                    )
-                  }
-                  className="text-left cursor-pointer flex items-center gap-2"
+                <MenubarItem
+                  className={`text-black ${
+                    notification.read ? "" : "font-extrabold"
+                  }`}
                 >
-                  {notification.read ? <MailOpen /> : <Mail />}
-                  {notification.message}
-                </button>
-              </MenubarItem>
+                  <button
+                    onClick={() =>
+                      clickOnNotification(
+                        notification.id,
+                        notification.userId,
+                        notification.to as string
+                      )
+                    }
+                    className="text-left cursor-pointer flex items-center gap-2"
+                  >
+                    {notification.read ? <MailOpen /> : <Mail />}
+                    {notification.message}
+                  </button>
+                </MenubarItem>
+                {notification.read && (
+                  <CustomTooltip text="Eliminar Notificación">
+                    <button
+                      className="text-red-500 hover:text-red-700 absolute top-1 right-1 cursor-pointer"
+                      onClick={() => onDeleteNotification(notification.id)}
+                    >
+                      <Trash size={17} />
+                    </button>
+                  </CustomTooltip>
+                )}
+              </div>
             ))}
           </div>
         )}

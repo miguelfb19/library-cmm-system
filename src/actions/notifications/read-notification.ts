@@ -3,10 +3,10 @@
 import prisma from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 
-export const readNotification = async (id: string) => {
+export const readNotification = async (id: string, userId: string) => {
   try {
     await prisma.notification.update({
-      where: { id },
+      where: { id, userId },
       data: { read: true },
     });
 

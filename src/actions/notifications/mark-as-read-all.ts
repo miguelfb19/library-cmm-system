@@ -3,11 +3,11 @@
 import prisma from "@/lib/prisma";
 import { revalidatePath } from 'next/cache';
 
-export const markAsReadAll = async () => {
+export const markAsReadAll = async (userId: string) => {
   try {
     await prisma.notification.updateMany({
       where: {
-        read: false,
+        userId,
       },
       data: {
         read: true, // Mark all unread notifications as read

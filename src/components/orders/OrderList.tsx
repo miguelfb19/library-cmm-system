@@ -20,6 +20,15 @@ interface Props {
   userId: string;
 }
 
+/**
+ * Componente que renderiza una tabla con la lista de pedidos del sistema
+ * Incluye funcionalidades como:
+ * - Visualización de detalles del pedido
+ * - Edición de pedidos (solo para líderes o propietarios)
+ * - Despacho de pedidos (solo para administradores)
+ * - Indicadores visuales del estado del pedido
+ * - Alertas visuales para fechas límite próximas
+ */
 export const OrderList = ({
   orders,
   books,
@@ -27,10 +36,16 @@ export const OrderList = ({
   userRole,
   userId,
 }: Props) => {
+  // Muestra un componente Empty si no hay pedidos disponibles
   if (orders.length === 0) {
     return <Empty text="No hay pedidos disponibles" />;
   }
 
+  /**
+   * Obtiene el nombre del usuario basado en su ID
+   * @param id - ID del usuario a buscar
+   * @returns Nombre del usuario o "Desconocido" si no se encuentra
+   */
   const getUserName = (id: string) => {
     const user = users.find((user) => user.id === id);
     return user ? user.name : "Desconocido";
@@ -39,6 +54,7 @@ export const OrderList = ({
   return (
     <div className="overflow-x-auto">
       <table className="min-w-[50rem] md:min-w-full text-sm text-center">
+        {/* Encabezados de la tabla con campos principales */}
         <thead className="bg-secondary font-bold">
           <tr className="border-b h-10">
             <td>ID</td>
@@ -55,10 +71,19 @@ export const OrderList = ({
               key={order.id}
               className="text-center border-b hover:bg-secondary h-10"
             >
+              {/* Columna de ID con truncamiento para IDs largos */}
               <td className="truncate max-w-20">{order.id}</td>
+              
+              {/* Columna de ciudad de origen con formato capitalizado */}
               <td>{capitalizeWords(order.origin.city.replaceAll("-", " "))}</td>
+              
+              {/* Nombre del usuario que realizó el pedido */}
               <td>{getUserName(order.userId)}</td>
+              
+              {/* Estado actual del pedido con indicador visual */}
               <td>{formatOrderState(order.state)}</td>
+              
+              {/* Fecha límite con alerta visual si está próxima (5 días o menos) */}
               <td
                 className={
                   order.limitDate
@@ -71,12 +96,15 @@ export const OrderList = ({
                 }
               >
                 {order.limitDate ? (
-                  dayjs(order.limitDate).format("DD/MM/YYYY")
+                  <div className="font-bold">{dayjs(order.limitDate).format("DD/MM/YYYY")}</div>
                 ) : (
-                  <div className="text-red-500 font-bold">N/A</div>
+                  <div>N/A</div>
                 )}
               </td>
+              
+              {/* Acciones disponibles según el rol del usuario */}
               <td className="flex justify-center items-center gap-2 h-12">
+                {/* Modal de detalles del pedido accesible para todos */}
                 <CustomDialog
                   trigger={
                     <CustomTooltip text="Detalles del Pedido" withSpan>
@@ -98,11 +126,15 @@ export const OrderList = ({
                     ))}
                   </ul>
                 </CustomDialog>
+
+                {/* Botón de edición solo visible para líderes o propietarios del pedido */}
                 {(userRole === "leader" || userId === order.userId) && (
                   <CustomTooltip text="Editar Pedido" withSpan>
                     <EditOrder order={order} booksList={books} />
                   </CustomTooltip>
                 )}
+
+                {/* Botón de despacho solo visible para administradores */}
                 {userRole === "admin" && (
                   <CustomTooltip text="Despachar Pedido" withSpan>
                     <DispatchOrder order={order} booksList={books} />

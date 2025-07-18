@@ -4,10 +4,10 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "./tooltip";
 interface Props {
   children: React.ReactNode;
   text: string;
-  withSpan: boolean;
+  withSpan?: boolean;
 }
 
-export const CustomTooltip = ({ children, text, withSpan }: Props) => {
+export const CustomTooltip = ({ children, text, withSpan = false }: Props) => {
   return (
     <Tooltip>
       <TooltipTrigger asChild>

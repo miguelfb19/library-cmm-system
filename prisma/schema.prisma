@@ -81,7 +81,7 @@ model Inventory {
 }
 
 model Order {
-  id           String      @id @default(uuid())
+  id           String      @id @default(cuid())
   origin       Sede        @relation(fields: [originId], references: [id], onDelete: Cascade)
   originId     String
   user         User        @relation(fields: [userId], references: [id], onDelete: Cascade)

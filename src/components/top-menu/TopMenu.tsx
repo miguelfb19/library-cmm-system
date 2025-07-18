@@ -28,7 +28,7 @@ export const TopMenu = async () => {
     return <div>{message || "Error al cargar las notificaciones"}</div>;
   }
 
-  const filteredNotifications = data.filter((notification) => notification.to === session.user.role);
+  const filteredNotifications = data.filter((notification) => notification.userId === session.user.id);
 
   return (
     <nav className="w-full bg-primary/90 shadow-lg h-16 text-white flex items-center px-5">
@@ -59,7 +59,7 @@ export const TopMenu = async () => {
           </MenubarMenu>
 
           {/* NOTIFICACIONES */}
-          <NotificationsMenu notifications={filteredNotifications || []} />
+          <NotificationsMenu notifications={filteredNotifications || []} userSessionId={session.user.id} />
         </Menubar>
       </div>
     </nav>

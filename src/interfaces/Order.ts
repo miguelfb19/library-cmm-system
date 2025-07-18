@@ -4,7 +4,6 @@ export interface Order {
   id: string;
   origin: OrderOrigin;
   limitDate: Date | null;
-
   originId: string;
   userId: string;
   createdAt: Date;
