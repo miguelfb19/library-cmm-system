@@ -20,7 +20,7 @@ export default async function ProductionOrdersPage() {
       : await getOrdersByUser(session.user.id),
     getSedes(),
     getAllBooks(),
-    getUsers()
+    getUsers(),
   ]);
   const sedes = sedesRes.sedes?.map((sede) => ({
     id: sede.id,
@@ -39,9 +39,19 @@ export default async function ProductionOrdersPage() {
   return (
     <div>
       <Title title="Pedidos" />
-      <NewOrder sedes={sedes || []} books={booksRes.books || []} userId={session.user.id} />
+      <NewOrder
+        sedes={sedes || []}
+        books={booksRes.books || []}
+        userId={session.user.id}
+      />
       <hr className="my-4" />
-      <OrderList orders={ordersRes.orders} books={booksRes.books || []} users={usersRes.data || []} />
+      <OrderList
+        orders={ordersRes.orders}
+        books={booksRes.books || []}
+        users={usersRes.data || []}
+        userRole={session.user.role as "admin" | "leader" | "user"}
+        userId={session.user.id}
+      />
     </div>
   );
 }

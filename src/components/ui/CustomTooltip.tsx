@@ -1,18 +1,23 @@
-
-import { Tooltip, TooltipContent, TooltipTrigger } from "./tooltip" 
+"use client";
+import { Tooltip, TooltipContent, TooltipTrigger } from "./tooltip";
 
 interface Props {
-    children: React.ReactNode;
-    text: string;
+  children: React.ReactNode;
+  text: string;
+  withSpan: boolean;
 }
 
-export const CustomTooltip = ({ children, text }: Props) => {
+export const CustomTooltip = ({ children, text, withSpan }: Props) => {
   return (
     <Tooltip>
       <TooltipTrigger asChild>
-        {children}
+        {withSpan ? (
+          <span className="cursor-pointer">{children}</span>
+        ) : (
+          children
+        )}
       </TooltipTrigger>
       <TooltipContent>{text}</TooltipContent>
     </Tooltip>
-  )
-}
+  );
+};

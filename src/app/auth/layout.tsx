@@ -20,6 +20,7 @@ export default async function AuthLayout({
           width={500}
           height={500}
           className="w-96 mb-10"
+          priority
         />
         {children}
       </div>

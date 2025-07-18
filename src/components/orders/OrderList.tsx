@@ -7,41 +7,46 @@ import { ListCollapse } from "lucide-react";
 import { Book } from "@/interfaces/Book";
 import { User } from "@/interfaces/User";
 import dayjs from "dayjs";
+import { DispatchOrder } from "./DispatchOrder";
+import { getBookName } from "./utils";
+import { CustomTooltip } from "../ui/CustomTooltip";
+import { EditOrder } from "./EditOrder";
 
 interface Props {
   orders: Order[];
   books: Book[];
   users: User[];
+  userRole: "admin" | "leader" | "user";
+  userId: string;
 }
 
-export const OrderList = ({ orders, books, users }: Props) => {
+export const OrderList = ({
+  orders,
+  books,
+  users,
+  userRole,
+  userId,
+}: Props) => {
   if (orders.length === 0) {
     return <Empty text="No hay pedidos disponibles" />;
   }
-
-  const getBookName = (id: string) => {
-    const book = books.find((book) => book.id === id);
-    return book ? book.name : "Desconocido";
-  };
 
   const getUserName = (id: string) => {
     const user = users.find((user) => user.id === id);
     return user ? user.name : "Desconocido";
   };
 
-  const now = new Date();
-
   return (
     <div className="overflow-x-auto">
       <table className="min-w-[50rem] md:min-w-full text-sm text-center">
         <thead className="bg-secondary font-bold">
           <tr className="border-b h-10">
+            <td>ID</td>
             <td>Origen</td>
             <td>Usuario</td>
             <td>Estado</td>
             <td>Fecha Límite</td>
-            <td>Detalles</td>
-            <td>Despachar</td>
+            <td>Acciones</td>
           </tr>
         </thead>
         <tbody>
@@ -50,13 +55,15 @@ export const OrderList = ({ orders, books, users }: Props) => {
               key={order.id}
               className="text-center border-b hover:bg-secondary h-10"
             >
+              <td className="truncate max-w-20">{order.id}</td>
               <td>{capitalizeWords(order.origin.city.replaceAll("-", " "))}</td>
               <td>{getUserName(order.userId)}</td>
               <td>{formatOrderState(order.state)}</td>
               <td
                 className={
                   order.limitDate
-                    ? new Date(order.limitDate).getTime() - now.getTime() <
+                    ? new Date(order.limitDate).getTime() -
+                        new Date().getTime() <
                       5 * 24 * 60 * 60 * 1000
                       ? "text-red-500 font-bold"
                       : ""
@@ -69,12 +76,14 @@ export const OrderList = ({ orders, books, users }: Props) => {
                   <div className="text-red-500 font-bold">N/A</div>
                 )}
               </td>
-              <td>
+              <td className="flex justify-center items-center gap-2 h-12">
                 <CustomDialog
                   trigger={
-                    <button className="btn-blue !w-auto self-center !min-h-auto">
-                      <ListCollapse size={17} />
-                    </button>
+                    <CustomTooltip text="Detalles del Pedido" withSpan>
+                      <button className="btn-blue !w-auto self-center !min-h-auto">
+                        <ListCollapse size={17} />
+                      </button>
+                    </CustomTooltip>
                   }
                   title="Detalles del Pedido"
                 >
@@ -82,13 +91,23 @@ export const OrderList = ({ orders, books, users }: Props) => {
                     {order.detail.map((item) => (
                       <li key={item.id}>
                         {capitalizeWords(
-                          getBookName(item.bookId).replaceAll("_", " ")
+                          getBookName(item.bookId, books).replaceAll("_", " ")
                         )}{" "}
                         x <span className="font-bold">{item.quantity}</span>
                       </li>
                     ))}
                   </ul>
                 </CustomDialog>
+                {(userRole === "leader" || userId === order.userId) && (
+                  <CustomTooltip text="Editar Pedido" withSpan>
+                    <EditOrder order={order} booksList={books} />
+                  </CustomTooltip>
+                )}
+                {userRole === "admin" && (
+                  <CustomTooltip text="Despachar Pedido" withSpan>
+                    <DispatchOrder order={order} booksList={books} />
+                  </CustomTooltip>
+                )}
               </td>
             </tr>
           ))}

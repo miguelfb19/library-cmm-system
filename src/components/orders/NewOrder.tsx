@@ -222,7 +222,7 @@ export const NewOrder = ({
                 />
               </div>
               {index !== 0 && (
-                <CustomTooltip text="Quitar libro">
+                <CustomTooltip text="Quitar libro" className="self-end">
                   <button
                     type="button"
                     className="btn-red-outline !w-auto self-end"
@@ -235,7 +235,7 @@ export const NewOrder = ({
             </div>
           ))}
         </div>
-        <CustomTooltip text="Agregar otro libro">
+        <CustomTooltip text="Agregar otro libro" className="w-14">
           <button type="button" className="btn-blue !w-14" onClick={addNewBook}>
             <Plus />
           </button>

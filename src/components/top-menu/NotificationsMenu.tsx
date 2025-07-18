@@ -11,6 +11,8 @@ import {
 import { Notification } from "@/interfaces/Notification";
 import { readNotification } from "@/actions/notifications/read-notification";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
+import { markAsReadAll } from "@/actions/notifications/mark-as-read-all";
 
 interface Props {
   notifications: Notification[];
@@ -38,6 +40,14 @@ export const NotificationsMenu = ({ notifications }: Props) => {
     router.refresh();
   };
 
+  const onMarkAllAsRead = async () => {
+    const { ok, message } = await markAsReadAll();
+
+    if (!ok) {
+      toast.error(message);
+    }
+  };
+
   return (
     <MenubarMenu>
       <MenubarTrigger>
@@ -51,19 +61,27 @@ export const NotificationsMenu = ({ notifications }: Props) => {
       <MenubarContent>
         <div
           id="title"
-          className="flex items-center gap-2 text-primary text-sm"
+          className="flex items-center justify-between text-primary text-sm px-2"
         >
-          <Bell />
-          Mis Notificaciones
+          <div className="flex items-center gap-2">
+            <Bell />
+            <span>Mis Notificaciones</span>
+          </div>
+          <button
+            className="hover:underline cursor-pointer"
+            onClick={onMarkAllAsRead}
+          >
+            Marcar como leídas
+          </button>
         </div>
         <MenubarSeparator />
         {notifications.length === 0 ? (
           <div className="text-sm my-5 flex flex-col items-center text-gray-500">
-            <MailX size={50}/>
+            <MailX size={50} />
             <span>No tienes notificaciones</span>
           </div>
         ) : (
-          <div className="max-w-60">
+          <div className="max-w-80 max-h-72 overflow-y-auto">
             {notifications.map((notification) => (
               <MenubarItem
                 key={notification.id}
