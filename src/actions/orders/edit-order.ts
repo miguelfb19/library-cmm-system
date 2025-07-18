@@ -29,7 +29,7 @@ export const editOrder = async (order: Order) => {
       // Crear la notidicación para los admin y los usuarios relacionados al pedido
       // Filtramos en los admin en caso de que haya sido quien edito el pedido
       [order.userId, ...((users ?? []).filter((user) => user !== order.userId))],
-      `El pedido con ID ${order.id} ha sido editado.`
+      `El pedido con ID ${order.id} para la ciudad de ${order.origin.city} ha sido editado.`
     );
 
     revalidatePath("/dashboard/");
