@@ -11,6 +11,11 @@ import { useSession } from "next-auth/react";
 import { useState } from "react";
 import { toast } from "sonner";
 
+/**
+ * Interface que define la estructura del inventario y la sede
+ * @property inventory - Array de items de inventario con detalles del libro y niveles de stock
+ * @property sede - Información básica de la sede
+ */
 interface Props {
   inventory: {
     id: string;
@@ -26,22 +31,45 @@ interface Props {
   sede: ShortSede;
 }
 
+/**
+ * Componente que muestra y permite editar los detalles del inventario de una sede
+ * Incluye funcionalidades de:
+ * - Visualización de niveles de stock por libro
+ * - Edición de stock (solo para admin o líder de sede)
+ * - Indicadores visuales de estado de stock
+ */
 export const SedeInventoryDetails = ({ inventory, sede }: Props) => {
+  // Estado para controlar qué item está siendo editado
   const [editingItem, setEditingItem] = useState<string | number | null>(null);
+  // Estado para almacenar los nuevos valores de stock
   const [newStocks, setNewStocks] = useState<Record<string, string>>({});
+  // Obtiene la sesión del usuario
   const { data: session } = useSession();
 
+  // Validación de autenticación
   if (!session?.user) return null;
 
+  /**
+   * Maneja el cambio en el valor del stock
+   * @param bookId - ID del libro a modificar
+   * @param value - Nuevo valor de stock
+   */
   const handleStockChange = (bookId: string, value: string) => {
     setEditingItem(bookId);
     setNewStocks((prev) => ({ ...prev, [bookId]: value }));
   };
 
+  /**
+   * Maneja la confirmación y actualización del stock
+   * @param bookId - ID del libro a actualizar
+   * @param bookName - Nombre del libro para mostrar en la alerta
+   */
   const handleChangeStock = async (bookId: string, bookName: string) => {
     const result = await submitAlert({
       title: "Cambiar stock",
-      html: `¿Estás seguro de que quieres cambiar el stock de <b>${capitalizeWords(bookName.replaceAll("_", " "))}</b>?`,
+      html: `¿Estás seguro de que quieres cambiar el stock de <b>${capitalizeWords(
+        bookName.replaceAll("_", " ")
+      )}</b>?`,
       icon: "warning",
       confirmButtonText: "Cambiar stock",
       showCancelButton: true,
@@ -57,23 +85,29 @@ export const SedeInventoryDetails = ({ inventory, sede }: Props) => {
     setEditingItem(null);
   };
 
+  // Determina si el usuario puede editar el inventario
   const enableEditing =
     session.user.role === "admin" || session.user.name!.includes(sede.leader);
 
   return (
     <div>
       <div className="flex flex-col gap-3">
+        {/* Título de la categoría */}
         <h3 className="font-bold text-primary text-xl">
           {capitalizeWords(inventory[0]?.book.category.replaceAll("_", " "))}
         </h3>
 
+        {/* Tabla de inventario */}
         <table className="table-auto border-collapse">
+          {/* Encabezados de la tabla */}
           <thead className="bg-secondary/70 border-b">
             <tr>
               <th className="font-extrabold text-start">Libro</th>
               <th className="font-extrabold text-start">Stock</th>
             </tr>
           </thead>
+
+          {/* Cuerpo de la tabla con items de inventario */}
           <tbody>
             {inventory
               .sort((a, b) => a.book.name.localeCompare(b.book.name))

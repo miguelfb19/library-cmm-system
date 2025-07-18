@@ -1,3 +1,5 @@
+"use client";
+
 import { getSedeById } from "@/actions/inventory/get-sede-by-id";
 import { SedeInventoryDetails } from "@/components/inventory/SedeInventoryDetails";
 import { UpdateStockLevelsBySede } from "@/components/inventory/UpdateStockLevelsBySede";
@@ -9,19 +11,37 @@ import { EditSedeLeader } from "@/components/inventory/ui/EditSedeLeader";
 import { auth } from "@/auth.config";
 import { redirect } from "next/navigation";
 
+/**
+ * Interface para las props de la página
+ * @property params - Objeto con el ID de la sede como parámetro dinámico
+ */
 interface Props {
   params: Promise<{ id: string }>;
 }
 
+/**
+ * Página que muestra los detalles de una sede específica
+ * Incluye:
+ * - Validación de autenticación
+ * - Restricción de acceso por roles
+ * - Detalles del inventario
+ * - Edición de niveles de stock
+ */
 export default async function SedeDetailsPage({ params }: Props) {
+  // Extrae el ID de los parámetros y obtiene la sesión actual
   const { id } = await params;
   const session = await auth();
 
+  // Redirecciona a login si no hay sesión activa
   if (!session || !session.user) redirect("/auth/login");
 
+  // Obtiene los datos de la sede
   const { sede, ok, message } = await getSedeById(id);
 
-  // Restringir acceso a la sede "Bodega" solo para administradores
+  /**
+   * Validación de acceso a la sede "Bodega"
+   * Solo los administradores pueden acceder a esta sede especial
+   */
   if (
     sede?.city.toLocaleLowerCase() === "bodega" &&
     session.user.role !== "admin"
@@ -36,7 +56,10 @@ export default async function SedeDetailsPage({ params }: Props) {
     );
   }
 
-  // Si no se encuentra la sede o hay un error, mostrar mensaje de error
+  /**
+   * Validación de existencia de la sede
+   * Muestra un mensaje de error si la sede no existe o hay un problema
+   */
   if (!ok || !sede) {
     return (
       <div className="flex flex-col h-[calc(100vh-8rem)] items-center justify-center">

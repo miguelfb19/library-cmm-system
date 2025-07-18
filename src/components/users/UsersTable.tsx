@@ -27,16 +27,34 @@ import { Role } from "@/generated/prisma";
 import { UserPlus } from "lucide-react";
 import { CustomTooltip } from '../ui/CustomTooltip';
 
+/**
+ * Interface que define las propiedades necesarias para la tabla de usuarios
+ * @template TData - Tipo de datos que debe extender un objeto con id
+ * @template TValue - Tipo de valor para las columnas
+ * @property columns - Definición de columnas para la tabla
+ * @property data - Datos a mostrar en la tabla
+ */
 interface UsersTableProps<TData extends { id: string }, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
 }
 
+/**
+ * Componente que renderiza una tabla interactiva de usuarios
+ * Incluye funcionalidades como:
+ * - Filtrado por nombre
+ * - Ordenamiento de columnas
+ * - Cambio de roles (solo admin)
+ * - Creación de nuevos usuarios (solo admin)
+ */
 export function UsersTable<TData extends { id: string }, TValue>({
   columns,
   data,
 }: UsersTableProps<TData, TValue>) {
+  // Hook para manejar la sesión del usuario y actualizarla
   const { update, data: session } = useSession();
+  
+  // Configuración de la tabla usando tanstack/react-table
   const table = useReactTable({
     data,
     columns,
@@ -45,11 +63,14 @@ export function UsersTable<TData extends { id: string }, TValue>({
     getFilteredRowModel: getFilteredRowModel(),
   });
 
+  // Obtiene todos los roles disponibles del enum Role
   const roles = Object.values(Role);
 
   return (
     <>
+      {/* Contenedor de controles superiores */}
       <div className="flex max-md:flex-col-reverse gap-5 justify-between items-center mb-4">
+        {/* Input de búsqueda por nombre */}
         <Input
           placeholder="Buscar por nombre..."
           value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
@@ -58,6 +79,7 @@ export function UsersTable<TData extends { id: string }, TValue>({
           }
           className="md:max-w-sm"
         />
+        {/* Botón para crear nuevo usuario (solo visible para admin) */}
         {session?.user.role === "admin" && (
           <DialogTrigger
             className="btn-blue !w-auto"
@@ -69,6 +91,7 @@ export function UsersTable<TData extends { id: string }, TValue>({
           </DialogTrigger>
         )}
       </div>
+      {/* Tabla de usuarios */}
       <div className="rounded border border-primary/30 overflow-auto max-w-[calc(100vw-7rem)] ">
         <Table>
           <TableHeader>

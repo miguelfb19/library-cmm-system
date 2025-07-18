@@ -11,8 +11,16 @@ import { CustomTooltip } from "../ui/CustomTooltip";
 import { toast } from "sonner";
 import { submitAlert } from "@/utils/submitAlert";
 import { createNewOrder } from "@/actions/orders/create-new-order";
-import { LoadingSpinner } from "../ui/LoadingSpinner";
+import { LoadingSpinner } from '../ui/LoadingSpinner';
+import Loading from "@/app/dashboard/loading";
 
+/**
+ * Interface que define las propiedades necesarias para el componente
+ * @property isProduction - Indica si el pedido es de producción
+ * @property sedes - Lista de sedes disponibles
+ * @property books - Catálogo de libros disponibles
+ * @property userId - ID del usuario que realiza el pedido
+ */
 interface Props {
   isProduction?: boolean;
   sedes: { id: string; city: string }[];
@@ -20,41 +28,66 @@ interface Props {
   userId: string;
 }
 
+/**
+ * Componente para crear nuevos pedidos de libros
+ * Permite seleccionar sede, fecha límite y detalles de libros
+ */
 export const NewOrder = ({
   isProduction = false,
   sedes,
   books,
   userId,
 }: Props) => {
-  const [open, setOpen] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const [limitDate, setLimitDate] = useState<Date | undefined>(undefined);
-  const [origin, setOrigin] = useState<string>("");
+  // Estados para manejar el formulario
+  const [open, setOpen] = useState(false);                    // Control del modal
+  const [isLoading, setIsLoading] = useState(false);         // Estado de carga
+  const [limitDate, setLimitDate] = useState<Date | undefined>(undefined);  // Fecha límite
+  const [origin, setOrigin] = useState<string>("");          // Sede de origen
   const [detail, setDetail] = useState<{ bookId: string; quantity: number }[]>([
     { bookId: "", quantity: 0 },
   ]);
 
+  /**
+   * Maneja el cambio de libro seleccionado
+   * @param index - Índice del detalle a modificar
+   * @param bookId - ID del libro seleccionado
+   */
   const handleBookChange = (index: number, bookId: string) => {
     const newDetail = [...detail];
     newDetail[index].bookId = bookId;
     setDetail(newDetail);
   };
 
+  /**
+   * Maneja el cambio en la cantidad de libros
+   * @param index - Índice del detalle a modificar
+   * @param quantity - Nueva cantidad
+   */
   const handleQuantityChange = (index: number, quantity: number) => {
     const newDetail = [...detail];
     newDetail[index].quantity = quantity;
     setDetail(newDetail);
   };
 
+  /**
+   * Agrega una nueva línea de detalle al pedido
+   */
   const addNewBook = () => {
     setDetail([...detail, { bookId: "", quantity: 0 }]);
   };
 
+  /**
+   * Elimina una línea de detalle del pedido
+   * @param bookId - ID del libro a eliminar
+   */
   const removeBook = (bookId: string) => {
     setDetail(detail.filter((item) => item.bookId !== bookId));
   };
 
-  // FUNCION DE ENVIO DEL PEDIDO
+  /**
+   * MANEJO DE ENVÍO DEL FORMULARIO
+   * Incluye validaciones y confirmación antes de crear el pedido
+   */
   const onSubmit = async () => {
     // Validate the order details
     if (
@@ -131,124 +164,129 @@ export const NewOrder = ({
   };
 
   return (
-    <CustomDialog
-      title="Crear nuevo pedido"
-      description="Los campos marcados con * son obligatorios"
-      trigger={
-        <CustomTooltip text="Hacer un nuevo pedido">
+    <>
+      <CustomDialog
+        title="Crear nuevo pedido"
+        description="Los campos marcados con * son obligatorios"
+        trigger={
+          <CustomTooltip text="Hacer un nuevo pedido">
+            <button
+              type="button"
+              onClick={() => setOpen(true)}
+              className="btn-blue !w-auto"
+            >
+              <PackagePlus />
+            </button>
+          </CustomTooltip>
+        }
+        open={open}
+        onOpenChange={setOpen}
+        size="lg"
+      >
+        {/* Formulario principal */}
+        <form className="grid grid-cols-1 md:grid-cols-2 gap-5">
+          {/* Selector de sede (solo para pedidos no productivos) */}
+          {!isProduction && (
+            <div className="flex flex-col gap-2">
+              <label htmlFor="origin" className="font-bold">
+                ¿Para cual sede es el pedido? <b className="text-red-500">*</b>
+              </label>
+              <select
+                id="origin"
+                className="custom-select"
+                value={origin}
+                onChange={(e) => setOrigin(e.target.value)}
+              >
+                <option value="">Seleccione una sede</option>
+                {sedes.map((sede) =>
+                  sede.city === "bodega" ? null : (
+                    <option key={sede.id} value={sede.id}>
+                      {capitalizeWords(sede.city)}
+                    </option>
+                  )
+                )}
+              </select>
+            </div>
+          )}
+          {/* Selector de fecha límite */}
+          <div className="flex flex-col gap-2">
+            <label className="font-bold">
+              ¿Cual es la fecha límite de recepción?
+            </label>
+            <DatePicker
+              date={limitDate}
+              setDate={setLimitDate}
+              triggerText="Fecha límite"
+              futureDatesOnly
+            />
+          </div>
+          {/* LISTADO DE LIBROS A PEDIR */}
+          <div className="h-72 max-h-72 overflow-y-auto md:col-span-2">
+            {detail.map((item, index) => (
+              <div className="flex gap-2" key={index}>
+                <div className="flex flex-col gap-2">
+                  <label htmlFor={`book-${index}`} className="font-bold">
+                    Seleccione el libro:
+                  </label>
+                  <select
+                    name={`book-${index}`}
+                    id={`book-${index}`}
+                    className="custom-select w-full"
+                    value={item.bookId}
+                    onChange={(e) => handleBookChange(index, e.target.value)}
+                  >
+                    <option value="">Seleccione un libro</option>
+                    {books.map((book) => (
+                      <option key={book.id} value={book.id}>
+                        {capitalizeWords(book.name.replaceAll("_", " "))} -{" "}
+                        {capitalizeWords(book.category.replaceAll("_", " "))}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div className="flex flex-col gap-2">
+                  <label htmlFor={`quantity-${index}`} className="font-bold">
+                    Cantidad:
+                  </label>
+                  <Input
+                    type="number"
+                    id={`quantity-${index}`}
+                    placeholder="Cantidad"
+                    value={item.quantity || ""}
+                    onChange={(e) =>
+                      handleQuantityChange(index, Number(e.target.value))
+                    }
+                  />
+                </div>
+                {index !== 0 && (
+                  <CustomTooltip text="Quitar libro">
+                    <button
+                      type="button"
+                      className="btn-red-outline !w-auto self-end"
+                      onClick={() => removeBook(item.bookId)}
+                    >
+                      <Minus />
+                    </button>
+                  </CustomTooltip>
+                )}
+              </div>
+            ))}
+          </div>
+          <CustomTooltip text="Agregar otro libro">
+            <button type="button" className="btn-blue !w-14" onClick={addNewBook}>
+              <Plus />
+            </button>
+          </CustomTooltip>
           <button
             type="button"
-            onClick={() => setOpen(true)}
-            className="btn-blue !w-auto"
+            onClick={onSubmit}
+            className="btn-blue md:col-span-2"
           >
-            <PackagePlus />
+            {isLoading ? <LoadingSpinner size={10} /> : "Hacer pedido"}
           </button>
-        </CustomTooltip>
-      }
-      open={open}
-      onOpenChange={setOpen}
-      size="lg"
-    >
-      <form className="grid grid-cols-1 md:grid-cols-2 gap-5">
-        {!isProduction && (
-          <div className="flex flex-col gap-2">
-            <label htmlFor="origin" className="font-bold">
-              ¿Para cual sede es el pedido? <b className="text-red-500">*</b>
-            </label>
-            <select
-              id="origin"
-              className="custom-select"
-              value={origin}
-              onChange={(e) => setOrigin(e.target.value)}
-            >
-              <option value="">Seleccione una sede</option>
-              {sedes.map((sede) =>
-                sede.city === "bodega" ? null : (
-                  <option key={sede.id} value={sede.id}>
-                    {capitalizeWords(sede.city)}
-                  </option>
-                )
-              )}
-            </select>
-          </div>
-        )}
-        <div className="flex flex-col gap-2">
-          <label className="font-bold">
-            ¿Cual es la fecha límite de recepción?
-          </label>
-          <DatePicker
-            date={limitDate}
-            setDate={setLimitDate}
-            triggerText="Fecha límite"
-            futureDatesOnly
-          />
-        </div>
-        {/* LISTADO DE LIBROS A PEDIR */}
-        <div className="h-72 max-h-72 overflow-y-auto md:col-span-2">
-          {detail.map((item, index) => (
-            <div className="flex gap-2" key={index}>
-              <div className="flex flex-col gap-2">
-                <label htmlFor={`book-${index}`} className="font-bold">
-                  Seleccione el libro:
-                </label>
-                <select
-                  name={`book-${index}`}
-                  id={`book-${index}`}
-                  className="custom-select w-full"
-                  value={item.bookId}
-                  onChange={(e) => handleBookChange(index, e.target.value)}
-                >
-                  <option value="">Seleccione un libro</option>
-                  {books.map((book) => (
-                    <option key={book.id} value={book.id}>
-                      {capitalizeWords(book.name.replaceAll("_", " "))} -{" "}
-                      {capitalizeWords(book.category.replaceAll("_", " "))}
-                    </option>
-                  ))}
-                </select>
-              </div>
-              <div className="flex flex-col gap-2">
-                <label htmlFor={`quantity-${index}`} className="font-bold">
-                  Cantidad:
-                </label>
-                <Input
-                  type="number"
-                  id={`quantity-${index}`}
-                  placeholder="Cantidad"
-                  value={item.quantity || ""}
-                  onChange={(e) =>
-                    handleQuantityChange(index, Number(e.target.value))
-                  }
-                />
-              </div>
-              {index !== 0 && (
-                <CustomTooltip text="Quitar libro" className="self-end">
-                  <button
-                    type="button"
-                    className="btn-red-outline !w-auto self-end"
-                    onClick={() => removeBook(item.bookId)}
-                  >
-                    <Minus />
-                  </button>
-                </CustomTooltip>
-              )}
-            </div>
-          ))}
-        </div>
-        <CustomTooltip text="Agregar otro libro" className="w-14">
-          <button type="button" className="btn-blue !w-14" onClick={addNewBook}>
-            <Plus />
-          </button>
-        </CustomTooltip>
-
-        <button
-          type="button"
-          onClick={onSubmit}
-          className="btn-blue md:col-span-2"
-        >
-          {isLoading ? <LoadingSpinner size={10} /> : "Hacer pedido"}
-        </button>
-      </form>
-    </CustomDialog>
+        </form>
+      </CustomDialog>
+      {isLoading && <Loading />}
+    </>
   );
 };

@@ -11,27 +11,55 @@ import { editStockLevelsByCategory } from "@/actions/inventory/edit-stock-levels
 import { Category } from "@/generated/prisma";
 import { CustomDialog } from "../ui/CustomDialog";
 
+/**
+ * Interface que define las propiedades del componente
+ * @property sede - Sede cuyos niveles de stock se van a actualizar
+ */
 interface Props {
   sede: ShortSede;
 }
 
+/**
+ * Componente que permite actualizar los niveles de stock crítico y bajo para cada categoría en una sede
+ * Proporciona una interfaz modal para editar los valores de stock
+ */
 export const UpdateStockLevelsBySede = ({ sede }: Props) => {
+  // Estado para controlar qué item está siendo editado
   const [editingItem, setEditingItem] = useState<string | number | null>(null);
-  const [newCriticalStocks, setNewCriticalStocks] = useState<
-    Record<string, string>
-  >({});
+  
+  // Estados para almacenar los nuevos valores de stock
+  const [newCriticalStocks, setNewCriticalStocks] = useState<Record<string, string>>({});
   const [newLowStocks, setNewLowStocks] = useState<Record<string, string>>({});
+  
+  // Estado para controlar la visibilidad del modal
   const [openModal, setOpenModal] = useState(false);
 
+  /**
+   * Maneja el cambio en el valor del stock crítico
+   * @param inventoryId - ID del inventario a modificar
+   * @param value - Nuevo valor de stock crítico
+   */
   const handleCriticalStockChange = (inventoryId: string, value: string) => {
     setEditingItem(inventoryId);
     setNewCriticalStocks((prev) => ({ ...prev, [inventoryId]: value }));
   };
+
+  /**
+   * Maneja el cambio en el valor del stock bajo
+   * @param inventoryId - ID del inventario a modificar
+   * @param value - Nuevo valor de stock bajo
+   */
   const handleLowStockChange = (inventoryId: string, value: string) => {
     setEditingItem(inventoryId);
     setNewLowStocks((prev) => ({ ...prev, [inventoryId]: value }));
   };
 
+  /**
+   * Maneja la actualización de los niveles de stock
+   * Muestra una alerta de confirmación antes de realizar los cambios
+   * @param category - Categoría del inventario a modificar
+   * @param values - Nuevos valores de stock crítico y bajo
+   */
   const handleChangeStock = async (
     category: Category,
     values: { criticalStock: string; lowStock: string }
@@ -76,7 +104,9 @@ export const UpdateStockLevelsBySede = ({ sede }: Props) => {
         </button>
       }
     >
+      {/* Contenedor con scroll para la lista de categorías */}
       <div className="max-h-[60vh] overflow-y-auto">
+        {/* Mapeo de categorías de inventario */}
         {getAllCategoriesInventory(sede).map((inventory, index) => (
           <div key={index} className="flex flex-col gap-2 mb-5">
             <div className="flex flex-col gap-2">
@@ -123,6 +153,7 @@ export const UpdateStockLevelsBySede = ({ sede }: Props) => {
                       handleChangeStock(
                         inventory[0].book.category as Category,
                         {
+                          // Usa el nuevo valor si existe, sino mantiene el valor actual
                           criticalStock:
                             newCriticalStocks[inventory[0].id] ||
                             inventory[0].criticalStock.toString(),
@@ -135,10 +166,12 @@ export const UpdateStockLevelsBySede = ({ sede }: Props) => {
                   >
                     <Check size={15} />
                   </button>
+                  
+                  {/* Botón para cancelar la edición */}
                   <button
                     className="p-1 bg-red-500 rounded hover:bg-red-300 transition-colors text-white cursor-pointer"
                     onClick={() => {
-                      setEditingItem(null);
+                      setEditingItem(null); // Resetea el estado de edición
                     }}
                   >
                     <X size={15} />

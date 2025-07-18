@@ -9,16 +9,33 @@ import { capitalizeWord, capitalizeWords } from "@/utils/capitalize";
 import { LoadingSpinner } from "../../ui/LoadingSpinner";
 import { CustomDialog } from "../../ui/CustomDialog";
 
+/**
+ * Componente para crear nuevas sedes
+ * Incluye:
+ * - Validación de formato para el nombre de la sede
+ * - Modal de confirmación
+ * - Manejo de estados de carga
+ */
 export const CreateSede = () => {
-  const [sedeCity, setsedeCity] = useState("");
-  const [sedeLeader, setsedeLeader] = useState("");
-  const [isCreating, setIsCreating] = useState(false);
-  const [openModal, setOpenModal] = useState(false);
+  // Estados para manejar el formulario y modal
+  const [sedeCity, setsedeCity] = useState("");           // Nombre de la sede
+  const [sedeLeader, setsedeLeader] = useState("");       // Líder de la sede
+  const [isCreating, setIsCreating] = useState(false);    // Estado de creación
+  const [openModal, setOpenModal] = useState(false);      // Control del modal
 
+  // Expresión regular para validar el formato del nombre de la sede
+  // Debe estar en minúsculas y usar guiones bajos para espacios
   const regex = /^[a-z]+(_[a-z]+)*$/;
 
+  /**
+   * Maneja la creación de una nueva sede
+   * Incluye:
+   * - Validación del formato del nombre
+   * - Confirmación mediante modal
+   * - Creación y feedback
+   */
   const onCreateSede = async () => {
-    
+    // Validación del formato del nombre de la sede
     if(regex.test(sedeCity) === false) {
       toast.error(
         "El nombre de la sede debe estar en minúsculas y separado por guiones bajos (_)."
@@ -26,9 +43,11 @@ export const CreateSede = () => {
       return;
     }
     
+    // Activar estado de carga y cerrar modal
     setIsCreating(true);
     setOpenModal(false);
 
+    // Mostrar alerta de confirmación
     const result = await submitAlert({
       title: "Crear sede",
       html: `¿Estás seguro de que quieres crear la sede <b>${sedeCity}</b>?`,
@@ -37,6 +56,7 @@ export const CreateSede = () => {
       showCancelButton: true,
     });
 
+    // Manejar cancelación
     if (result.isDenied || result.isDismissed) {
       toast.info("Creación de sede cancelada");
       setIsCreating(false);

@@ -1,5 +1,6 @@
 "use client";
 
+// Importaciones necesarias para la funcionalidad de la tabla
 import { deleteUser } from "@/actions/users/delete-user";
 import { submitAlert } from "@/utils/submitAlert";
 import { ColumnDef } from "@tanstack/react-table";
@@ -7,6 +8,15 @@ import { ArrowUpDown, Trash, Loader2 } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { useState } from "react";
 
+/**
+ * Tipo que define la estructura de un usuario en la tabla
+ * @property id - Identificador único del usuario
+ * @property name - Nombre completo del usuario
+ * @property email - Correo electrónico del usuario
+ * @property phone - Número telefónico del usuario
+ * @property city - Ciudad de residencia del usuario
+ * @property role - Rol del usuario en el sistema (admin/productor/leader)
+ */
 export type User = {
   id: string;
   name: string;
@@ -16,6 +26,12 @@ export type User = {
   role: "admin" | "productor" | "leader";
 };
 
+/**
+ * Función auxiliar para manejar la eliminación de usuarios
+ * Incluye confirmación y feedback visual
+ * @param id - ID del usuario a eliminar
+ * @param setLoading - Función para actualizar el estado de carga
+ */
 const handleDeleteUser = async (
   id: string,
   setLoading: (id: string | null) => void
@@ -44,7 +60,18 @@ const handleDeleteUser = async (
   }
 };
 
+/**
+ * Definición de columnas para la tabla de usuarios
+ * Incluye:
+ * - Nombre (ordenable)
+ * - Rol
+ * - Correo electrónico
+ * - Teléfono
+ * - Ciudad
+ * - Acciones (eliminación para admin)
+ */
 export const columns: ColumnDef<User>[] = [
+  // Columna de nombre con capacidad de ordenamiento
   {
     accessorKey: "name",
     header: ({ column }) => {
@@ -60,26 +87,37 @@ export const columns: ColumnDef<User>[] = [
     },
     cell: ({ row }) => <div>{row.getValue("name")}</div>,
   },
+
+  // Columna de rol (sin ordenamiento)
   {
     accessorKey: "role",
     header: () => <div className="font-bold">Rol</div>,
   },
+
+  // Columna de correo electrónico
   {
     accessorKey: "email",
     header: () => <div className="font-bold">Correo electrónico</div>,
   },
+
+  // Columna de teléfono
   {
     accessorKey: "phone",
     header: () => <div className="font-bold">Teléfono</div>,
   },
+
+  // Columna de ciudad
   {
     accessorKey: "city",
     header: () => <div className="font-bold">Ciudad</div>,
   },
+
+  // Columna de acciones (botón de eliminar)
   {
     id: "actions",
     header: () => <div className="font-bold">Acciones</div>,
     cell: ({ row }) => {
+      // Estado local para manejar la carga durante la eliminación
       const [loadingId, setLoadingId] = useState<string | null>(null);
       const isLoading = loadingId === row.original.id;
       const { data: session } = useSession();

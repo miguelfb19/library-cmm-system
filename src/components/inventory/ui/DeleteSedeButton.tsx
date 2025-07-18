@@ -3,7 +3,6 @@
 import { submitAlert } from "@/utils/submitAlert";
 import { LoaderCircle, Trash } from "lucide-react";
 import { useState } from "react";
-import { LoadingSpinner } from "../ui/LoadingSpinner";
 import { toast } from "sonner";
 import { deleteSede } from "@/actions/inventory/delete-sede";
 

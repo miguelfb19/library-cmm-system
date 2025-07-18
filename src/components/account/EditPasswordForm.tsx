@@ -8,21 +8,38 @@ import { Eye, EyeOff } from "lucide-react";
 import { LoadingSpinner } from "../ui/LoadingSpinner";
 import { Input } from "../ui/input";
 
+/**
+ * Interface que define la estructura del formulario
+ * @property password - Nueva contraseña
+ * @property confirmPassword - Confirmación de la nueva contraseña
+ */
 interface FormInputs {
   password: string;
   confirmPassword: string;
 }
 
+/**
+ * Interface para las props del componente
+ * @property userId - ID del usuario que actualiza su contraseña
+ */
 interface Props {
   userId: string;
 }
 
+/**
+ * Componente para actualizar la contraseña del usuario
+ * Incluye:
+ * - Validación de longitud mínima
+ * - Confirmación de contraseña
+ * - Visibilidad toggle para los campos
+ */
 export const EditPasswordForm = ({ userId }: Props) => {
-  
+  // Estados para manejar la carga y visibilidad de la contraseña
   const [isLoading, setIsLoading] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
   const toggleVisibility = () => setIsVisible(!isVisible);
 
+  // Configuración del formulario con React Hook Form
   const {
     register,
     handleSubmit,
@@ -31,6 +48,11 @@ export const EditPasswordForm = ({ userId }: Props) => {
     formState: { errors },
   } = useForm<FormInputs>();
 
+  /**
+   * Maneja el envío del formulario
+   * Incluye validaciones y actualización de contraseña
+   * @param data - Datos del formulario (password y confirmación)
+   */
   const onPressSave = async (data: FormInputs) => {
     if (data.password === "") return;
 
@@ -42,14 +64,14 @@ export const EditPasswordForm = ({ userId }: Props) => {
     );
 
     if (!ok) {
-      if (status === 400) submitAlert({title: message, icon: "warning"});
-      else submitAlert({title: message, icon: "error"});
+      if (status === 400) submitAlert({ title: message, icon: "warning" });
+      else submitAlert({ title: message, icon: "error" });
       setIsLoading(false);
-      reset()
+      reset();
       return;
     }
 
-    submitAlert({title: message, icon: "success"});
+    submitAlert({ title: message, icon: "success" });
     setIsLoading(false);
     reset();
   };
@@ -75,10 +97,10 @@ export const EditPasswordForm = ({ userId }: Props) => {
               {...register("password", {
                 required: "La contraseña es requerida",
                 validate: {
-                  large: (value) => {
-                    return value.length >= 8 || "La contraseña debe tener al menos 8 caracteres";
-                  },
-                }
+                  large: (value) =>
+                    value.length >= 8 ||
+                    "La contraseña debe tener al menos 8 caracteres",
+                },
               })}
             />
             <button
@@ -87,11 +109,7 @@ export const EditPasswordForm = ({ userId }: Props) => {
               type="button"
               onClick={toggleVisibility}
             >
-              {isVisible ? (
-                <EyeOff />
-              ) : (
-                <Eye />
-              )}
+              {isVisible ? <EyeOff /> : <Eye />}
             </button>
           </div>
           {errors.password && (
@@ -129,11 +147,7 @@ export const EditPasswordForm = ({ userId }: Props) => {
           }`}
           disabled={isLoading}
         >
-          {isLoading ? (
-            <LoadingSpinner size={10} />
-          ) : (
-            "Guardar"
-          )}
+          {isLoading ? <LoadingSpinner size={10} /> : "Guardar"}
         </button>
       </div>
     </form>

@@ -1,25 +1,39 @@
 "use client";
 
+// Importaciones necesarias para el componente
 import { Warehouse } from "@/interfaces/Warehouse";
 import { capitalizeWords } from "@/utils/capitalize";
 import { Input } from "../ui/input";
 import { useState } from "react";
-import Link from "next/link";
 
+/**
+ * Interface que define las propiedades del componente
+ * @property warehouse - Objeto que contiene el inventario completo de la bodega
+ */
 interface Props {
   warehouse: Warehouse;
 }
 
 export const WarehouseTable = ({ warehouse }: Props) => {
-  const [searchTerm, setSearchTerm] = useState("");
-  const [searchTerm2, setSearchTerm2] = useState("");
+  // Estados para los términos de búsqueda
+  const [searchTerm, setSearchTerm] = useState("");     // Búsqueda por nombre
+  const [searchTerm2, setSearchTerm2] = useState("");   // Búsqueda por categoría
 
+  /**
+   * Filtra el inventario por nombre de libro
+   * Normaliza el texto eliminando guiones bajos y considerando mayúsculas/minúsculas
+   */
   const filteredInventory = warehouse.inventory.filter((item) =>
     item.book.name
       .toLowerCase()
       .replaceAll("_", " ")
       .includes(searchTerm.toLowerCase())
   );
+
+  /**
+   * Filtra el resultado anterior por categoría
+   * Aplica el mismo proceso de normalización de texto
+   */
   const filteredInventoryByCategory = filteredInventory.filter((item) =>
     item.book.category
       .toLowerCase()
@@ -29,13 +43,16 @@ export const WarehouseTable = ({ warehouse }: Props) => {
 
   return (
     <>
+      {/* Contenedor de campos de búsqueda */}
       <div className="flex max-md:flex-col-reverse items-center justify-between gap-2">
+        {/* Input para búsqueda por nombre de libro */}
         <Input
           type="text"
           placeholder="Buscar libro..."
           onChange={(e) => setSearchTerm(e.target.value)}
           value={searchTerm}
         />
+        {/* Input para búsqueda por categoría */}
         <Input
           type="text"
           placeholder="Buscar categoría..."
@@ -43,8 +60,11 @@ export const WarehouseTable = ({ warehouse }: Props) => {
           value={searchTerm2}
         />
       </div>
+
+      {/* Contenedor de la tabla con scroll horizontal */}
       <div className="overflow-x-auto">
         <table className="min-w-[50rem] md:min-w-full text-sm">
+          {/* Encabezados de la tabla */}
           <thead className="bg-secondary">
             <tr className="border-b h-10">
               <th>Libro</th>
