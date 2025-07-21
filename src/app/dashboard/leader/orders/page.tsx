@@ -50,7 +50,7 @@ export default async function ProductionOrdersPage() {
         books={booksRes.books || []}
         users={usersRes.data || []}
         userRole={session.user.role as "admin" | "leader" | "user"}
-        userId={session.user.id}
+        sessionUserId={session.user.id}
       />
     </div>
   );

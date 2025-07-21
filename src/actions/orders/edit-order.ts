@@ -12,7 +12,10 @@ import { getUsersToNotify } from "../notifications/get-users-to-notify";
  * @param to - Destinatarios de la notificación (Administradores o Productores)
  * @returns Objeto con el resultado de la operación
  */
-export const editOrder = async (order: Order, to: "ToAdmin" | "ToProductor") => {
+export const editOrder = async (
+  order: Order,
+  to: "ToAdmin" | "ToProductor"
+) => {
   try {
     // Actualiza la orden en la base de datos
     // Primero elimina todos los detalles existentes y luego crea los nuevos
@@ -26,6 +29,7 @@ export const editOrder = async (order: Order, to: "ToAdmin" | "ToProductor") => 
             quantity: item.quantity,
           })), // Crea los nuevos detalles
         },
+        limitDate: order.limitDate,
       },
     });
 
@@ -40,7 +44,9 @@ export const editOrder = async (order: Order, to: "ToAdmin" | "ToProductor") => 
       // Crear la notidicación para los admin y los usuarios relacionados al pedido
       // Filtramos en los admin en caso de que haya sido quien edito el pedido
       [order.userId, ...(filteredUsers ?? [])],
-      `El pedido con ID ${order.id} para la ciudad de ${order.origin.city.toUpperCase()} ha sido editado.`
+      `El pedido con ID ${
+        order.id
+      } para la ciudad de ${order.origin.city.toUpperCase()} ha sido editado.`
     );
 
     // Revalida la ruta del dashboard para actualizar los datos en el cliente

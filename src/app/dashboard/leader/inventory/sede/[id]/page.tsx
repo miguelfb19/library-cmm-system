@@ -1,5 +1,3 @@
-"use client";
-
 import { getSedeById } from "@/actions/inventory/get-sede-by-id";
 import { SedeInventoryDetails } from "@/components/inventory/SedeInventoryDetails";
 import { UpdateStockLevelsBySede } from "@/components/inventory/UpdateStockLevelsBySede";

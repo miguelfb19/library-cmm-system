@@ -10,6 +10,7 @@ import { useState } from "react";
 import { LoadingSpinner } from "../ui/LoadingSpinner";
 import { toast } from "sonner";
 import { editOrder } from "@/actions/orders/edit-order";
+import { DatePicker } from "../ui/DatePicker";
 
 /**
  * Interface para las propiedades del componente EditOrder
@@ -38,23 +39,24 @@ export const EditOrder = ({ order, booksList }: Props) => {
       orderId: item.orderId,
     }))
   );
+  const [limitDate, setLimitDate] = useState<Date | undefined>(
+    new Date(order.limitDate || "")
+  );
 
   // Estados para controlar el diálogo y el estado de carga
   const [open, setOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-  
-   //Actualiza el libro seleccionado en una línea específica del detalle
-  
+  //Actualiza el libro seleccionado en una línea específica del detalle
+
   const handleBookChange = (index: number, bookId: string) => {
     const newDetail = [...detail];
     newDetail[index].bookId = bookId;
     setDetail(newDetail);
   };
 
-  
-   //Actualiza la cantidad de libros en una línea específica del detalle
-   
+  //Actualiza la cantidad de libros en una línea específica del detalle
+
   const handleQuantityChange = (index: number, quantity: number) => {
     const newDetail = [...detail];
     newDetail[index].quantity = quantity;
@@ -70,6 +72,7 @@ export const EditOrder = ({ order, booksList }: Props) => {
     const updatedOrder = {
       ...order,
       detail: detail,
+      limitDate: limitDate ? limitDate : null,
     };
     const res = await editOrder(updatedOrder, "ToAdmin");
 
@@ -94,10 +97,20 @@ export const EditOrder = ({ order, booksList }: Props) => {
       open={open}
       onOpenChange={setOpen}
     >
+      <div className="flex flex-col gap-2 mb-5">
+        <label htmlFor="limitDate" className="font-bold">
+          Fecha Límite:
+        </label>
+        <DatePicker
+          date={limitDate}
+          setDate={setLimitDate}
+          futureDatesOnly
+        />
+      </div>
       <ul className="space-y-5 max-h-[27rem] overflow-y-auto">
         {order.detail.map((item, index) => (
           <li key={item.id} className="flex items-center gap-5">
-            <div className="flex flex-col gap-2">
+            <div className="flex flex-col gap-2 w-full">
               <label htmlFor={`book-${index}`} className="font-bold">
                 Seleccione el libro:
               </label>
@@ -125,7 +138,7 @@ export const EditOrder = ({ order, booksList }: Props) => {
               onChange={(e) =>
                 handleQuantityChange(index, Number(e.target.value))
               }
-              className="w-24 self-end"
+              className="flex-2/12 self-end"
             />
           </li>
         ))}
