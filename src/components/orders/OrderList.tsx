@@ -12,7 +12,6 @@ import { getBookName } from "./utils";
 import { CustomTooltip } from "../ui/CustomTooltip";
 import { EditOrder } from "./EditOrder";
 import { getLimitDateState } from "@/utils/get-limitdate-state";
-import { submitAlert } from "@/utils/submitAlert";
 import { ShowOrdersAlert } from "./ShowOrdersAlert";
 
 interface Props {
@@ -61,6 +60,7 @@ export const OrderList = ({
         {/* Encabezados de la tabla con campos principales */}
         <thead className="bg-secondary font-bold">
           <tr className="border-b h-10">
+            <td></td>
             <td>ID</td>
             <td>Origen</td>
             <td>Usuario</td>
@@ -73,8 +73,15 @@ export const OrderList = ({
           {orders.map((order) => (
             <tr
               key={order.id}
-              className="text-center border-b hover:bg-secondary h-10"
+              className="text-center border-b hover:bg-secondary h-10 relative"
             >
+              <div className="absolute">
+                {dayjs().diff(dayjs(order.createdAt), 'day') <= 1 && (
+                  <div className="absolute -top-1/2 left-1 rounded-full bg-green-500 text-white text-xs px-1 -rotate-10">
+                    Nuevo
+                  </div>
+                )}
+              </div>
               {/* Columna de ID con truncamiento para IDs largos */}
               <td className="truncate max-w-20">{order.id}</td>
 
