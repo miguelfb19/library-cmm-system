@@ -75,13 +75,15 @@ export const OrderList = ({
               key={order.id}
               className="text-center border-b hover:bg-secondary h-10 relative"
             >
-              <div className="absolute">
-                {dayjs().diff(dayjs(order.createdAt), 'day') <= 1 && (
-                  <div className="absolute -top-1/2 left-1 rounded-full bg-green-500 text-white text-xs px-1 -rotate-10">
-                    Nuevo
-                  </div>
-                )}
-              </div>
+              <td>
+                <div className="absolute">
+                  {dayjs().diff(dayjs(order.createdAt), 'day') <= 1 && (
+                    <div className="absolute -top-7 left-1 rounded-full bg-green-500 text-white text-xs px-1 -rotate-10">
+                      Nuevo
+                    </div>
+                  )}
+                </div>
+              </td>
               {/* Columna de ID con truncamiento para IDs largos */}
               <td className="truncate max-w-20">{order.id}</td>
 
@@ -97,10 +99,10 @@ export const OrderList = ({
               {/* Fecha límite con alerta visual si está próxima (5 días o menos) */}
               <td
                 className={
-                  getLimitDateState(order.limitDate) <= 5
-                    ? "text-yellow-500 font-bold"
-                    : getLimitDateState(order.limitDate) <= 0
+                  getLimitDateState(order.limitDate) <= 0
                     ? "text-red-500 font-bold"
+                    : getLimitDateState(order.limitDate) <= 5
+                    ? "text-yellow-500 font-bold"
                     : ""
                 }
               >
