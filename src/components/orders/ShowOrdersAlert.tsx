@@ -14,8 +14,20 @@ export const ShowOrdersAlert = ({ orders }: Props) => {
       const limitDateState = getLimitDateState(order.limitDate);
       return limitDateState <= 5; // Si hay al menos un pedido con fecha límite próxima
     });
+    const someOrderIsOverLimit = orders.some((order) => {
+      const limitDateState = getLimitDateState(order.limitDate);
+      return limitDateState <= 0; // Si hay al menos un pedido con fecha límite pasada
+    });
+    if (someOrderIsOverLimit) {
+      return submitAlert({
+        title: "Alerta de Pedidos",
+        text: "Hay pedidos con fecha límite pasada. Por favor, revisa los pedidos.",
+        icon: "error",
+        confirmButtonText: "Aceptar",
+      });
+    }
     if (someOrderIsLimitUnderFive) {
-      submitAlert({
+      return submitAlert({
         title: "Alerta de Pedidos",
         text: "Hay pedidos con fecha límite próxima (5 días o menos). Por favor, revisa los pedidos.",
         icon: "warning",
