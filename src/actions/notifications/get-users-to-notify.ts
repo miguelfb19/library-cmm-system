@@ -19,7 +19,7 @@ export const getUsersToNotify = async (notificationType: NotificationType) => {
         ok: true,
         message: "Usuarios obtenidos correctamente",
         status: 200,
-        users: usersIds.map(user => user.id),
+        ids: usersIds.map(user => user.id),
     }
 
   } catch (error) {

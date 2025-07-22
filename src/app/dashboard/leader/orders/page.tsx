@@ -37,7 +37,7 @@ export default async function ProductionOrdersPage() {
   }
 
   return (
-    <div>
+    <div className="h-full">
       <Title title="Pedidos" />
       <NewOrder
         sedes={sedes || []}

@@ -17,11 +17,11 @@ interface OrderData {
     bookId: string;
   }[];
   userId: string;
+  note: string | null;
 }
 
 export const createNewOrder = async (data: OrderData) => {
   try {
-
     const res = await prisma.order.create({
       data: {
         origin: {
@@ -39,6 +39,7 @@ export const createNewOrder = async (data: OrderData) => {
             id: data.userId,
           },
         },
+        note: data.note,
       },
     });
 
@@ -47,7 +48,7 @@ export const createNewOrder = async (data: OrderData) => {
       data.isProduction ? "ToProductor" : "ToAdmin"
     );
 
-    if (!userToNotify.ok || !userToNotify.users) {
+    if (!userToNotify.ok || !userToNotify.ids) {
       return {
         ok: false,
         message: userToNotify.message,
@@ -57,7 +58,7 @@ export const createNewOrder = async (data: OrderData) => {
 
     // CREATE NOTIFICATION
     await createNewNotification(
-      userToNotify.users,
+      userToNotify.ids,
       data.isProduction
         ? "Se ha creado un nuevo pedido para producción, click para ver más detalles"
         : `Se ha creado un nuevo pedido para ${data.origin.city.toUpperCase()}, click para ver más detalles`,

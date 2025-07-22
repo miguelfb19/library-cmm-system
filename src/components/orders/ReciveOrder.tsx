@@ -1,26 +1,22 @@
 "use client";
 
-import { Send } from "lucide-react";
-import { CustomDialog } from "../ui/CustomDialog";
-import { Order } from "@/interfaces/Order";
-import { capitalizeWords } from "@/utils/capitalize";
-import { Input } from "../ui/input";
-import { Book } from "@/interfaces/Book";
-import { getBookCategory, getBookName } from "./utils";
 import { useState } from "react";
-import { LoadingSpinner } from "../ui/LoadingSpinner";
-import { dispatchOrder } from "@/actions/orders/dispatch-order";
-import { submitAlert } from "@/utils/submitAlert";
-import { toast } from "sonner";
+import { CustomDialog } from "../ui/CustomDialog";
+import { CheckCheck } from "lucide-react";
+import { Order } from "@/interfaces/Order";
+import { Book } from "@/interfaces/Book";
 import Loading from "@/app/dashboard/loading";
+import { capitalizeWords } from "@/utils/capitalize";
+import { getBookCategory, getBookName } from "./utils";
+import { Input } from "../ui/input";
+import { LoadingSpinner } from "../ui/LoadingSpinner";
 
 interface Props {
   order: Order;
-  booksList: Book[];
+  bookList: Book[];
 }
 
-export const DispatchOrder = ({ order, booksList }: Props) => {
-  // Estado para manejar los detalles de la orden que pueden ser modificados
+export const ReciveOrder = ({ order, bookList }: Props) => {
   const [detail, setDetail] = useState<
     { bookId: string; quantity: number; id: string; orderId: string }[]
   >(
@@ -32,60 +28,32 @@ export const DispatchOrder = ({ order, booksList }: Props) => {
     }))
   );
   const [note, setNote] = useState<string | null>(order.note);
-
-  // Estados para controlar el diálogo y el estado de carga
-  const [open, setOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleDispathOrder = async () => {
-    setIsLoading(true);
-    setOpen(false);
-
-    const result = await submitAlert({
-      title: "¿Estás seguro de despachar este pedido?",
-      confirmButtonText: "Despachar",
-      cancelButtonText: "Cancelar",
-      showCancelButton: true,
-      icon: "question",
-    });
-
-    if (result.isDenied || result.isDismissed) {
-      toast.error("Despacho cancelado");
-      setIsLoading(false);
-      setOpen(false);
-      return;
-    }
-
-    const {ok, message} = await dispatchOrder({
-      ...order,
-      detail,
-      note,
-    });
-
-    if (!ok){
-      toast.error(message);
-      setIsLoading(false);
-      setOpen(true);
-      return;
-    }
-
-    toast.success(message);
-    setIsLoading(false);
-  };
+    const handleReciveOrder = async () => {
+        setIsLoading(true);
+        setIsOpen(false);
+    
+        // Aquí se puede agregar la lógica para recibir el pedido
+        // Por ejemplo, actualizar el estado del pedido en la base de datos
+    
+        setIsLoading(false);
+    };
 
   return (
     <>
       {isLoading && <Loading />}
       <CustomDialog
+        title="Recibir Pedido"
+        onOpenChange={setIsOpen}
+        open={isOpen}
         trigger={
           <button className="btn-blue !w-auto self-center !min-h-auto">
-            <Send size={17} />
+            <CheckCheck size={18} />
           </button>
         }
-        title="Detalles del Pedido"
         size="xl"
-        open={open}
-        onOpenChange={setOpen}
       >
         <ul className="space-y-5 max-h-[27rem] overflow-y-auto">
           {order.detail.map((item) => (
@@ -93,13 +61,13 @@ export const DispatchOrder = ({ order, booksList }: Props) => {
               <div>
                 <span className="font-bold">
                   {capitalizeWords(
-                    getBookName(item.bookId, booksList).replaceAll("_", " ")
+                    getBookName(item.bookId, bookList).replaceAll("_", " ")
                   )}
                 </span>{" "}
                 -{" "}
                 <span>
                   {capitalizeWords(
-                    getBookCategory(item.bookId, booksList).replaceAll("_", " ")
+                    getBookCategory(item.bookId, bookList).replaceAll("_", " ")
                   )}
                 </span>
               </div>
@@ -131,9 +99,9 @@ export const DispatchOrder = ({ order, booksList }: Props) => {
           />
         <button
           className="btn-blue md:!w-1/2 m-auto"
-          onClick={handleDispathOrder}
+          onClick={handleReciveOrder}
         >
-          Despachar
+          Aceptar
         </button>
       </CustomDialog>
     </>

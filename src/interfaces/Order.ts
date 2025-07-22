@@ -11,6 +11,7 @@ export interface Order {
   isProduction: boolean;
   state: OrderState;
   detail: OrderDetails[];
+  note: string | null;
 }
 
 interface OrderDetails {

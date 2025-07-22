@@ -11,7 +11,7 @@ import { CustomTooltip } from "../ui/CustomTooltip";
 import { toast } from "sonner";
 import { submitAlert } from "@/utils/submitAlert";
 import { createNewOrder } from "@/actions/orders/create-new-order";
-import { LoadingSpinner } from '../ui/LoadingSpinner';
+import { LoadingSpinner } from "../ui/LoadingSpinner";
 import Loading from "@/app/dashboard/loading";
 
 /**
@@ -39,13 +39,14 @@ export const NewOrder = ({
   userId,
 }: Props) => {
   // Estados para manejar el formulario
-  const [open, setOpen] = useState(false);                    // Control del modal
-  const [isLoading, setIsLoading] = useState(false);         // Estado de carga
-  const [limitDate, setLimitDate] = useState<Date | undefined>(undefined);  // Fecha límite
-  const [origin, setOrigin] = useState<string>("");          // Sede de origen
+  const [open, setOpen] = useState(false); // Control del modal
+  const [isLoading, setIsLoading] = useState(false); // Estado de carga
+  const [limitDate, setLimitDate] = useState<Date | undefined>(undefined); // Fecha límite
+  const [origin, setOrigin] = useState<string>(""); // Sede de origen
   const [detail, setDetail] = useState<{ bookId: string; quantity: number }[]>([
     { bookId: "", quantity: 0 },
   ]);
+  const [note, setNote] = useState<string | null>(null); // Notas del pedido
 
   /**
    * Maneja el cambio de libro seleccionado
@@ -143,6 +144,7 @@ export const NewOrder = ({
       detail,
       isProduction,
       userId,
+      note,
     };
 
     const { ok, message } = await createNewOrder(data);
@@ -221,7 +223,7 @@ export const NewOrder = ({
             />
           </div>
           {/* LISTADO DE LIBROS A PEDIR */}
-          <div className="h-72 max-h-72 overflow-y-auto md:col-span-2">
+          <div className="h-48 max-h-48 overflow-y-auto md:col-span-2">
             {detail.map((item, index) => (
               <div className="flex gap-2" key={index}>
                 <div className="flex flex-col gap-2">
@@ -273,10 +275,23 @@ export const NewOrder = ({
             ))}
           </div>
           <CustomTooltip text="Agregar otro libro">
-            <button type="button" className="btn-blue !w-14" onClick={addNewBook}>
+            <button
+              type="button"
+              className="btn-blue !w-14"
+              onClick={addNewBook}
+            >
               <Plus />
             </button>
           </CustomTooltip>
+          <textarea
+            name="note"
+            id="note"
+            placeholder="Notas sobre el pedido"
+            maxLength={500}
+            className="w-full min-h-10 max-h-24 h-24 p-2 border border-gray-300 rounded col-span-2"
+            value={note || undefined}
+            onChange={(e) => setNote(e.target.value)}
+          />
           <button
             type="button"
             onClick={onSubmit}

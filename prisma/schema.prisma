@@ -30,7 +30,7 @@ enum Category {
 
 enum OrderState {
   pending
-  in_progress
+  dispatched
   approved
   cancelled
   modified
@@ -92,6 +92,7 @@ model Order {
   limitDate    DateTime?
   isProduction Boolean     @default(false)
   state        OrderState  @default(pending)
+  note         String?
 }
 
 model BookOrder {
