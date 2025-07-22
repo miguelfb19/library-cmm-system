@@ -17,6 +17,7 @@ export const getOrdersByUser = async (userId: string) => {
             city: true,
           },
         },
+        dispatchData: true,
       },
       orderBy: {
         limitDate: "asc",

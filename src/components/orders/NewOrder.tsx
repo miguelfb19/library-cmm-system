@@ -13,6 +13,7 @@ import { submitAlert } from "@/utils/submitAlert";
 import { createNewOrder } from "@/actions/orders/create-new-order";
 import { LoadingSpinner } from "../ui/LoadingSpinner";
 import Loading from "@/app/dashboard/loading";
+import { DispatchData } from "@/interfaces/DispatchData";
 
 /**
  * Interface que define las propiedades necesarias para el componente
@@ -46,6 +47,13 @@ export const NewOrder = ({
   const [detail, setDetail] = useState<{ bookId: string; quantity: number }[]>([
     { bookId: "", quantity: 0 },
   ]);
+  const [dispatchData, setDispatchData] = useState<DispatchData>({
+    name: "",
+    phone: "",
+    address: "",
+    city: "",
+    document: "",
+  }); // Datos de envío, si aplica
   const [note, setNote] = useState<string | null>(null); // Notas del pedido
 
   /**
@@ -101,6 +109,18 @@ export const NewOrder = ({
       return;
     }
 
+    // Validate dispatch data 
+    if (
+      !dispatchData.name ||
+      !dispatchData.phone ||
+      !dispatchData.address ||
+      !dispatchData.city ||
+      !dispatchData.document
+    ) {
+      toast.error("Debes completar todos los datos de envío");
+      return;
+    }
+
     // If not production and no origin selected, show error
     if (!isProduction && origin === "") {
       toast.error("Debes seleccionar una sede de origen para el pedido");
@@ -145,6 +165,7 @@ export const NewOrder = ({
       isProduction,
       userId,
       note,
+      dispatchData
     };
 
     const { ok, message } = await createNewOrder(data);
@@ -184,6 +205,7 @@ export const NewOrder = ({
         open={open}
         onOpenChange={setOpen}
         size="lg"
+        maxHeight={90}
       >
         {/* Formulario principal */}
         <form className="grid grid-cols-1 md:grid-cols-2 gap-5">
@@ -222,8 +244,9 @@ export const NewOrder = ({
               futureDatesOnly
             />
           </div>
+
           {/* LISTADO DE LIBROS A PEDIR */}
-          <div className="h-48 max-h-48 overflow-y-auto md:col-span-2">
+          <div className="h-32 max-h-32 overflow-y-auto md:col-span-2">
             {detail.map((item, index) => (
               <div className="flex gap-2" key={index}>
                 <div className="flex flex-col gap-2">
@@ -283,6 +306,71 @@ export const NewOrder = ({
               <Plus />
             </button>
           </CustomTooltip>
+
+          {/* Datos de envío */}
+          <div className="flex flex-col gap-2 col-span-2">
+            <label className="font-bold">
+              Datos de envío <span className="text-red-500">*</span>
+            </label>
+            <div className="grid grid-cols-2 gap-4">
+              <Input
+                type="text"
+                placeholder="Nombre del destinatario"
+                value={dispatchData?.name || ""}
+                onChange={(e) =>
+                  setDispatchData({
+                    ...dispatchData,
+                    name: e.target.value,
+                  })
+                }
+              />
+              <Input
+                type="text"
+                placeholder="Teléfono del destinatario"
+                value={dispatchData?.phone || ""}
+                onChange={(e) =>
+                  setDispatchData({
+                    ...dispatchData,
+                    phone: e.target.value,
+                  })
+                }
+              />
+                <Input
+                  type="text"
+                  placeholder="Documento del destinatario"
+                  value={dispatchData?.document || ""}
+                  onChange={(e) =>
+                    setDispatchData({
+                      ...dispatchData,
+                      document: e.target.value,
+                    })
+                  }
+                />
+              <Input
+                type="text"
+                placeholder="Ciudad de envío"
+                value={dispatchData?.city || ""}
+                onChange={(e) =>
+                  setDispatchData({
+                    ...dispatchData,
+                    city: e.target.value,
+                  })
+                }
+              />
+                <Input
+                  type="text"
+                  placeholder="Dirección de envío"
+                  value={dispatchData?.address || ""}
+                  onChange={(e) =>
+                    setDispatchData({
+                      ...dispatchData,
+                      address: e.target.value,
+                    })
+                  }
+                  className="col-span-2"
+                />
+            </div>
+          </div>
           <textarea
             name="note"
             id="note"

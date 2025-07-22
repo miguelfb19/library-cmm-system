@@ -15,7 +15,7 @@ import { OrderDetails } from "./OrderDetails";
 import { OrderStatus } from "./OrderStatus";
 import { Input } from "../ui/input";
 import { useState } from "react";
-import { ReciveOrder } from "./ReciveOrder";
+import { ReceiveOrder } from "./ReceiveOrder";
 
 interface Props {
   orders: Order[];
@@ -180,7 +180,7 @@ export const OrderList = ({
                   {(userRole === "leader" || sessionUserId === order.userId) &&
                   order.state === "dispatched" ? (
                     <CustomTooltip text="Recibir Pedido" withSpan>
-                      <ReciveOrder order={order} bookList={books} />
+                      <ReceiveOrder order={order} bookList={books} />
                     </CustomTooltip>
                   ) : null}
                 </td>

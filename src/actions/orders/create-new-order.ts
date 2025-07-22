@@ -4,6 +4,7 @@ import prisma from "@/lib/prisma";
 import { createNewNotification } from "../notifications/create-new-notification";
 import { getUsersToNotify } from "../notifications/get-users-to-notify";
 import { revalidatePath } from "next/cache";
+import { DispatchData } from "@/interfaces/DispatchData";
 
 interface OrderData {
   origin: {
@@ -18,6 +19,7 @@ interface OrderData {
   }[];
   userId: string;
   note: string | null;
+  dispatchData: DispatchData;
 }
 
 export const createNewOrder = async (data: OrderData) => {
@@ -40,6 +42,15 @@ export const createNewOrder = async (data: OrderData) => {
           },
         },
         note: data.note,
+        dispatchData: {
+          create: {
+            name: data.dispatchData.name,
+            phone: data.dispatchData.phone,
+            address: data.dispatchData.address,
+            city: data.dispatchData.city,
+            document: data.dispatchData.document,
+          },
+        }
       },
     });
 

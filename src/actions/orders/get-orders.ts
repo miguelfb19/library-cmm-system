@@ -14,6 +14,7 @@ export const getOrders = async () => {
             city: true,
           },
         },
+        dispatchData: true,
       },
       orderBy: {
         limitDate: "asc",

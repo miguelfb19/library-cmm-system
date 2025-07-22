@@ -1,4 +1,5 @@
 import { OrderState } from "@/generated/prisma";
+import { DispatchData } from "./DispatchData";
 
 export interface Order {
   id: string;
@@ -12,6 +13,7 @@ export interface Order {
   state: OrderState;
   detail: OrderDetails[];
   note: string | null;
+  dispatchData?: DispatchData;
 }
 
 interface OrderDetails {

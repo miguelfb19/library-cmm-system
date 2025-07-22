@@ -9,14 +9,13 @@ import Loading from "@/app/dashboard/loading";
 import { capitalizeWords } from "@/utils/capitalize";
 import { getBookCategory, getBookName } from "./utils";
 import { Input } from "../ui/input";
-import { LoadingSpinner } from "../ui/LoadingSpinner";
 
 interface Props {
   order: Order;
   bookList: Book[];
 }
 
-export const ReciveOrder = ({ order, bookList }: Props) => {
+export const ReceiveOrder = ({ order, bookList }: Props) => {
   const [detail, setDetail] = useState<
     { bookId: string; quantity: number; id: string; orderId: string }[]
   >(
@@ -28,7 +27,7 @@ export const ReciveOrder = ({ order, bookList }: Props) => {
     }))
   );
   const [note, setNote] = useState<string | null>(order.note);
-  const [isOpen, setIsOpen] = useState(true);
+  const [isOpen, setIsOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
     const handleReciveOrder = async () => {

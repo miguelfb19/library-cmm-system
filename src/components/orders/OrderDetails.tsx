@@ -13,6 +13,9 @@ interface Props {
 }
 
 export const OrderDetails = ({ order, books }: Props) => {
+
+  const {name, phone, address, city, document} = order.dispatchData || {};
+
   return (
     <CustomDialog
       trigger={
@@ -38,6 +41,16 @@ export const OrderDetails = ({ order, books }: Props) => {
           </li>
         ))}
       </ul>
+      {order.dispatchData && (
+        <div className="mt-4">
+          <span className="font-bold text-primary">Datos de envío: </span>
+          <div>{name}</div>
+          <div>{phone}</div>
+          <div>{address}</div>
+          <div>{city}</div>
+          <div>{document}</div>
+        </div>
+      )}
       {order.note && (
         <div className="mt-4">
           <span className="font-bold text-primary">Notas: </span>
