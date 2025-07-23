@@ -42,6 +42,7 @@ export const EditOrder = ({ order, booksList }: Props) => {
   const [limitDate, setLimitDate] = useState<Date | undefined>(
     new Date(order.limitDate || "")
   );
+  const [note, setNote] = useState<string | null>(null); // Notas del pedido
 
   // Estados para controlar el diálogo y el estado de carga
   const [open, setOpen] = useState(false);
@@ -73,6 +74,7 @@ export const EditOrder = ({ order, booksList }: Props) => {
       ...order,
       detail: detail,
       limitDate: limitDate ? limitDate : null,
+      note,
     };
     const res = await editOrder(updatedOrder, "ToAdmin");
 
@@ -101,11 +103,7 @@ export const EditOrder = ({ order, booksList }: Props) => {
         <label htmlFor="limitDate" className="font-bold">
           Fecha Límite:
         </label>
-        <DatePicker
-          date={limitDate}
-          setDate={setLimitDate}
-          futureDatesOnly
-        />
+        <DatePicker date={limitDate} setDate={setLimitDate} futureDatesOnly />
       </div>
       <ul className="space-y-5 max-h-[27rem] overflow-y-auto">
         {order.detail.map((item, index) => (
@@ -143,6 +141,15 @@ export const EditOrder = ({ order, booksList }: Props) => {
           </li>
         ))}
       </ul>
+      <textarea
+        name="note"
+        id="note"
+        placeholder="Notas sobre el pedido"
+        maxLength={500}
+        className="w-full min-h-10 max-h-24 h-24 p-2 border border-gray-300 rounded"
+        value={note || undefined}
+        onChange={(e) => setNote(e.target.value)}
+      />
       <button
         className={`btn-blue md:!w-1/2 m-auto ${
           isLoading ? "pointer-events-none opacity-50" : ""

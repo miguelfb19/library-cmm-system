@@ -9,6 +9,10 @@ import Loading from "@/app/dashboard/loading";
 import { capitalizeWords } from "@/utils/capitalize";
 import { getBookCategory, getBookName } from "./utils";
 import { Input } from "../ui/input";
+import { submitAlert } from "@/utils/submitAlert";
+import { toast } from "sonner";
+import { receiveOrder } from "@/actions/orders/receive-order";
+import { addOrderToInventory } from "@/actions/inventory/add-order-to-inventory";
 
 interface Props {
   order: Order;
@@ -26,19 +30,56 @@ export const ReceiveOrder = ({ order, bookList }: Props) => {
       orderId: item.orderId,
     }))
   );
-  const [note, setNote] = useState<string | null>(order.note);
+  const [note, setNote] = useState<string | null>(null);
   const [isOpen, setIsOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-    const handleReciveOrder = async () => {
-        setIsLoading(true);
-        setIsOpen(false);
-    
-        // Aquí se puede agregar la lógica para recibir el pedido
-        // Por ejemplo, actualizar el estado del pedido en la base de datos
-    
-        setIsLoading(false);
-    };
+  const handleReciveOrder = async () => {
+    setIsLoading(true);
+    setIsOpen(false);
+
+    const result = await submitAlert({
+      title: "Aceptar Pedido",
+      text: "¿Estás seguro de que deseas aceptar este pedido?",
+      confirmButtonText: "Aceptar",
+      cancelButtonText: "Cancelar",
+      showCancelButton: true,
+      icon: "warning",
+    });
+
+    if (result.isDismissed || result.isDenied) {
+      setIsOpen(true);
+      setIsLoading(false);
+      return toast.error("Operación cancelada");
+    }
+
+    const { ok, message } = await receiveOrder({
+      ...order,
+      detail: detail,
+      note: note,
+    });
+
+    if (!ok) {
+      setIsOpen(true);
+      setIsLoading(false);
+      return toast.error(message);
+    }
+
+    const { message: inventoryMessage, ok: inventoryOk } =
+      await addOrderToInventory(order.origin.id, detail);
+
+    if (!inventoryOk) {
+      setIsOpen(true);
+      setIsLoading(false);
+      return toast.error(inventoryMessage);
+    }
+
+    toast.success(message);
+    toast.success(inventoryMessage);
+    setDetail([]);
+    setNote(null);
+    setIsLoading(false);
+  };
 
   return (
     <>
@@ -88,14 +129,14 @@ export const ReceiveOrder = ({ order, bookList }: Props) => {
           ))}
         </ul>
         <textarea
-            name="note"
-            id="note"
-            placeholder="Notas sobre el pedido"
-            maxLength={500}
-            className="w-full min-h-10 max-h-24 h-24 p-2 border border-gray-300 rounded"
-            value={note || undefined}
-            onChange={(e) => setNote(e.target.value)}
-          />
+          name="note"
+          id="note"
+          placeholder="Notas sobre el pedido"
+          maxLength={500}
+          className="w-full min-h-10 max-h-24 h-24 p-2 border border-gray-300 rounded"
+          value={note || undefined}
+          onChange={(e) => setNote(e.target.value)}
+        />
         <button
           className="btn-blue md:!w-1/2 m-auto"
           onClick={handleReciveOrder}

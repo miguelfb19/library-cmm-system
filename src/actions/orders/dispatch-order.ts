@@ -3,7 +3,7 @@
 import { Order } from "@/interfaces/Order";
 import prisma from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
-import { createNewOrder } from "./create-new-order";
+import { calculatePendingItems } from "./helpers";
 
 export const dispatchOrder = async (dispatchedOrder: Order) => {
   try {
@@ -19,84 +19,93 @@ export const dispatchOrder = async (dispatchedOrder: Order) => {
         include: {
           detail: true,
           origin: true,
+          dispatchData: true,
         },
       });
-
-      // Validar si la orden existe
-      if (!order) {
-        throw new Error("Ups, no se encontró la orden a despachar");
-      }
 
       //   Crear la notificacion de actualizacion de la orden
       await tx.notification.create({
         data: {
           userId: order.userId,
-          message: `Tu pedido ${order.id} ha sido despachado hacía la ciudad de ${order.origin.city.toUpperCase()}`,
+          message: `Tu pedido ${
+            order.id
+          } ha sido despachado hacía la ciudad de ${order.origin.city.toUpperCase()}`,
         },
       });
 
       // Obtener la diferencia entre las cantidades despachadas y las originales
-      const updatedDetail = order.detail.map((item) => {
-        const dispatchedItem = dispatchedOrder.detail.find(
-          (d) => d.id === item.id
-        );
-        return {
-          ...item,
-          quantity: item.quantity - (dispatchedItem?.quantity || 0),
-        };
-      });
+      const pendingItems = calculatePendingItems(
+        order.detail,
+        dispatchedOrder.detail
+      );
 
-      // Si hay algún item con cantidad mayor a 0, crea una orden nuevo con los items restantes
-      if (updatedDetail.some((item) => item.quantity > 0)) {
-        const newOrder = await createNewOrder({
-          userId: order.userId,
-          origin: {
-            id: order.origin.id,
-            city: order.origin.city,
-          },
-          detail: updatedDetail
-            .filter((item) => item.quantity > 0)
-            .map((item) => ({
-              bookId: item.bookId,
-              quantity: item.quantity,
-            })),
-
-          limitDate: order.limitDate,
-          isProduction: order.isProduction,
-          note: dispatchedOrder.note,
-        });
-        if (!newOrder.order || !newOrder.ok) {
-          throw new Error("Error al crear la nueva orden");
-        }
-
-        // Actualizar los detalles de la orden despachada
-        const updatedOrder = await tx.order.update({
-          where: { id: order.id },
+      // Crear nueva orden si hay items pendientes
+      let newOrder = null;
+      if (pendingItems.some((item) => item.quantity > 0)) {
+        newOrder = await tx.order.create({
           data: {
+            userId: order.userId,
+            originId: order.origin.id,
             detail: {
-              update: dispatchedOrder.detail.map((item) => ({
-                where: { id: item.id },
-                data: { quantity: item.quantity },
-              })),
+              create: pendingItems
+                .filter((item) => item.quantity > 0)
+                .map((item) => ({
+                  bookId: item.bookId,
+                  quantity: item.quantity,
+                })),
+            },
+
+            limitDate: order.limitDate,
+            isProduction: order.isProduction,
+            note: dispatchedOrder.note,
+            dispatchData: { 
+              create: {
+                name: dispatchedOrder.dispatchData!.name,
+                phone: dispatchedOrder.dispatchData!.phone,
+                address: dispatchedOrder.dispatchData!.address,
+                city: dispatchedOrder.dispatchData!.city,
+                document: dispatchedOrder.dispatchData!.document,
+              }
             },
           },
         });
-        if (!updatedOrder) {
-          throw new Error("Error al actualizar la orden despachada");
+        if (!newOrder) {
+          throw new Error("Error al crear la nueva orden");
         }
-
-        return { order };
       }
+
+      // Actualizar los detalles de la orden despachada
+      const updatedOrder = await tx.order.update({
+        where: { id: order.id },
+        data: {
+          detail: {
+            update: order.detail.map((originalItem) => {
+              const dispatchedItem = dispatchedOrder.detail.find(
+                (item) => item.bookId === originalItem.bookId
+              );
+              return {
+                where: { id: originalItem.id },
+                data: { quantity: dispatchedItem?.quantity || originalItem.quantity },
+              };
+            }),
+          },
+        },
+      });
+      if (!updatedOrder) {
+        throw new Error("Error al actualizar la orden despachada");
+      }
+
+      return { order, newOrder };
     });
 
     revalidatePath("/dashboard");
 
     return {
       ok: true,
-      message: prismaTransaction?.order
+      message: prismaTransaction?.newOrder
         ? "Se despachó la orden y se creó una nueva con los items restantes de la orden original"
         : "Orden despachada",
-      newOrder: prismaTransaction?.order,
+      newOrder: prismaTransaction?.newOrder,
     };
   } catch (error) {
     console.error(error);

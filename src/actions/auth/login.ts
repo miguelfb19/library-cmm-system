@@ -23,8 +23,6 @@ export async function authenticate(
       redirectTo: "/dashboard",
     });
   } catch (error) {
-    console.log({ error });
-
     if (error instanceof AuthError) {
       switch (error.type) {
         case "CredentialsSignin":

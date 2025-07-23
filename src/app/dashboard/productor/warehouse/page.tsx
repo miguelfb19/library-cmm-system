@@ -1,4 +1,4 @@
-import { getWarehouse } from "@/actions/store/get-warehouse";
+import { getWarehouse } from "@/actions/warehouse/get-warehouse";
 import { auth } from "@/auth.config";
 import { Title } from "@/components/ui/Title";
 import { WarehouseActions } from "@/components/warehouse/WarehouseActions";

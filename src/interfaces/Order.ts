@@ -16,7 +16,7 @@ export interface Order {
   dispatchData?: DispatchData;
 }
 
-interface OrderDetails {
+export interface OrderDetails {
   id: string;
   quantity: number;
   bookId: string;

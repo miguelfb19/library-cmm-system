@@ -30,14 +30,15 @@ export const editOrder = async (
           })), // Crea los nuevos detalles
         },
         limitDate: order.limitDate,
+        note: order.note
       },
     });
 
     // Obtiene la lista de usuarios que deben ser notificados
-    const { users } = await getUsersToNotify(to);
+    const { ids } = await getUsersToNotify(to);
 
     // Filtra al usuario que realizó la edición de la lista de notificaciones
-    const filteredUsers = users?.filter((user) => user !== order.userId);
+    const filteredUsers = ids?.filter((id) => id !== order.userId);
 
     // Crea una notificación para el usuario dueño de la orden y los usuarios filtrados
     await createNewNotification(

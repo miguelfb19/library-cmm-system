@@ -8,7 +8,6 @@ import { Input } from "../ui/input";
 import { Book } from "@/interfaces/Book";
 import { getBookCategory, getBookName } from "./utils";
 import { useState } from "react";
-import { LoadingSpinner } from "../ui/LoadingSpinner";
 import { dispatchOrder } from "@/actions/orders/dispatch-order";
 import { submitAlert } from "@/utils/submitAlert";
 import { toast } from "sonner";
@@ -31,7 +30,7 @@ export const DispatchOrder = ({ order, booksList }: Props) => {
       orderId: item.orderId,
     }))
   );
-  const [note, setNote] = useState<string | null>(order.note);
+  const [note, setNote] = useState<string | null>(null);
 
   // Estados para controlar el diálogo y el estado de carga
   const [open, setOpen] = useState(false);
@@ -56,13 +55,14 @@ export const DispatchOrder = ({ order, booksList }: Props) => {
       return;
     }
 
-    const {ok, message} = await dispatchOrder({
+    const { ok, message } = await dispatchOrder({
       ...order,
       detail,
       note,
+      dispatchData: order.dispatchData,
     });
 
-    if (!ok){
+    if (!ok) {
       toast.error(message);
       setIsLoading(false);
       setOpen(true);
@@ -121,14 +121,14 @@ export const DispatchOrder = ({ order, booksList }: Props) => {
           ))}
         </ul>
         <textarea
-            name="note"
-            id="note"
-            placeholder="Notas sobre el pedido"
-            maxLength={500}
-            className="w-full min-h-10 max-h-24 h-24 p-2 border border-gray-300 rounded"
-            value={note || undefined}
-            onChange={(e) => setNote(e.target.value)}
-          />
+          name="note"
+          id="note"
+          placeholder="Notas sobre el pedido"
+          maxLength={500}
+          className="w-full min-h-10 max-h-24 h-24 p-2 border border-gray-300 rounded"
+          value={note || undefined}
+          onChange={(e) => setNote(e.target.value)}
+        />
         <button
           className="btn-blue md:!w-1/2 m-auto"
           onClick={handleDispathOrder}

@@ -22,11 +22,11 @@ export const OrderStatus = ({ state }: Props) => {
           Despachado
         </div>
       );
-    case "completed":
+    case "approved":
       return (
-        <div className="flex justify-center items-center gap-2 text-blue-500">
-          <Status color="blue" />
-          Entregado
+        <div className="flex justify-center items-center gap-2 text-green-500">
+          <Status color="green" />
+          Completada
         </div>
       );
     case "cancelled":

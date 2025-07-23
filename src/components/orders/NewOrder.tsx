@@ -246,7 +246,7 @@ export const NewOrder = ({
           </div>
 
           {/* LISTADO DE LIBROS A PEDIR */}
-          <div className="h-32 max-h-32 overflow-y-auto md:col-span-2">
+          <div className="h-48 max-h-48 overflow-y-auto md:col-span-2">
             {detail.map((item, index) => (
               <div className="flex gap-2" key={index}>
                 <div className="flex flex-col gap-2">
