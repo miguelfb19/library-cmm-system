@@ -7,7 +7,7 @@ import { capitalizeWords } from "@/utils/capitalize";
 import { Input } from "../ui/input";
 import { Book } from "@/interfaces/Book";
 import { getBookCategory, getBookName } from "./utils";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { dispatchOrder } from "@/actions/orders/dispatch-order";
 import { submitAlert } from "@/utils/submitAlert";
 import { toast } from "sonner";
@@ -35,6 +35,18 @@ export const DispatchOrder = ({ order, booksList }: Props) => {
   // Estados para controlar el diálogo y el estado de carga
   const [open, setOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+
+  // Actualizar el estado detail cuando cambie la orden (para reflejar anexados)
+  useEffect(() => {
+    setDetail(
+      order.detail.map((item) => ({
+        bookId: item.bookId,
+        quantity: item.quantity,
+        id: item.id,
+        orderId: item.orderId,
+      }))
+    );
+  }, [order.detail]);
 
   const handleDispathOrder = async () => {
     setIsLoading(true);
@@ -88,7 +100,7 @@ export const DispatchOrder = ({ order, booksList }: Props) => {
         onOpenChange={setOpen}
       >
         <ul className="space-y-5 max-h-[27rem] overflow-y-auto">
-          {order.detail.map((item) => (
+          {detail.map((item) => (
             <li key={item.id} className="flex items-center gap-5">
               <div>
                 <span className="font-bold">
@@ -104,7 +116,8 @@ export const DispatchOrder = ({ order, booksList }: Props) => {
                 </span>
               </div>
               <Input
-                defaultValue={item.quantity}
+                min={0}
+                value={item.quantity === 0 ? "" : item.quantity}
                 type="number"
                 onChange={(e) =>
                   setDetail((prev) =>
@@ -116,6 +129,7 @@ export const DispatchOrder = ({ order, booksList }: Props) => {
                   )
                 }
                 className="w-24"
+                placeholder="Cantidad"
               />
             </li>
           ))}

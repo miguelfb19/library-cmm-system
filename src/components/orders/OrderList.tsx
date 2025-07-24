@@ -173,7 +173,10 @@ export const OrderList = ({
                   {/* Botón de despacho solo visible para administradores */}
                   {userRole === "admin" && order.state === "pending" ? (
                     <CustomTooltip text="Despachar Pedido" withSpan>
-                      <DispatchOrder order={order} booksList={books} />
+                      <DispatchOrder 
+                        order={order} 
+                        booksList={books} 
+                      />
                     </CustomTooltip>
                   ) : null}
 

@@ -96,7 +96,7 @@ export const ReceiveOrder = ({ order, bookList }: Props) => {
         size="xl"
       >
         <ul className="space-y-5 max-h-[27rem] overflow-y-auto">
-          {order.detail.map((item) => (
+          {detail.map((item) => (
             <li key={item.id} className="flex items-center gap-5">
               <div>
                 <span className="font-bold">
@@ -112,7 +112,8 @@ export const ReceiveOrder = ({ order, bookList }: Props) => {
                 </span>
               </div>
               <Input
-                defaultValue={item.quantity}
+                min={0}
+                value={item.quantity === 0 ? "" : item.quantity}
                 type="number"
                 onChange={(e) =>
                   setDetail((prev) =>
@@ -124,6 +125,7 @@ export const ReceiveOrder = ({ order, bookList }: Props) => {
                   )
                 }
                 className="w-24"
+                placeholder="Cantidad"
               />
             </li>
           ))}

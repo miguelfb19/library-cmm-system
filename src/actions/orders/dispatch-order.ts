@@ -99,6 +99,8 @@ export const dispatchOrder = async (dispatchedOrder: Order) => {
     });
 
     revalidatePath("/dashboard");
+    revalidatePath("/dashboard/leader/orders");
+    revalidatePath("/dashboard/admin/orders");
 
     return {
       ok: true,
