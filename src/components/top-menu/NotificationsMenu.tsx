@@ -15,6 +15,8 @@ import { toast } from "sonner";
 import { markAsReadAll } from "@/actions/notifications/mark-as-read-all";
 import { CustomTooltip } from "../ui/CustomTooltip";
 import { deleteNotification } from "@/actions/notifications/delete-notification";
+import { deleteNotifications } from "@/actions/notifications/delete-notifications";
+import { submitAlert } from "@/utils/submitAlert";
 
 interface Props {
   notifications: Notification[];
@@ -28,7 +30,11 @@ export const NotificationsMenu = ({ notifications, userSessionId }: Props) => {
     (notification) => !notification.read
   );
 
-  const clickOnNotification = async (id: string, userId: string, to: string) => {
+  const clickOnNotification = async (
+    id: string,
+    userId: string,
+    to: string
+  ) => {
     router.push(
       to === "admin"
         ? "/dashboard/leader/orders"
@@ -53,6 +59,25 @@ export const NotificationsMenu = ({ notifications, userSessionId }: Props) => {
 
   const onDeleteNotification = async (id: string) => {
     const res = await deleteNotification(id);
+    if (!res.ok) {
+      toast.error(res.message);
+    }
+  };
+
+  const onDeleteNotifications = async (userId: string) => {
+    const result = await submitAlert({
+      title: "Eliminar todas las notificaciones",
+      text: "¿Estás seguro de que deseas eliminar todas las notificaciones?",
+      confirmButtonText: "Eliminar",
+      cancelButtonText: "Cancelar",
+      showCancelButton: true,
+      icon: "warning",
+    });
+
+    if (result.isDenied || result.isDismissed)
+      return toast.info("Operación cancelada");
+
+    const res = await deleteNotifications(userId);
     if (!res.ok) {
       toast.error(res.message);
     }
@@ -129,6 +154,15 @@ export const NotificationsMenu = ({ notifications, userSessionId }: Props) => {
               </div>
             ))}
           </div>
+        )}
+        <MenubarSeparator />
+        {notifications.length > 1 && (
+          <button
+            className="text-red-500 hover:text-red-700 text-xs hover:underline cursor-pointer text-center w-full"
+            onClick={() => onDeleteNotifications(userSessionId)}
+          >
+            Eliminar todas las notificaciones
+          </button>
         )}
       </MenubarContent>
     </MenubarMenu>

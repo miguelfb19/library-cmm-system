@@ -42,7 +42,7 @@ export const EditOrder = ({ order, booksList }: Props) => {
   const [limitDate, setLimitDate] = useState<Date | undefined>(
     new Date(order.limitDate || "")
   );
-  const [note, setNote] = useState<string | null>(null); // Notas del pedido
+  const [note, setNote] = useState<string | null>(order.note); // Notas del pedido
 
   // Estados para controlar el diálogo y el estado de carga
   const [open, setOpen] = useState(false);
@@ -103,10 +103,10 @@ export const EditOrder = ({ order, booksList }: Props) => {
         <label htmlFor="limitDate" className="font-bold">
           Fecha Límite:
         </label>
-        <DatePicker date={limitDate} setDate={setLimitDate} futureDatesOnly />
+        <DatePicker disabled={isLoading} date={limitDate} setDate={setLimitDate} futureDatesOnly />
       </div>
       <ul className="space-y-5 max-h-[27rem] overflow-y-auto">
-        {order.detail.map((item, index) => (
+        {detail.map((item, index) => (
           <li key={item.id} className="flex items-center gap-5">
             <div className="flex flex-col gap-2 w-full">
               <label htmlFor={`book-${index}`} className="font-bold">
@@ -118,6 +118,7 @@ export const EditOrder = ({ order, booksList }: Props) => {
                 className="custom-select w-full"
                 value={detail[index].bookId}
                 onChange={(e) => handleBookChange(index, e.target.value)}
+                disabled={isLoading}
               >
                 <option value="">Seleccione un libro</option>
                 {booksList.map((book) => (
@@ -132,11 +133,14 @@ export const EditOrder = ({ order, booksList }: Props) => {
               type="number"
               id={`quantity-${index}`}
               name={`quantity-${index}`}
-              value={detail[index].quantity}
+              value={detail[index].quantity || ""}
               onChange={(e) =>
                 handleQuantityChange(index, Number(e.target.value))
               }
               className="flex-2/12 self-end"
+              disabled={isLoading}
+              placeholder="Cantidad"
+              min={1}
             />
           </li>
         ))}
@@ -145,6 +149,7 @@ export const EditOrder = ({ order, booksList }: Props) => {
         name="note"
         id="note"
         placeholder="Notas sobre el pedido"
+        disabled={isLoading}
         maxLength={500}
         className="w-full min-h-10 max-h-24 h-24 p-2 border border-gray-300 rounded"
         value={note || undefined}

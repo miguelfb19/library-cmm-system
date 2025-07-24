@@ -22,6 +22,7 @@ export const receiveOrder = async (orderToReceive: Order) => {
         where: { id: orderToReceive.id },
         data: {
           state: "approved",
+          updatedAt: new Date(),
         },
         include: {
           detail: true,

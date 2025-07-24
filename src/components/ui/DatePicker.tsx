@@ -9,6 +9,7 @@ interface Props {
   setDate: (date: Date | undefined) => void;
   triggerText?: string;
   futureDatesOnly?: boolean; // Optional prop to restrict to future dates only
+  disabled?: boolean; // Optional prop to disable the date picker
 }
 
 export const DatePicker = ({
@@ -16,6 +17,7 @@ export const DatePicker = ({
   setDate,
   triggerText = "Seleccione una fecha",
   futureDatesOnly = false,
+  disabled = false,
 }: Props) => {
   const [open, setOpen] = useState(false);
   return (
@@ -24,6 +26,7 @@ export const DatePicker = ({
         <button
           id="date"
           className="btn-blue !w-auto flex justify-center gap-2"
+          disabled={disabled}
         >
           {date ? date.toLocaleDateString() : triggerText}
           <CalendarIcon />
@@ -31,6 +34,7 @@ export const DatePicker = ({
       </PopoverTrigger>
       <PopoverContent className="w-auto overflow-hidden p-0" align="start">
         <Calendar
+          disabled={disabled}
           mode="single"
           selected={date}
           captionLayout="dropdown"

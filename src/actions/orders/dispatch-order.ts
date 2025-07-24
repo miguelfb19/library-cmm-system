@@ -14,6 +14,7 @@ export const dispatchOrder = async (dispatchedOrder: Order) => {
         data: {
           state: "dispatched",
           limitDate: null,
+          updatedAt: new Date(),
           note: dispatchedOrder.note,
         },
         include: {
@@ -57,7 +58,6 @@ export const dispatchOrder = async (dispatchedOrder: Order) => {
 
             limitDate: order.limitDate,
             isProduction: order.isProduction,
-            note: dispatchedOrder.note,
             dispatchData: { 
               create: {
                 name: dispatchedOrder.dispatchData!.name,

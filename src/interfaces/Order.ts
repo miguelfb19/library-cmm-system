@@ -13,7 +13,7 @@ export interface Order {
   state: OrderState;
   detail: OrderDetails[];
   note: string | null;
-  dispatchData?: DispatchData;
+  dispatchData?: DispatchData | null;
 }
 
 export interface OrderDetails {

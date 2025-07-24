@@ -19,16 +19,32 @@ export const getOrdersByUser = async (userId: string) => {
         },
         dispatchData: true,
       },
-      orderBy: {
-        limitDate: "asc",
-      },
+    });
+
+    // Ordenar las órdenes con prioridad por fecha límite y luego por estado
+    const sortedOrders = orders.sort((a, b) => {
+      // Primero ordenar por fecha límite (más cercana primero)
+      // Si no hay fecha límite, se considera menos prioritaria
+      const dateA = a.limitDate ? new Date(a.limitDate).getTime() : Infinity;
+      const dateB = b.limitDate ? new Date(b.limitDate).getTime() : Infinity;
+      
+      if (dateA !== dateB) {
+        return dateA - dateB;
+      }
+      
+      // Si las fechas límite son iguales, ordenar por estado
+      const stateOrder = { pending: 1, dispatched: 2, approved: 3 };
+      const stateA = stateOrder[a.state as keyof typeof stateOrder] || 4;
+      const stateB = stateOrder[b.state as keyof typeof stateOrder] || 4;
+      
+      return stateA - stateB;
     });
 
     return {
       ok: true,
       message: "Pedidos obtenidos correctamente",
       status: 200,
-      orders,
+      orders: sortedOrders,
     };
   } catch (error) {
     console.error(error);
