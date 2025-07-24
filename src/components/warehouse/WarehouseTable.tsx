@@ -4,7 +4,9 @@
 import { Warehouse } from "@/interfaces/Warehouse";
 import { capitalizeWords } from "@/utils/capitalize";
 import { Input } from "../ui/input";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { OrderDetails } from "@/interfaces/Order";
+import { toast } from "sonner";
 
 /**
  * Interface que define las propiedades del componente
@@ -12,12 +14,15 @@ import { useState } from "react";
  */
 interface Props {
   warehouse: Warehouse;
+  ordersDetails:
+    | (OrderDetails & { order: { isProduction: boolean } })[]
+    | undefined;
 }
 
-export const WarehouseTable = ({ warehouse }: Props) => {
+export const WarehouseTable = ({ warehouse, ordersDetails }: Props) => {
   // Estados para los términos de búsqueda
-  const [searchTerm, setSearchTerm] = useState("");     // Búsqueda por nombre
-  const [searchTerm2, setSearchTerm2] = useState("");   // Búsqueda por categoría
+  const [searchTerm, setSearchTerm] = useState(""); // Búsqueda por nombre
+  const [searchTerm2, setSearchTerm2] = useState(""); // Búsqueda por categoría
 
   /**
    * Filtra el inventario por nombre de libro
@@ -40,6 +45,31 @@ export const WarehouseTable = ({ warehouse }: Props) => {
       .replaceAll("_", " ")
       .includes(searchTerm2.toLowerCase())
   );
+
+  // Mostrar toast solo una vez cuando no hay orderDetails
+  useEffect(() => {
+    if (!ordersDetails || ordersDetails.length === 0) {
+      toast.info("No se encontraron detalles o cantidades de pedidos.");
+    }
+  }, [ordersDetails]);
+
+  /**
+   * Calcula la cantidad total de producción para un libro específico
+   * sumando todas las cantidades de orderDetails que coincidan con el bookId
+   */
+  const getProductionQuantity = (
+    bookId: string,
+    isProduction: boolean
+  ): number => {
+    if (!ordersDetails || ordersDetails.length === 0) return 0;
+
+    return ordersDetails
+      .filter(
+        (detail) =>
+          detail.bookId === bookId && detail.order.isProduction === isProduction
+      )
+      .reduce((total, detail) => total + detail.quantity, 0);
+  };
 
   return (
     <>
@@ -76,23 +106,35 @@ export const WarehouseTable = ({ warehouse }: Props) => {
             </tr>
           </thead>
           <tbody>
-            {filteredInventoryByCategory.map((item) => (
-              <tr
-                key={item.id}
-                className="text-center border-b hover:bg-secondary h-7"
-              >
-                <td className="text-start w-60 md:w-80">
-                  {capitalizeWords(item.book.name.replaceAll("_", " "))}
-                </td>
-                <td className="text-center">
-                  {capitalizeWords(item.book.category.replaceAll("_", " "))}
-                </td>
-                <td>{item.stock}</td>
-                <td className="text-green-500">100</td>
-                <td className="text-red-500">50</td>
-                <td className="text-primary">{item.stock + 100 - 50}</td>
-              </tr>
-            ))}
+            {filteredInventoryByCategory.map((item) => {
+              const finalInventory =
+                item.stock +
+                getProductionQuantity(item.book.id, true) -
+                getProductionQuantity(item.book.id, false);
+              return (
+                <tr
+                  key={item.id}
+                  className="text-center border-b hover:bg-secondary h-7"
+                >
+                  <td className="text-start w-60 md:w-80">
+                    {capitalizeWords(item.book.name.replaceAll("_", " "))}
+                  </td>
+                  <td className="text-center">
+                    {capitalizeWords(item.book.category.replaceAll("_", " "))}
+                  </td>
+                  <td>{item.stock}</td>
+                  <td className="text-purple-500">
+                    {getProductionQuantity(item.book.id, true)}
+                  </td>
+                  <td className="text-yellow-500">
+                    {getProductionQuantity(item.book.id, false)}
+                  </td>
+                  <td className={`${finalInventory < 0 ? "text-red-500" : "text-green-500"} font-bold`}>
+                    {finalInventory}
+                  </td>
+                </tr>
+              );
+            })}
           </tbody>
         </table>
       </div>

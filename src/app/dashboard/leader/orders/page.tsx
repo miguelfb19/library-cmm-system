@@ -9,7 +9,7 @@ import { getSedes } from "@/actions/inventory/get-sedes";
 import { getAllBooks } from "@/actions/product/get-all-books";
 import { getUsers } from "@/actions/users/get-users";
 
-export default async function ProductionOrdersPage() {
+export default async function OrdersPage() {
   const session = await auth();
 
   if (!session || !session.user) redirect("/auth/login");

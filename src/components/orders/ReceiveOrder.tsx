@@ -13,6 +13,7 @@ import { submitAlert } from "@/utils/submitAlert";
 import { toast } from "sonner";
 import { receiveOrder } from "@/actions/orders/receive-order";
 import { addOrderToInventory } from "@/actions/inventory/add-order-to-inventory";
+import { substractOrderFromWarehouse } from "@/actions/warehouse/substract-order-from-warehouse";
 
 interface Props {
   order: Order;
@@ -65,15 +66,27 @@ export const ReceiveOrder = ({ order, bookList }: Props) => {
       return toast.error(message);
     }
 
+    // Actualizar el inventario de la sede y restar de la bodega
     const { message: inventoryMessage, ok: inventoryOk } =
       await addOrderToInventory(order.origin.id, detail);
 
+    // Restar de la bodega los libros recibidos
+    const { message: warehouseMessage, ok: warehouseOk } =
+      await substractOrderFromWarehouse(detail);
+
+    // Mostrar mensajes de error si alguno falla en la actualizacion de la bodega
+    if (!warehouseOk) {
+      console.error(warehouseMessage);
+    }
+
+    // Si la actualización del inventario de la sede falla, mostrar mensaje de error
     if (!inventoryOk) {
       setIsOpen(true);
       setIsLoading(false);
       return toast.error(inventoryMessage);
     }
 
+    // Si todo sale bien, mostrar mensajes de éxito
     toast.success(message);
     toast.success(inventoryMessage);
     setDetail([]);
