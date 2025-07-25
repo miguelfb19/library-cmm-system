@@ -30,7 +30,7 @@ export const editOrder = async (
           })), // Crea los nuevos detalles
         },
         limitDate: order.limitDate,
-        note: order.note
+        note: order.note,
       },
     });
 
@@ -45,9 +45,12 @@ export const editOrder = async (
       // Crear la notidicación para los admin y los usuarios relacionados al pedido
       // Filtramos en los admin en caso de que haya sido quien edito el pedido
       [order.userId, ...(filteredUsers ?? [])],
-      `El pedido con ID ${
-        order.id
-      } para la ciudad de ${order.origin.city.toUpperCase()} ha sido editado.`
+      order.isProduction
+        ? `El pedido con ID ${order.id} para producción ha sido editado`
+        : `El pedido con ID ${
+            order.id
+          } para la ciudad de ${order.origin.city.toUpperCase()} ha sido editado.`,
+      order.isProduction ? "productor" : "admin"
     );
 
     // Revalida la ruta del dashboard para actualizar los datos en el cliente

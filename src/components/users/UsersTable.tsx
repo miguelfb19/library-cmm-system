@@ -72,6 +72,8 @@ export function UsersTable<TData extends { id: string }, TValue>({
       <div className="flex max-md:flex-col-reverse gap-5 justify-between items-center mb-4">
         {/* Input de búsqueda por nombre */}
         <Input
+          id="search-users-name"
+          name="searchUsersName"
           placeholder="Buscar por nombre..."
           value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
           onChange={(event) =>
@@ -124,6 +126,7 @@ export function UsersTable<TData extends { id: string }, TValue>({
                       {cell.column.id === "role" ? (
                         <TableCell>
                           <select
+                            id={`role-${row.original.id}`}
                             name="role"
                             className={`border ${
                               session?.user.role === "admin"

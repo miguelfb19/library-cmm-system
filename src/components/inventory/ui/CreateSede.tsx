@@ -111,11 +111,15 @@ export const CreateSede = () => {
       <form className="flex flex-col gap-4">
         <div className="flex max-md:flex-col gap-2">
           <Input
+            id="sede-city"
+            name="sedeCity"
             placeholder="Ciudad de la sede"
             value={sedeCity}
             onChange={(e) => setsedeCity(e.target.value)}
           />
           <Input
+            id="sede-leader"
+            name="sedeLeader"
             placeholder="Nombre del líder o responsable"
             value={sedeLeader}
             onChange={(e) => setsedeLeader(e.target.value)}

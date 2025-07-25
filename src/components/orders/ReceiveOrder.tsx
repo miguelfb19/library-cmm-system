@@ -126,6 +126,8 @@ export const ReceiveOrder = ({ order, bookList }: Props) => {
                 </span>
               </div>
               <Input
+                id={`receive-quantity-${item.id}`}
+                name={`receiveQuantity-${item.id}`}
                 min={0}
                 value={item.quantity === 0 ? "" : item.quantity}
                 type="number"

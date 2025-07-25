@@ -61,6 +61,7 @@ export const CreateUserDialog = () => {
       >
         <div className="flex flex-col gap-1">
           <Input
+            id="user-name"
             type="text"
             placeholder="Nombre del usuario"
             {...register("name", { required: "Este campo es obligatorio" })}
@@ -71,6 +72,7 @@ export const CreateUserDialog = () => {
         </div>
         <div className="flex flex-col gap-1">
           <Input
+            id="user-email"
             type="email"
             placeholder="Correo electrónico"
             {...register("email", { required: "Este campo es obligatorio" })}
@@ -81,6 +83,7 @@ export const CreateUserDialog = () => {
         </div>
         <div className="flex flex-col gap-1">
           <Input
+            id="user-phone"
             type="tel"
             placeholder="Teléfono"
             {...register("phone", {
@@ -101,6 +104,7 @@ export const CreateUserDialog = () => {
         </div>
         <div className="flex flex-col gap-1">
           <Input
+            id="user-city"
             type="text"
             placeholder="Ciudad"
             {...register("city", { required: "Este campo es obligatorio" })}

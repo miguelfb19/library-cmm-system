@@ -120,6 +120,8 @@ export const UpdateStockLevelsBySede = ({ sede }: Props) => {
                   <div className="flex items-center gap-2">
                     <p className="font-bold text-yellow-600">Stock bajo:</p>
                     <input
+                      id={`low-stock-${inventory[0].id}`}
+                      name={`lowStock-${inventory[0].id}`}
                       className="w-20 pl-5"
                       type="number"
                       defaultValue={inventory[0].lowStock || 0}
@@ -131,6 +133,8 @@ export const UpdateStockLevelsBySede = ({ sede }: Props) => {
                   <div className="flex items-center gap-2">
                     <p className="font-bold text-red-600">Stock crítico:</p>
                     <input
+                      id={`critical-stock-${inventory[0].id}`}
+                      name={`criticalStock-${inventory[0].id}`}
                       className="w-20 pl-5"
                       type="number"
                       defaultValue={inventory[0].criticalStock || 0}

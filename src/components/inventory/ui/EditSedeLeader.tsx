@@ -70,6 +70,8 @@ export const EditSedeLeader = ({ sedeId }: Props) => {
       onOpenChange={setIsOpen}
     >
       <Input
+        id={`edit-sede-leader-${sedeId}`}
+        name={`editSedeLeader-${sedeId}`}
         type="text"
         placeholder="Nuevo nombre"
         value={newName}

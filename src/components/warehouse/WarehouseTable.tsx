@@ -77,6 +77,8 @@ export const WarehouseTable = ({ warehouse, ordersDetails }: Props) => {
       <div className="flex max-md:flex-col-reverse items-center justify-between gap-2">
         {/* Input para búsqueda por nombre de libro */}
         <Input
+          id="search-book-name"
+          name="searchBookName"
           type="text"
           placeholder="Buscar libro..."
           onChange={(e) => setSearchTerm(e.target.value)}
@@ -84,6 +86,8 @@ export const WarehouseTable = ({ warehouse, ordersDetails }: Props) => {
         />
         {/* Input para búsqueda por categoría */}
         <Input
+          id="search-category"
+          name="searchCategory"
           type="text"
           placeholder="Buscar categoría..."
           onChange={(e) => setSearchTerm2(e.target.value)}
@@ -111,8 +115,6 @@ export const WarehouseTable = ({ warehouse, ordersDetails }: Props) => {
                 item.stock +
                 getProductionQuantity(item.book.id, { isProduction: true }) -
                 getProductionQuantity(item.book.id, { isProduction: false });
-
-                console.log(getProductionQuantity(item.book.id, { isProduction: true }))
               return (
                 <tr
                   key={item.id}

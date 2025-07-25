@@ -30,7 +30,10 @@ export const dispatchOrder = async (dispatchedOrder: Order) => {
           userId: order.userId,
           message: order.isProduction
             ? `Tu pedido ${order.id} de producción ha sido despachado`
-            : `Tu pedido ${order.id} ha sido despachado hacía la ciudad de ${order.origin.city.toUpperCase()}`,
+            : `Tu pedido ${
+                order.id
+              } ha sido despachado hacía la ciudad de ${order.origin.city.toUpperCase()}`,
+          to: dispatchedOrder.isProduction ? "productor" : "admin",
         },
       });
 
@@ -58,14 +61,14 @@ export const dispatchOrder = async (dispatchedOrder: Order) => {
 
             limitDate: order.limitDate,
             isProduction: order.isProduction,
-            dispatchData: { 
+            dispatchData: {
               create: {
                 name: dispatchedOrder.dispatchData!.name,
                 phone: dispatchedOrder.dispatchData!.phone,
                 address: dispatchedOrder.dispatchData!.address,
                 city: dispatchedOrder.dispatchData!.city,
                 document: dispatchedOrder.dispatchData!.document,
-              }
+              },
             },
           },
         });
@@ -85,7 +88,9 @@ export const dispatchOrder = async (dispatchedOrder: Order) => {
               );
               return {
                 where: { id: originalItem.id },
-                data: { quantity: dispatchedItem?.quantity || originalItem.quantity },
+                data: {
+                  quantity: dispatchedItem?.quantity || originalItem.quantity,
+                },
               };
             }),
           },

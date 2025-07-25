@@ -47,6 +47,8 @@ export const AllBooks = ({ books }: Props) => {
 
       {/* Campo de búsqueda */}
       <Input
+        id="search-books"
+        name="searchBooks"
         className="md:w-1/2"
         placeholder="Buscar libro..."
         value={searchTerm}

@@ -25,6 +25,7 @@ export const DatePicker = ({
       <PopoverTrigger asChild>
         <button
           id="date"
+          name="date"
           className="btn-blue !w-auto flex justify-center gap-2"
           disabled={disabled}
         >

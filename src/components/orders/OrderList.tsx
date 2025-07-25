@@ -77,12 +77,16 @@ export const OrderList = ({
       />
       <div className="mb-5 grid grid-cols-1 md:grid-cols-2 gap-4">
         <Input
+          id="search-order-id"
+          name="searchOrderId"
           placeholder="Buscar por id..."
           type="text"
           value={idSearch}
           onChange={(e) => setIdSearch(e.target.value)}
         />
         <Input
+          id="search-user"
+          name="searchUser"
           placeholder="Buscar por usuario..."
           type="text"
           value={userSearch}

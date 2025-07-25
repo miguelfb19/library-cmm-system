@@ -86,6 +86,8 @@ export const NewProductoForm = () => {
         <div className="flex flex-col gap-2">
           <span>Nombre:</span>
           <Input
+            id="product-name"
+            name="productName"
             placeholder="Nombre del producto"
             value={product.name}
             onChange={(e) => setProduct({ ...product, name: e.target.value })}
@@ -95,6 +97,8 @@ export const NewProductoForm = () => {
         <div className="flex flex-col gap-2">
           <span>Categoría:</span>
           <select
+            id="product-category"
+            name="productCategory"
             className="custom-select"
             value={product.category}
             onChange={(e) =>

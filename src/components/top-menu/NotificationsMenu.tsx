@@ -34,10 +34,9 @@ export const NotificationsMenu = ({ notifications, userSessionId }: Props) => {
     id: string,
     userId: string,
     to: string,
-    isProduction: boolean
   ) => {
     router.push(
-      to === "admin" || !isProduction
+      to === "admin"
         ? "/dashboard/leader/orders"
         : "/dashboard/productor/orders"
     );
@@ -134,10 +133,6 @@ export const NotificationsMenu = ({ notifications, userSessionId }: Props) => {
                         notification.id,
                         notification.userId,
                         notification.to as string,
-                        notification.message.includes("producción") ||
-                          notification.message
-                            .toLocaleLowerCase()
-                            .includes("bodega")
                       )
                     }
                     className="text-left cursor-pointer flex items-center gap-2"

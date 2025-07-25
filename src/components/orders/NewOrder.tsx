@@ -217,6 +217,7 @@ export const NewOrder = ({
               </label>
               <select
                 id="origin"
+                name="origin"
                 className="custom-select"
                 value={origin}
                 onChange={(e) => setOrigin(e.target.value)}
@@ -234,7 +235,7 @@ export const NewOrder = ({
           )}
           {/* Selector de fecha límite */}
           <div className="flex flex-col gap-2">
-            <label className="font-bold">
+            <label className="font-bold" htmlFor="date">
               ¿Cual es la fecha límite de recepción?
             </label>
             <DatePicker
@@ -276,6 +277,7 @@ export const NewOrder = ({
                   <Input
                     type="number"
                     id={`quantity-${index}`}
+                    name={`quantity-${index}`}
                     placeholder="Cantidad"
                     value={item.quantity || ""}
                     onChange={(e) =>
@@ -309,11 +311,13 @@ export const NewOrder = ({
 
           {/* Datos de envío */}
           <div className="flex flex-col gap-2 col-span-2">
-            <label className="font-bold">
+            <label className="font-bold" htmlFor="dispatchData">
               Datos de envío <span className="text-red-500">*</span>
             </label>
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-2 gap-4" id="dispatchData">
               <Input
+                id="recipient-name"
+                name="recipientName"
                 type="text"
                 placeholder="Nombre del destinatario"
                 value={dispatchData?.name || ""}
@@ -325,6 +329,8 @@ export const NewOrder = ({
                 }
               />
               <Input
+                id="recipient-phone"
+                name="recipientPhone"
                 type="text"
                 placeholder="Teléfono del destinatario"
                 value={dispatchData?.phone || ""}
@@ -336,6 +342,8 @@ export const NewOrder = ({
                 }
               />
                 <Input
+                  id="recipient-document"
+                  name="recipientDocument"
                   type="text"
                   placeholder="Documento del destinatario"
                   value={dispatchData?.document || ""}
@@ -347,6 +355,8 @@ export const NewOrder = ({
                   }
                 />
               <Input
+                id="recipient-city"
+                name="recipientCity"
                 type="text"
                 placeholder="Ciudad de envío"
                 value={dispatchData?.city || ""}
@@ -358,6 +368,8 @@ export const NewOrder = ({
                 }
               />
                 <Input
+                  id="recipient-address"
+                  name="recipientAddress"
                   type="text"
                   placeholder="Dirección de envío"
                   value={dispatchData?.address || ""}

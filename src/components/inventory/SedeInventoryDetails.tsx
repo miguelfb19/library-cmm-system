@@ -135,6 +135,8 @@ export const SedeInventoryDetails = ({ inventory, sede }: Props) => {
                         <div className="flex items-center gap-2">
                           <span>Stock:</span>
                           <input
+                            id={`stock-${book.id}`}
+                            name={`stock-${book.id}`}
                             // defaultValue={stock}
                             className="border-none rounded p-1 w-16"
                             type="number"

@@ -68,6 +68,8 @@ export const PopoverEditBookName = ({ book }: Props) => {
           </span>
         </h3>
         <Input
+          id={`edit-book-name-${book.id}`}
+          name={`editBookName-${book.id}`}
           type="text"
           placeholder="Nuevo nombre"
           value={newName}
