@@ -2,9 +2,12 @@
 
 import prisma from "@/lib/prisma";
 
-export const getOrders = async () => {
+export const getOrders = async ({isProduction}: {isProduction: boolean}) => {
   try {
     const orders = await prisma.order.findMany({
+      where: {
+        isProduction,
+      },
       include: {
         detail: true,
         origin: {

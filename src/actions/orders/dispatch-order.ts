@@ -28,9 +28,9 @@ export const dispatchOrder = async (dispatchedOrder: Order) => {
       await tx.notification.create({
         data: {
           userId: order.userId,
-          message: `Tu pedido ${
-            order.id
-          } ha sido despachado hacía la ciudad de ${order.origin.city.toUpperCase()}`,
+          message: order.isProduction
+            ? `Tu pedido ${order.id} de producción ha sido despachado`
+            : `Tu pedido ${order.id} ha sido despachado hacía la ciudad de ${order.origin.city.toUpperCase()}`,
         },
       });
 

@@ -2,14 +2,24 @@
 
 import { Warehouse } from "@/interfaces/Warehouse";
 import Link from "next/link";
-import { PackagePlus, Settings } from "lucide-react";
+import { Settings } from "lucide-react";
 import { CustomTooltip } from "../ui/CustomTooltip";
+import { NewOrder } from "../orders/NewOrder";
+import { Book } from "@/interfaces/Book";
 
 interface Props {
   warehouse: Warehouse;
+  books: Book[];
+  sedes: { id: string; city: string }[];
+  sessionUserId: string;
 }
 
-export const WarehouseActions = ({ warehouse }: Props) => {
+export const WarehouseActions = ({
+  warehouse,
+  books,
+  sedes,
+  sessionUserId,
+}: Props) => {
   return (
     <div className="flex items-center gap-3">
       <CustomTooltip text="Modificar inventario de bodega">
@@ -20,14 +30,12 @@ export const WarehouseActions = ({ warehouse }: Props) => {
           <Settings />
         </Link>
       </CustomTooltip>
-      <CustomTooltip text="Realizar pedido a producción">
-        <Link
-          href={`/dashboard/leader/inventory/sede/${warehouse.id}`}
-          className="btn-blue !w-auto text-center"
-        >
-          <PackagePlus />
-        </Link>
-      </CustomTooltip>
+      <NewOrder
+        sedes={sedes || []}
+        books={books || []}
+        userId={sessionUserId}
+        isProduction={true}
+      />
     </div>
   );
 };

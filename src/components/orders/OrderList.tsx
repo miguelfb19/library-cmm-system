@@ -21,7 +21,7 @@ interface Props {
   orders: Order[];
   books: Book[];
   users: User[];
-  userRole: "admin" | "leader" | "user";
+  userRole: "admin" | "leader" | "productor";
   sessionUserId: string;
 }
 
@@ -170,18 +170,31 @@ export const OrderList = ({
                     </CustomTooltip>
                   ) : null}
 
-                  {/* Botón de despacho solo visible para administradores */}
-                  {userRole === "admin" && order.state === "pending" ? (
+                  {/* Botón de despacho solo visible para administradores si isProduction es false y si no solo para Productores */}
+                  {order.isProduction ? (
+                    userRole === "productor" && order.state === "pending" ? (
+                      <CustomTooltip text="Despachar Pedido" withSpan>
+                        <DispatchOrder order={order} booksList={books} />
+                      </CustomTooltip>
+                    ) : null
+                  ) : userRole === "admin" && order.state === "pending" ? (
                     <CustomTooltip text="Despachar Pedido" withSpan>
-                      <DispatchOrder 
-                        order={order} 
-                        booksList={books} 
-                      />
+                      <DispatchOrder order={order} booksList={books} />
                     </CustomTooltip>
                   ) : null}
 
-                  {(userRole === "leader" || sessionUserId === order.userId) &&
-                  order.state === "dispatched" ? (
+                  {/* Botón de recibir orden solo visible para administradores si isProduction es true y si no solo para lideres */}
+
+                  {order.isProduction ? (
+                    (userRole === "admin" || sessionUserId === order.userId) &&
+                    order.state === "dispatched" ? (
+                      <CustomTooltip text="Recibir Pedido" withSpan>
+                        <ReceiveOrder order={order} bookList={books} />
+                      </CustomTooltip>
+                    ) : null
+                  ) : (userRole === "admin" ||
+                      sessionUserId === order.userId) &&
+                    order.state === "dispatched" ? (
                     <CustomTooltip text="Recibir Pedido" withSpan>
                       <ReceiveOrder order={order} bookList={books} />
                     </CustomTooltip>

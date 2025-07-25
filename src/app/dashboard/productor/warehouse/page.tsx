@@ -1,3 +1,5 @@
+import { getSedes } from "@/actions/inventory/get-sedes";
+import { getAllBooks } from "@/actions/product/get-all-books";
 import { getOrdersDetails } from "@/actions/warehouse/get-orders-details";
 import { getWarehouse } from "@/actions/warehouse/get-warehouse";
 import { auth } from "@/auth.config";
@@ -7,9 +9,11 @@ import { WarehouseTable } from "@/components/warehouse/WarehouseTable";
 import { redirect } from "next/navigation";
 
 export default async function WarehousePage() {
-  const [inventory, ordersDetails] = await Promise.all([
+  const [inventory, ordersDetails, sedesRes, booksRes] = await Promise.all([
     getWarehouse(),
     getOrdersDetails(),
+    getSedes(),
+    getAllBooks(),
   ]);
 
   const session = await auth();
@@ -25,13 +29,23 @@ export default async function WarehousePage() {
     );
   }
 
+  const sedes = sedesRes.sedes?.map((sede) => ({
+    id: sede.id,
+    city: sede.city,
+  }));
+
   const { warehouse: warehouseData } = inventory;
 
   return (
     <div className="flex flex-col gap-5 overflow-hidden">
       <Title title="Inventario de Bodega" />
       {session.user.role === "admin" && (
-        <WarehouseActions warehouse={warehouseData} />
+        <WarehouseActions
+          warehouse={warehouseData}
+          books={booksRes.books || []}
+          sedes={sedes || []}
+          sessionUserId={session.user.id}
+        />
       )}
       <WarehouseTable
         warehouse={warehouseData}

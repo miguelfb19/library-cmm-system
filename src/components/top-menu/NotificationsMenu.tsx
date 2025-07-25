@@ -33,12 +33,13 @@ export const NotificationsMenu = ({ notifications, userSessionId }: Props) => {
   const clickOnNotification = async (
     id: string,
     userId: string,
-    to: string
+    to: string,
+    isProduction: boolean
   ) => {
     router.push(
-      to === "admin"
+      to === "admin" || !isProduction
         ? "/dashboard/leader/orders"
-        : "/dashboard/productor/production"
+        : "/dashboard/productor/orders"
     );
     const res = await readNotification(id, userId);
 
@@ -132,7 +133,11 @@ export const NotificationsMenu = ({ notifications, userSessionId }: Props) => {
                       clickOnNotification(
                         notification.id,
                         notification.userId,
-                        notification.to as string
+                        notification.to as string,
+                        notification.message.includes("producción") ||
+                          notification.message
+                            .toLocaleLowerCase()
+                            .includes("bodega")
                       )
                     }
                     className="text-left cursor-pointer flex items-center gap-2"

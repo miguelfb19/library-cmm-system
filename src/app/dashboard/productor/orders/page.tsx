@@ -1,31 +1,21 @@
-import { getOrders } from "@/actions/orders/get-orders";
 import { Title } from "@/components/ui/Title";
 import { OrderList } from "@/components/orders/OrderList";
 import { auth } from "@/auth.config";
 import { redirect } from "next/navigation";
-import { getOrdersByUser } from "@/actions/orders/get-orders-by-user";
-import { NewOrder } from "@/components/orders/NewOrder";
-import { getSedes } from "@/actions/inventory/get-sedes";
+import { getOrders } from "@/actions/orders/get-orders";
 import { getAllBooks } from "@/actions/product/get-all-books";
 import { getUsers } from "@/actions/users/get-users";
 
-export default async function OrdersPage() {
+export default async function ProductionOrdersPage() {
   const session = await auth();
 
   if (!session || !session.user) redirect("/auth/login");
 
-  const [ordersRes, sedesRes, booksRes, usersRes] = await Promise.all([
-    session.user.role === "admin"
-      ? await getOrders({ isProduction: false })
-      : await getOrdersByUser(session.user.id),
-    getSedes(),
+  const [ordersRes, booksRes, usersRes] = await Promise.all([
+    getOrders({ isProduction: true }),
     getAllBooks(),
     getUsers(),
   ]);
-  const sedes = sedesRes.sedes?.map((sede) => ({
-    id: sede.id,
-    city: sede.city,
-  }));
 
   if (!ordersRes.ok || !ordersRes.orders) {
     return (
@@ -35,16 +25,10 @@ export default async function OrdersPage() {
       </div>
     );
   }
-
   return (
-    <div className="h-full">
-      <Title title="Pedidos" />
-      <NewOrder
-        sedes={sedes || []}
-        books={booksRes.books || []}
-        userId={session.user.id}
-      />
-      <hr className="my-4" />
+    <div>
+      <Title title="Pedidos en Producción" />
+      <hr className="my-5"/>
       <OrderList
         orders={ordersRes.orders}
         books={booksRes.books || []}

@@ -59,7 +59,7 @@ export const WarehouseTable = ({ warehouse, ordersDetails }: Props) => {
    */
   const getProductionQuantity = (
     bookId: string,
-    isProduction: boolean
+    { isProduction }: { isProduction: boolean }
   ): number => {
     if (!ordersDetails || ordersDetails.length === 0) return 0;
 
@@ -109,8 +109,10 @@ export const WarehouseTable = ({ warehouse, ordersDetails }: Props) => {
             {filteredInventoryByCategory.map((item) => {
               const finalInventory =
                 item.stock +
-                getProductionQuantity(item.book.id, true) -
-                getProductionQuantity(item.book.id, false);
+                getProductionQuantity(item.book.id, { isProduction: true }) -
+                getProductionQuantity(item.book.id, { isProduction: false });
+
+                console.log(getProductionQuantity(item.book.id, { isProduction: true }))
               return (
                 <tr
                   key={item.id}
@@ -124,12 +126,20 @@ export const WarehouseTable = ({ warehouse, ordersDetails }: Props) => {
                   </td>
                   <td>{item.stock}</td>
                   <td className="text-purple-500">
-                    {getProductionQuantity(item.book.id, true)}
+                    {getProductionQuantity(item.book.id, {
+                      isProduction: true,
+                    })}
                   </td>
                   <td className="text-yellow-500">
-                    {getProductionQuantity(item.book.id, false)}
+                    {getProductionQuantity(item.book.id, {
+                      isProduction: false,
+                    })}
                   </td>
-                  <td className={`${finalInventory < 0 ? "text-red-500" : "text-green-500"} font-bold`}>
+                  <td
+                    className={`${
+                      finalInventory < 0 ? "text-red-500" : "text-green-500"
+                    } font-bold`}
+                  >
                     {finalInventory}
                   </td>
                 </tr>

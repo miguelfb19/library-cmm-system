@@ -76,7 +76,10 @@ export const EditOrder = ({ order, booksList }: Props) => {
       limitDate: limitDate ? limitDate : null,
       note,
     };
-    const res = await editOrder(updatedOrder, "ToAdmin");
+    const res = await editOrder(
+      updatedOrder,
+      order.isProduction ? "ToProductor" : "ToAdmin"
+    );
 
     if (res.ok) {
       toast.success(res.message);
@@ -103,7 +106,12 @@ export const EditOrder = ({ order, booksList }: Props) => {
         <label htmlFor="limitDate" className="font-bold">
           Fecha Límite:
         </label>
-        <DatePicker disabled={isLoading} date={limitDate} setDate={setLimitDate} futureDatesOnly />
+        <DatePicker
+          disabled={isLoading}
+          date={limitDate}
+          setDate={setLimitDate}
+          futureDatesOnly
+        />
       </div>
       <ul className="space-y-5 max-h-[27rem] overflow-y-auto">
         {detail.map((item, index) => (

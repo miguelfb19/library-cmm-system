@@ -189,10 +189,10 @@ export const NewOrder = ({
   return (
     <>
       <CustomDialog
-        title="Crear nuevo pedido"
+        title={`Crear nuevo pedido ${isProduction ? "de producción" : ""}`}
         description="Los campos marcados con * son obligatorios"
         trigger={
-          <CustomTooltip text="Hacer un nuevo pedido">
+          <CustomTooltip text={`Hacer un nuevo pedido ${isProduction ? "de producción" : ""}`}>
             <button
               type="button"
               onClick={() => setOpen(true)}

@@ -1,4 +1,4 @@
-import { BookCopy, House, LibraryBig, Package, Users, Warehouse } from "lucide-react";
+import { BookCopy, Factory, House, LibraryBig, Package, Users, Warehouse } from "lucide-react";
 
 
 export const menuItems = [
@@ -40,5 +40,10 @@ export const ProductorMenuItems = [
     name: "Bodega",
     path: "/dashboard/productor/warehouse",
     icon: Warehouse,
+  },
+  {
+    name: "En Producción",
+    path: "/dashboard/productor/orders",
+    icon: Factory,
   },
 ];
