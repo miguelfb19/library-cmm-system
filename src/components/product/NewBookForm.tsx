@@ -14,7 +14,7 @@ import { createNewProduct } from "@/actions/product/create-new-product";
  * Maneja la creación de productos con nombre y categoría
  * Incluye validaciones y feedback visual
  */
-export const NewProductoForm = () => {
+export const NewBookForm = () => {
   // Estado para manejar los datos del producto
   const [product, setProduct] = useState({
     name: "",

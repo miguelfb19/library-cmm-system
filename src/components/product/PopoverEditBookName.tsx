@@ -37,8 +37,6 @@ export const PopoverEditBookName = ({ book }: Props) => {
       return;
     }
 
-    console.log(newName);
-
     const res = await editProductName(book.id, newName);
 
     if (!res.ok) {
