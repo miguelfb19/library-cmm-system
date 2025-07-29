@@ -1,4 +1,3 @@
-import { Category } from "@/generated/prisma";
 import { ShortSede } from "@/interfaces/Sede";
 
 export const getAllCategoriesInventory = (sede: ShortSede) => {

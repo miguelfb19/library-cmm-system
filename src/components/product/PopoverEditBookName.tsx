@@ -62,7 +62,7 @@ export const PopoverEditBookName = ({ book }: Props) => {
         <h3 className="text-primary font-bold text-center">
           Editar nombre del libro{" "}
           <span className="font-normal text-yellow-600">
-            "{capitalizeWords(book.name.replaceAll("_", " "))}"
+            &quot;{capitalizeWords(book.name.replaceAll("_", " "))}&quot;
           </span>
         </h3>
         <Input

@@ -61,6 +61,33 @@ const handleDeleteUser = async (
 };
 
 /**
+ * Componente para las acciones de la tabla (botón de eliminar)
+ * Separado para poder usar hooks de React correctamente
+ */
+const ActionsCell = ({ userId }: { userId: string }) => {
+  const [loadingId, setLoadingId] = useState<string | null>(null);
+  const isLoading = loadingId === userId;
+  const { data: session } = useSession();
+
+  return (
+    <div className="flex items-center justify-center gap-2">
+      {session?.user.role === "admin" && (
+        <button
+          onClick={() => handleDeleteUser(userId, setLoadingId)}
+          className="text-red-500 cursor-pointer bg-red-500/20 rounded p-1 hover:bg-red-500/10 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          {isLoading ? (
+            <Loader2 size={20} className="animate-spin" />
+          ) : (
+            <Trash size={20} />
+          )}
+        </button>
+      )}
+    </div>
+  );
+};
+
+/**
  * Definición de columnas para la tabla de usuarios
  * Incluye:
  * - Nombre (ordenable)
@@ -116,28 +143,6 @@ export const columns: ColumnDef<User>[] = [
   {
     id: "actions",
     header: () => <div className="font-bold">Acciones</div>,
-    cell: ({ row }) => {
-      // Estado local para manejar la carga durante la eliminación
-      const [loadingId, setLoadingId] = useState<string | null>(null);
-      const isLoading = loadingId === row.original.id;
-      const { data: session } = useSession();
-
-      return (
-        <div className="flex items-center justify-center gap-2">
-          {session?.user.role === "admin" && (
-            <button
-              onClick={() => handleDeleteUser(row.original.id, setLoadingId)}
-              className="text-red-500 cursor-pointer bg-red-500/20 rounded p-1 hover:bg-red-500/10 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              {isLoading ? (
-                <Loader2 size={20} className="animate-spin" />
-              ) : (
-                <Trash size={20} />
-              )}
-            </button>
-          )}
-        </div>
-      );
-    },
+    cell: ({ row }) => <ActionsCell userId={row.original.id} />,
   },
 ];
