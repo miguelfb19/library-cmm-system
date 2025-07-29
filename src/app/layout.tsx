@@ -13,16 +13,34 @@ const lato = Lato({
 
 export const metadata: Metadata = {
   title: "Gestión de inventario CMM",
-  description: "Sistema de gestión de inventario para la Comunidad Maria Mediadora.",
+  description:
+    "Sistema de gestión de inventario para la Comunidad Maria Mediadora.",
   manifest: "/webmanifest.json",
   icons: {
-    icon: [
-      { url: "/icon.png", type: "image/png" },
+    icon: "/icon.png",
+    apple: "/icon.png",
+    other: [
+      {
+        rel: "shortcut icon",
+        url: "/icon.png",
+      },
+      {
+        rel: "mask-icon",
+        url: "/icon.png",
+      },
+      {
+        rel: "icon",
+        url: "/icon.png",
+      },
+      {
+        rel: "apple-touch-icon",
+        url: "/icon.png",
+      },
+      {
+        rel: "manifest",
+        url: "/webmanifest.json",
+      },
     ],
-    apple: [
-      { url: "/apple-icon.png", sizes: "180x180", type: "image/png" },
-    ],
-    shortcut: "/favicon.ico",
   },
   appleWebApp: {
     capable: true,
@@ -36,12 +54,14 @@ export const metadata: Metadata = {
     type: "website",
     siteName: "Sistema de Gestión de Inventario CMM",
     title: "Gestión de inventario CMM",
-    description: "Sistema de gestión de inventario para la Comunidad Maria Mediadora.",
+    description:
+      "Sistema de gestión de inventario para la Comunidad Maria Mediadora.",
   },
   twitter: {
     card: "summary",
     title: "Gestión de inventario CMM",
-    description: "Sistema de gestión de inventario para la Comunidad Maria Mediadora.",
+    description:
+      "Sistema de gestión de inventario para la Comunidad Maria Mediadora.",
   },
 };
 
@@ -53,7 +73,10 @@ export default function RootLayout({
   return (
     <html lang="es">
       <head>
-        <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+        <meta
+          name="viewport"
+          content="width=device-width, initial-scale=1, viewport-fit=cover"
+        />
         <meta name="theme-color" content="#2563eb" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="default" />
