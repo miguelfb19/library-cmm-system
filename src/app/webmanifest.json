@@ -1,0 +1,26 @@
+{
+  "name": "Sistema de Gestión de Inventario CMM",
+  "short_name": "CMM Inventario",
+  "description": "Sistema de gestión de inventario para la Comunidad Maria Mediadora",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#2563eb",
+  "orientation": "portrait-primary",
+  "scope": "/",
+  "lang": "es",
+  "categories": ["productivity", "business"],
+  "icons": [
+    {
+      "src": "/icon.png",
+      "sizes": "500x500",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "/apple-icon.png",
+      "sizes": "180x180",
+      "type": "image/png"
+    }
+  ]
+}
