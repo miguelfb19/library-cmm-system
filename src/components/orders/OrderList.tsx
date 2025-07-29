@@ -16,6 +16,7 @@ import { OrderStatus } from "./OrderStatus";
 import { Input } from "../ui/input";
 import { useState } from "react";
 import { ReceiveOrder } from "./ReceiveOrder";
+import { History, ClipboardList } from "lucide-react";
 
 interface Props {
   orders: Order[];
@@ -44,11 +45,8 @@ export const OrderList = ({
   // Estado para el término de búsqueda
   const [idSearch, setIdSearch] = useState("");
   const [userSearch, setUserSearch] = useState("");
-
-  // Muestra un componente Empty si no hay pedidos disponibles
-  if (orders.length === 0) {
-    return <Empty text="No hay pedidos disponibles" />;
-  }
+  // Estado para mostrar el historial de pedidos
+  const [showOrderHistory, setShowOrderHistory] = useState(false);
 
   /**
    * Obtiene el nombre del usuario basado en su ID
@@ -60,12 +58,18 @@ export const OrderList = ({
     return user ? user.name : "Desconocido";
   };
 
+  // Filtra los pedidos por ID y usuario según los términos de búsqueda
   const filteredOrdersById = orders.filter((order) =>
     order.id.toLowerCase().includes(idSearch.toLowerCase())
   );
   const filteredOrdersByUser = filteredOrdersById.filter((order) =>
     getUserName(order.userId).toLowerCase().includes(userSearch.toLowerCase())
   );
+
+  const filteredOrdersByHistory = filteredOrdersByUser.filter((order) => (
+    showOrderHistory ? order.state === "approved" : order.state !== "approved"
+  ));
+
 
   return (
     <div className="flex flex-col h-[calc(100vh-16rem)]">
@@ -75,7 +79,15 @@ export const OrderList = ({
           note: order.note === undefined ? null : order.note,
         }))}
       />
-      <div className="mb-5 grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="mb-5 grid grid-cols-1 md:grid-cols-[1fr_9fr_9fr] gap-4">
+        <CustomTooltip text={` ${showOrderHistory ? "Pedidos activos" : "Historial de pedidos"}`}>
+          <button
+            className="p-2 w-10 cursor-pointer text-primary"
+            onClick={() => setShowOrderHistory(!showOrderHistory)}
+          >
+            {showOrderHistory ? <ClipboardList /> : <History />}
+          </button>
+        </CustomTooltip>
         <Input
           id="search-order-id"
           name="searchOrderId"
@@ -93,6 +105,10 @@ export const OrderList = ({
           onChange={(e) => setUserSearch(e.target.value)}
         />
       </div>
+      {filteredOrdersByHistory.length === 0 ? (
+        <Empty text="No hay pedidos para mostrar" />
+      ) : 
+      
       <div className="overflow-auto flex-1">
         <table className="min-w-[50rem] md:min-w-full text-sm text-center">
           {/* Encabezados de la tabla con campos principales */}
@@ -109,7 +125,7 @@ export const OrderList = ({
             </tr>
           </thead>
           <tbody>
-            {filteredOrdersByUser.map((order) => (
+            {filteredOrdersByHistory.map((order) => (
               <tr
                 key={order.id}
                 className="text-center border-b hover:bg-secondary h-10 relative"
@@ -209,6 +225,7 @@ export const OrderList = ({
           </tbody>
         </table>
       </div>
+      }
     </div>
   );
 };

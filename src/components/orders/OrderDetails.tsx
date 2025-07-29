@@ -1,4 +1,4 @@
-import { ListCollapse } from "lucide-react";
+import { PackageSearch } from "lucide-react";
 import { CustomDialog } from "../ui/CustomDialog";
 import { CustomTooltip } from "../ui/CustomTooltip";
 import { capitalizeWords } from "@/utils/capitalize";
@@ -21,7 +21,7 @@ export const OrderDetails = ({ order, books }: Props) => {
       trigger={
         <CustomTooltip text="Detalles del Pedido" withSpan>
           <button className="btn-blue !w-auto self-center !min-h-auto">
-            <ListCollapse size={17} />
+            <PackageSearch size={17} />
           </button>
         </CustomTooltip>
       }
