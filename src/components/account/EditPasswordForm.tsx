@@ -75,8 +75,6 @@ export const EditPasswordForm = ({ userId }: Props) => {
     setIsLoading(false);
     reset();
   };
-
-  console.log("hola")
   return (
     <form
       className="flex flex-col gap-5 p-5 border border-primary/50 rounded"
