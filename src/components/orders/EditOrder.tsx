@@ -148,7 +148,7 @@ export const EditOrder = ({ order, booksList }: Props) => {
               className="flex-2/12 self-end"
               disabled={isLoading}
               placeholder="Cantidad"
-              min={1}
+              min={0}
             />
           </li>
         ))}

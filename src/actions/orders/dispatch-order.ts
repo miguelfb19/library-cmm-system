@@ -8,6 +8,12 @@ import { calculatePendingItems } from "./helpers";
 export const dispatchOrder = async (dispatchedOrder: Order) => {
   try {
     const prismaTransaction = await prisma.$transaction(async (tx) => {
+
+      if(!dispatchedOrder.isProduction) {
+        // Verificar si hay existencias suficientes en bodega para despachar la orden
+        await reviewWarehouseStock(dispatchedOrder);
+      }
+
       // Actualizar el estado de la orden a "despachada"
       const order = await tx.order.update({
         where: { id: dispatchedOrder.id },
@@ -118,8 +124,54 @@ export const dispatchOrder = async (dispatchedOrder: Order) => {
     console.error(error);
     return {
       ok: false,
-      message: "Error al despachar la orden",
+      message: error instanceof Error ? error.message : "Error al despachar la orden",
       status: 500,
     };
   }
 };
+
+
+const reviewWarehouseStock = async (order: Order) => {
+  // Buscar la sede principal (bodega)
+  const warehouse = await prisma.sede.findFirst({
+    where: {
+      isPrincipal: true,
+    },
+    include: {
+      inventory: {
+        include: {
+          book: true,
+        },
+      },
+    },
+  });
+
+  if (!warehouse) {
+    throw new Error("No se encontró la sede principal (bodega)");
+  }
+
+  // Verificar stock para cada item de la orden
+  const insufficientStockBooks: string[] = [];
+
+  for (const orderItem of order.detail) {
+    const inventoryItem = warehouse.inventory.find(
+      (inv) => inv.bookId === orderItem.bookId
+    );
+
+    if (!inventoryItem || inventoryItem.stock < orderItem.quantity) {
+      const book = inventoryItem?.book || await prisma.book.findUnique({
+        where: { id: orderItem.bookId },
+      });
+      
+      if (book) {
+        insufficientStockBooks.push(book.name);
+      }
+    }
+  }
+
+  if (insufficientStockBooks.length > 0) {
+    throw new Error(
+      `No hay suficientes existencias en bodega para los siguientes libros: ${insufficientStockBooks.join(", ")}`
+    );
+  }
+}
