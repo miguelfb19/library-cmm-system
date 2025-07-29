@@ -15,7 +15,6 @@ export const metadata: Metadata = {
   title: "Gestión de inventario CMM",
   description:
     "Sistema de gestión de inventario para la Comunidad Maria Mediadora.",
-  manifest: "/webmanifest.json",
   icons: {
     icon: "/icon.png",
     apple: "/icon.png",

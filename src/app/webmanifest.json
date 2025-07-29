@@ -9,7 +9,6 @@
   "orientation": "portrait-primary",
   "scope": "/",
   "lang": "es",
-  "categories": ["productivity", "business"],
   "icons": [
     {
       "src": "/icon.png",
