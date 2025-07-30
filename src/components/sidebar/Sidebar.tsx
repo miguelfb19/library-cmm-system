@@ -43,7 +43,7 @@ export const Sidebar = () => {
               width={500}
               height={500}
               src="/logo-azul.avif"
-              className="w-full"
+              className="m-auto w-64 md:w-full"
               alt="logo de cafe jardin de paraíso"
               priority
             />
