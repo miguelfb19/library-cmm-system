@@ -9,6 +9,7 @@ import { submitAlert } from "@/utils/submitAlert";
 import { toast } from "sonner";
 import { useState } from "react";
 import { LoadingSpinner } from "../ui/LoadingSpinner";
+import { registerSaleBySede } from "@/actions/sales/register-sale-by-sede";
 
 interface Props {
   sedes: { id: string; city: string }[];
@@ -28,6 +29,7 @@ export const SalesRegisterForm = ({ sedes, books }: Props) => {
     register,
     handleSubmit,
     watch,
+    reset,
     formState: { errors },
   } = useForm<FormData>();
 
@@ -59,7 +61,20 @@ export const SalesRegisterForm = ({ sedes, books }: Props) => {
       return toast.error("Registro de venta cancelado");
     }
 
-    console.log("Form submitted with data:", data);
+    const res = await registerSaleBySede({
+      origin: data.origin.split("/")[0],
+      book: data.book.split("/")[0],
+      quantity: data.quantity,
+    });
+
+    if (!res.ok) {
+      setIsLoading(false);
+      return toast.error(res.message);
+    }
+
+    setIsLoading(false);
+    reset();
+    toast.success("Venta registrada exitosamente");
   };
 
   return (
@@ -147,10 +162,12 @@ export const SalesRegisterForm = ({ sedes, books }: Props) => {
       </div>
       <button
         type="submit"
-        className="btn-blue md:col-span-2"
+        className={`btn-blue md:col-span-2 ${
+          isLoading ? "pointer-events-none opacity-50" : ""
+        }`}
         disabled={isLoading}
       >
-        {isLoading ? <LoadingSpinner /> : "Registrar"}
+        {isLoading ? <LoadingSpinner size={10} /> : "Registrar"}
       </button>
     </form>
   );
