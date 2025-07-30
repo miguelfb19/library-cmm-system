@@ -13,7 +13,6 @@ import { submitAlert } from "@/utils/submitAlert";
 import { toast } from "sonner";
 import { receiveOrder } from "@/actions/orders/receive-order";
 import { addOrderToInventory } from "@/actions/inventory/add-order-to-inventory";
-import { substractOrderFromWarehouse } from "@/actions/warehouse/substract-order-from-warehouse";
 
 interface Props {
   order: Order;
