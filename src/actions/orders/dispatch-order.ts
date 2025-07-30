@@ -135,7 +135,7 @@ const reviewWarehouseStock = async (order: Order) => {
   // Buscar la sede principal (bodega)
   const warehouse = await prisma.sede.findFirst({
     where: {
-      isPrincipal: true,
+      city: "bodega",
     },
     include: {
       inventory: {

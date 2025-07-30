@@ -3,7 +3,6 @@
 import prisma from "@/lib/prisma";
 import { Order } from "@/interfaces/Order";
 import { getUsersToNotify } from "../notifications/get-users-to-notify";
-import { createNewNotification } from "../notifications/create-new-notification";
 import { createNewOrder } from "./create-new-order";
 import { revalidatePath } from "next/cache";
 import { calculatePendingItems } from "./helpers";
@@ -66,19 +65,23 @@ export const receiveOrder = async (orderToReceive: Order) => {
       // Si no, se notifica que se aprobó completamente
       const hasPendingItems = pendingItems.some((item) => item.quantity > 0);
       
-      const notif = await createNewNotification(
-        usersToNotify.ids,
-        hasPendingItems
-          ? `El pedido ${
-              order.id
-            } despachado hacia ${order.origin.city.toUpperCase()} se aprobó parcialmente, quedan items pendientes.`
-          : `El pedido ${
-              order.id
-            } despachado hacia ${order.origin.city.toUpperCase()} se aprobó completamente.`,
-        order.isProduction ? "productor" : "admin"
-      );
+      const notificationMessage = hasPendingItems
+        ? `El pedido ${
+            order.id
+          } despachado hacia ${order.origin.city.toUpperCase()} se aprobó parcialmente, quedan items pendientes.`
+        : `El pedido ${
+            order.id
+          } despachado hacia ${order.origin.city.toUpperCase()} se aprobó completamente.`;
 
-      if (!notif.ok) throw new Error(notif.message);
+      const notificationsToCreate = usersToNotify.ids.map((userId) => ({
+        userId,
+        message: notificationMessage,
+        to: order.isProduction ? "productor" as const : "admin" as const,
+      }));
+
+      await tx.notification.createMany({
+        data: notificationsToCreate,
+      });
 
       // Solo crear/anexar nueva orden si realmente hay items pendientes con cantidad > 0
       if (hasPendingItems) {

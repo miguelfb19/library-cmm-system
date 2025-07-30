@@ -1,5 +1,13 @@
-import { BookCopy, Factory, House, LibraryBig, Package, Users, Warehouse } from "lucide-react";
-
+import {
+  BookCopy,
+  CircleDollarSign,
+  Factory,
+  House,
+  LibraryBig,
+  Package,
+  Users,
+  Warehouse,
+} from "lucide-react";
 
 export const menuItems = [
   {
@@ -19,6 +27,11 @@ export const LeaderMenuItems = [
     name: "Pedidos",
     path: "/dashboard/leader/orders",
     icon: Package,
+  },
+  {
+    name: "Ventas",
+    path: "/dashboard/leader/sales",
+    icon: CircleDollarSign,
   },
 ];
 

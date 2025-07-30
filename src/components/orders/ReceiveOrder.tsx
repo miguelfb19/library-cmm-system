@@ -70,16 +70,6 @@ export const ReceiveOrder = ({ order, bookList }: Props) => {
     const { message: inventoryMessage, ok: inventoryOk } =
       await addOrderToInventory(order.origin.id, detail);
 
-    if (!order.isProduction) {
-      // Restar de la bodega los libros recibidos
-      const { message: warehouseMessage, ok: warehouseOk } =
-        await substractOrderFromWarehouse(detail);
-      // Mostrar mensajes de error si alguno falla en la actualizacion de la bodega
-      if (!warehouseOk) {
-        console.error(warehouseMessage);
-      }
-    }
-
     // Si la actualización del inventario de la sede falla, mostrar mensaje de error
     if (!inventoryOk) {
       setIsOpen(true);

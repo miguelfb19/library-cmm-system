@@ -49,7 +49,7 @@ export const Sidebar = () => {
             />
           </Link>
         </div>
-        <div className="my-10">
+        <div className="my-2">
           <span>Hola,</span>
           <br />
           <div className="flex flex-col">

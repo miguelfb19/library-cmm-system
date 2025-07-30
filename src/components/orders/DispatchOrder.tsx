@@ -12,6 +12,7 @@ import { dispatchOrder } from "@/actions/orders/dispatch-order";
 import { submitAlert } from "@/utils/submitAlert";
 import { toast } from "sonner";
 import Loading from "@/app/dashboard/loading";
+import { substractOrderFromWarehouse } from "@/actions/warehouse/substract-order-from-warehouse";
 
 interface Props {
   order: Order;
@@ -74,6 +75,7 @@ export const DispatchOrder = ({ order, booksList }: Props) => {
       dispatchData: order.dispatchData,
     });
 
+    
     if (!ok) {
       toast.error(message);
       setIsLoading(false);
@@ -81,6 +83,18 @@ export const DispatchOrder = ({ order, booksList }: Props) => {
       return;
     }
 
+    if (!order.isProduction) {
+      // Restar de la bodega los libros despachados
+      const { message: warehouseMessage, ok: warehouseOk } =
+        await substractOrderFromWarehouse(detail);
+      // Mostrar mensajes de error si alguno falla en la actualizacion de la bodega
+      if (!warehouseOk) {
+        setIsLoading(false);
+        setOpen(true);
+        return toast.error(warehouseMessage);
+      }
+    }
+    
     toast.success(message);
     setIsLoading(false);
   };

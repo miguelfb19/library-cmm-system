@@ -2,7 +2,6 @@
 
 import prisma from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
-import { createNewNotification } from "../notifications/create-new-notification";
 import { Order } from "@/interfaces/Order";
 import { getUsersToNotify } from "../notifications/get-users-to-notify";
 
@@ -17,51 +16,59 @@ export const editOrder = async (
   to: "ToAdmin" | "ToProductor"
 ) => {
   try {
-    // Actualiza la orden en la base de datos
-    // Primero elimina todos los detalles existentes y luego crea los nuevos
-    await prisma.order.update({
-      where: { id: order.id },
-      data: {
-        detail: {
-          deleteMany: {}, // Elimina todos los detalles existentes
-          create: order.detail.map((item) => ({
-            bookId: item.bookId,
-            quantity: item.quantity,
-          })), // Crea los nuevos detalles
+    const prismaTransaction = await prisma.$transaction(async (tx) => {
+      // Actualiza la orden en la base de datos
+      // Primero elimina todos los detalles existentes y luego crea los nuevos
+      await tx.order.update({
+        where: { id: order.id },
+        data: {
+          detail: {
+            deleteMany: {}, // Elimina todos los detalles existentes
+            create: order.detail.map((item) => ({
+              bookId: item.bookId,
+              quantity: item.quantity,
+            })), // Crea los nuevos detalles
+          },
+          limitDate: order.limitDate,
+          note: order.note,
         },
-        limitDate: order.limitDate,
-        note: order.note,
-      },
-    });
+      });
 
-    // Obtiene la lista de usuarios que deben ser notificados
-    const { ids } = await getUsersToNotify(to);
+      // Obtiene la lista de usuarios que deben ser notificados
+      const { ids } = await getUsersToNotify(to);
 
-    // Filtra al usuario que realizó la edición de la lista de notificaciones
-    const filteredUsers = ids?.filter((id) => id !== order.userId);
+      // Filtra al usuario que realizó la edición de la lista de notificaciones
+      const filteredUsers = ids?.filter((id) => id !== order.userId);
 
-    // Crea una notificación para el usuario dueño de la orden y los usuarios filtrados
-    await createNewNotification(
-      // Crear la notidicación para los admin y los usuarios relacionados al pedido
-      // Filtramos en los admin en caso de que haya sido quien edito el pedido
-      [order.userId, ...(filteredUsers ?? [])],
-      order.isProduction
+      // CREATE NOTIFICATION
+      const notificationMessage = order.isProduction
         ? `El pedido con ID ${order.id} para producción ha sido editado`
         : `El pedido con ID ${
             order.id
-          } para la ciudad de ${order.origin.city.toUpperCase()} ha sido editado.`,
-      order.isProduction ? "productor" : "admin"
-    );
+          } para la ciudad de ${order.origin.city.toUpperCase()} ha sido editado.`;
+
+      const notificationsToCreate = [order.userId, ...(filteredUsers ?? [])].map((userId) => ({
+        userId,
+        message: notificationMessage,
+        to: order.isProduction ? "productor" as const : "admin" as const,
+      }));
+
+      await tx.notification.createMany({
+        data: notificationsToCreate,
+      });
+
+      return {
+        ok: true,
+        message: "Pedido editado correctamente",
+        status: 200,
+      };
+    });
 
     // Revalida la ruta del dashboard para actualizar los datos en el cliente
     revalidatePath("/dashboard/");
 
     // Retorna respuesta exitosa
-    return {
-      ok: true,
-      message: "Pedido editado correctamente",
-      status: 200,
-    };
+    return prismaTransaction;
   } catch (error) {
     console.error(error);
     return {

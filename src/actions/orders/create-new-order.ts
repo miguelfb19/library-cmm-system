@@ -1,7 +1,6 @@
 "use server";
 
 import prisma from "@/lib/prisma";
-import { createNewNotification } from "../notifications/create-new-notification";
 import { getUsersToNotify } from "../notifications/get-users-to-notify";
 import { revalidatePath } from "next/cache";
 import { DispatchData } from "@/interfaces/DispatchData";
@@ -62,16 +61,21 @@ export const createNewOrder = async (data: OrderData) => {
 
       if (!userToNotify.ok || !userToNotify.ids)
         throw new Error(userToNotify.message);
+      
       // CREATE NOTIFICATION
-      const notif = await createNewNotification(
-        userToNotify.ids,
-        data.isProduction
-          ? "Se ha creado un nuevo pedido para producción, click para ver más detalles"
-          : `Se ha creado un nuevo pedido para ${data.origin.city.toUpperCase()}, click para ver más detalles`,
-        data.isProduction ? "productor" : "admin"
-      );
+      const notificationMessage = data.isProduction
+        ? "Se ha creado un nuevo pedido para producción, click para ver más detalles"
+        : `Se ha creado un nuevo pedido para ${data.origin.city.toUpperCase()}, click para ver más detalles`;
 
-      if (!notif.ok) throw new Error(notif.message);
+      const notificationsToCreate = userToNotify.ids.map((userId) => ({
+        userId,
+        message: notificationMessage,
+        to: data.isProduction ? "productor" as const : "admin" as const,
+      }));
+
+      await tx.notification.createMany({
+        data: notificationsToCreate,
+      });
 
       return {
         ok: true,
