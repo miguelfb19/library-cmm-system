@@ -54,13 +54,23 @@ export function UsersTable<TData extends { id: string }, TValue>({
   // Hook para manejar la sesión del usuario y actualizarla
   const { update, data: session } = useSession();
   
-  // Configuración de la tabla usando tanstack/react-table
+    // Configuración de la tabla usando tanstack/react-table
   const table = useReactTable({
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
+    initialState: {
+      sorting: [
+        {
+          id: "name", // Ordenar por nombre inicialmente
+          desc: false, // Orden ascendente
+        },
+      ],
+    },
+    enableSortingRemoval: false, // Evita que se pueda quitar el ordenamiento
+    enableSorting: true, // Permite ordenamiento pero mantendrá el estado
   });
 
   // Obtiene todos los roles disponibles del enum Role
@@ -118,14 +128,15 @@ export function UsersTable<TData extends { id: string }, TValue>({
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
                 <TableRow
-                  key={row.id}
+                  key={`${row.original.id}-${row.index}`}
                   data-state={row.getIsSelected() && "selected"}
                 >
                   {row.getVisibleCells().map((cell) => (
-                    <Fragment key={cell.id}>
+                    <Fragment key={`${cell.id}-${row.index}`}>
                       {cell.column.id === "role" ? (
                         <TableCell>
                           <select
+                            key={`role-select-${row.original.id}-${row.index}`}
                             id={`role-${row.original.id}`}
                             name="role"
                             className={`border ${
@@ -133,7 +144,8 @@ export function UsersTable<TData extends { id: string }, TValue>({
                                 ? "border-primary/40"
                                 : "border-white"
                             } rounded focus-visible:outline-primary/50 p-1`}
-                            defaultValue={cell.getValue() as string}
+                            value={cell.getValue() as string}
+                            disabled={session?.user.role !== "admin"}
                             onChange={async (event) => {
                               const select = event.target;
                               const originalValue = cell.getValue() as string;
