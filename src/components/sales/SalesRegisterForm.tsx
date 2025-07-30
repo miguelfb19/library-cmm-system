@@ -39,7 +39,15 @@ export const SalesRegisterForm = ({ sedes, books }: Props) => {
     // Handle form submission logic here
     const result = await submitAlert({
       title: "Registro de Venta",
-      text: `¿Desea registrar esta venta? \n\n Sede: ${data.origin.split("/")[1]}\n\n Categoría: ${data.category}\n\n Libro: ${data.book}\n\n Cantidad: ${data.quantity}`,
+      html: `<b style="color: #0050b3;">¿Desea registrar esta venta?</b> <br><br> <b>Sede:</b> ${capitalizeWords(
+        data.origin.split("/")[1].replaceAll("_", " ")
+      )}<br> <b>Categoría:</b> ${capitalizeWords(
+        data.category.replaceAll("_", " ")
+      )}<br> <b>Libro:</b> ${capitalizeWords(
+        data.book.split("/")[1].replaceAll("_", " ")
+      )}<br> <b>Cantidad:</b> ${
+        data.quantity
+      } <br><br> <i style="color: red; font-weight: bold;">Estos datos serán descontados en el inventario.</i>`,
       icon: "info",
       confirmButtonText: "Registrar",
       cancelButtonText: "Cancelar",
@@ -71,7 +79,7 @@ export const SalesRegisterForm = ({ sedes, books }: Props) => {
           <option value="">Seleccione una sede</option>
           {sedes.map((sede) =>
             sede.city === "bodega" ? null : (
-              <option key={sede.id} value={sede.id+"/"+sede.city}>
+              <option key={sede.id} value={sede.id + "/" + sede.city}>
                 {capitalizeWords(sede.city.replaceAll("_", " "))}
               </option>
             )
@@ -114,7 +122,7 @@ export const SalesRegisterForm = ({ sedes, books }: Props) => {
           {books
             .filter((book) => book.category === selectedCategory)
             .map((book) => (
-              <option key={book.id} value={book.id}>
+              <option key={book.id} value={book.id + "/" + book.name}>
                 {capitalizeWords(book.name.replaceAll("_", " "))}
               </option>
             ))}
