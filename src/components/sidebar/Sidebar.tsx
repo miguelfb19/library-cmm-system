@@ -67,7 +67,7 @@ export const Sidebar = () => {
 
         {/* LISTA DE MENU */}
 
-        <div id="menu-list" className="md:text-[0.9rem]">
+        <div id="menu-list" className="text-[0.9rem]">
           {status === "loading" ? (
             <div className="flex flex-col gap-3 mb-3">
               {Array.from({ length: 5 }).map((_, index) => (

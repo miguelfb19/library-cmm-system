@@ -47,25 +47,40 @@ model User {
   Order        Order[]
   Notification Notification[]
   Sede         Sede?          @relation(fields: [sedeId], references: [id])
-  sedeId       String?        // null = acceso a todas las sedes, valor = sede específica
+  sedeId       String? // null = acceso a todas las sedes, valor = sede específica
 }
 
 model Sede {
-  id          String      @id @default(uuid())
-  city        String      @unique
-  leader      String      @unique
+  id          String       @id @default(uuid())
+  city        String       @unique
+  leader      String       @unique
   inventory   Inventory[]
-  isPrincipal Boolean     @default(false)
+  isPrincipal Boolean      @default(false)
   Order       Order[]
-  User        User[]      // Relación uno-a-muchos tradicional
+  User        User[] // Relación uno-a-muchos tradicional
+  ParishSale  ParishSale[]
+}
+
+model ParishSale {
+  id         String    @id @default(uuid())
+  name       String
+  manager    String
+  isActive   Boolean   @default(true)
+  createdAt  DateTime  @default(now())
+  refundedAt DateTime? @updatedAt
+  sede       Sede      @relation(fields: [sedeId], references: [id])
+  sedeId     String
+  book       Book      @relation(fields: [bookId], references: [id])
+  bookId     String
 }
 
 model Book {
-  id        String      @id @unique @default(uuid())
-  name      String      @unique
-  category  Category
-  inventory Inventory[]
-  BookOrder BookOrder[]
+  id         String       @id @unique @default(uuid())
+  name       String       @unique
+  category   Category
+  inventory  Inventory[]
+  BookOrder  BookOrder[]
+  ParishSale ParishSale[]
 }
 
 model Inventory {

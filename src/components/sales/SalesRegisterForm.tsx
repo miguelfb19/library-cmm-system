@@ -34,6 +34,12 @@ interface FormData {
   book: string;
   /** Cantidad de libros a vender */
   quantity: number;
+  /** Indica si es un proceso parroquial */
+  isParishProcess?: boolean;
+  /** Nombre de la parroquia (opcional) */
+  parishName?: string;
+  /** Encargado de la parroquia (opcional) */
+  parishManager?: string;
 }
 
 /**
@@ -229,6 +235,54 @@ export const SalesRegisterForm = ({ sedes, books }: Props) => {
           <span className="text-red-500 text-xs">Este campo es requerido</span>
         )}
       </div>
+
+      <div className=" flex items-center gap-2 md:col-span-2">
+        <input
+          type="checkbox"
+          id="is-parish-process"
+          className="cursor-pointer"
+          {...register("isParishProcess")}
+          disabled={isLoading}
+        />
+        <label htmlFor="is-parish-process">¿Es proceso parroquial?</label>
+      </div>
+
+      {watch("isParishProcess") ? (
+        <>
+          <div className="flex flex-col gap-2">
+            <label htmlFor="parish-name" className="font-semibold">
+              Nombre de la Parroquia
+            </label>
+            <Input
+              type="text"
+              id="parish-name"
+              {...register("parishName", { required: true })}
+              placeholder="Nombre de la Parroquia"
+            />
+            {errors.parishName && (
+              <span className="text-red-500 text-xs">
+                Este campo es requerido
+              </span>
+            )}
+          </div>
+          <div className="flex flex-col gap-2">
+            <label htmlFor="parish-manager" className="font-semibold">
+              Encargado de la Parroquia
+            </label>
+            <Input
+              type="text"
+              id="parish-manager"
+              {...register("parishManager", { required: true })}
+              placeholder="Encargado de la Parroquia"
+            />
+            {errors.parishManager && (
+              <span className="text-red-500 text-xs">
+                Este campo es requerido
+              </span>
+            )}
+          </div>
+        </>
+      ) : null}
 
       {/* Botón de envío con estado de carga */}
       <button

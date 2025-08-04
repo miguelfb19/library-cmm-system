@@ -117,7 +117,7 @@ export const UserTable = ({ users, sedes }: Props) => {
           onChange={(e) => setSearchTerm(e.target.value)}
           className="md:max-w-sm mb-7"
         />
-        <DialogTrigger>
+        <DialogTrigger asChild className="flex justify-center self-start !w-auto">
           <button className="btn-blue">
             <UserPlus />
           </button>
