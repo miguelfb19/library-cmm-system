@@ -5,8 +5,8 @@ export const users: User[] = [
     id: "fsjg8-fd9djsn-gf8ssndsf-f99sd",
     name: "Miguel Fernandez",
     email: "miguelangelfb19@utp.edu.co",
-    password: "miguel1234",
-    role: "leader",
+    password: "65d26327d2",
+    role: "admin",
     city: "Pereira",
     phone: "+573225289202",
   },
@@ -27,6 +27,15 @@ export const users: User[] = [
     role: "productor",
     city: "Medellin",
     phone: "+573132774411",
+  },
+  {
+    id: "isaifn-7sykjbfds-8s8fjcx-jdjsah",
+    name: "Jose Miguel Blandon",
+    email: "miguebmorales@gmail.com",
+    password: "miguel1234",
+    role: "leader",
+    city: "Manizales",
+    phone: "+573104378294",
   },
 ];
 

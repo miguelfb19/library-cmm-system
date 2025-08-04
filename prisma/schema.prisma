@@ -46,6 +46,8 @@ model User {
   role         Role           @default(leader)
   Order        Order[]
   Notification Notification[]
+  Sede         Sede?          @relation(fields: [sedeId], references: [id])
+  sedeId       String?        // null = acceso a todas las sedes, valor = sede específica
 }
 
 model Sede {
@@ -55,6 +57,7 @@ model Sede {
   inventory   Inventory[]
   isPrincipal Boolean     @default(false)
   Order       Order[]
+  User        User[]      // Relación uno-a-muchos tradicional
 }
 
 model Book {

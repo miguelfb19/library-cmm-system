@@ -4,7 +4,14 @@ import prisma from "@/lib/prisma";
 
 export const getUsers = async () => {
   try {
-    const users = await prisma.user.findMany();
+    const users = await prisma.user.findMany({
+      include: {
+        Sede: true,
+      },
+      orderBy: {
+        name: "asc",
+      },
+    });
 
     if (!users) {
       return {
