@@ -13,6 +13,7 @@ export default async function MyAccountPage() {
     name: session.user.name ?? "",
     email: session.user.email ?? "",
     phone: session.user.phone ?? "",
+    sedeId: session.user.Sede?.id ?? null,
   };
   return (
     <div className="h-full flex flex-col gap-10 justify-center">
