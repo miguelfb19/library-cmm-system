@@ -178,7 +178,7 @@ export const OrderList = ({
                 </td>
 
                 {/* Acciones disponibles según el rol del usuario */}
-                <td className="flex justify-start items-center gap-2 h-12 w-28">
+                <td className="flex justify-center items-center gap-2 h-12">
                   {/* Modal de detalles del pedido accesible para todos */}
                   <OrderDetails order={order} books={books} />
 

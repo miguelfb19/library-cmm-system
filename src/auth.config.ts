@@ -80,7 +80,7 @@ export const authConfig = {
         session.user.name = user.name;
         session.user.phone = user.phone;
         session.user.city = user.city;
-        session.user.sede = user.Sede;
+        session.user.Sede = user.Sede;
         (session.user as any).password = user.password;
         /* eslint-enable */
       }

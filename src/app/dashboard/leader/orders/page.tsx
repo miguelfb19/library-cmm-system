@@ -43,6 +43,7 @@ export default async function OrdersPage() {
         sedes={sedes || []}
         books={booksRes.books || []}
         userId={session.user.id}
+        userSede={session.user.Sede} // Sede del usuario, si aplica
       />
       <hr className="my-4" />
       <OrderList

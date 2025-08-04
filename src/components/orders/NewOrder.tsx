@@ -14,6 +14,7 @@ import { createNewOrder } from "@/actions/orders/create-new-order";
 import { LoadingSpinner } from "../ui/LoadingSpinner";
 import Loading from "@/app/dashboard/loading";
 import { DispatchData } from "@/interfaces/DispatchData";
+import { Sede } from "@/interfaces/Sede";
 
 /**
  * Interface que define las propiedades necesarias para el componente
@@ -27,6 +28,7 @@ interface Props {
   sedes: { id: string; city: string }[];
   books: Book[];
   userId: string;
+  userSede: Sede | null; // Sede del usuario, si aplica
 }
 
 /**
@@ -38,6 +40,7 @@ export const NewOrder = ({
   sedes,
   books,
   userId,
+  userSede,
 }: Props) => {
   // Estados para manejar el formulario
   const [open, setOpen] = useState(false); // Control del modal
@@ -109,7 +112,7 @@ export const NewOrder = ({
       return;
     }
 
-    // Validate dispatch data 
+    // Validate dispatch data
     if (
       !dispatchData.name ||
       !dispatchData.phone ||
@@ -122,7 +125,7 @@ export const NewOrder = ({
     }
 
     // If not production and no origin selected, show error
-    if (!isProduction && origin === "") {
+    if (!isProduction && origin === "" && !userSede) {
       toast.error("Debes seleccionar una sede de origen para el pedido");
       return;
     }
@@ -145,10 +148,11 @@ export const NewOrder = ({
       return;
     }
 
-    // Validación del origin
+    // Validación del origin, seleccion bodega cuando es producción y si no selecciona la sede del usuario
+    // en caso de que el usuario no tenga una sede asignada y si no selecciona una sede del input
     const selectedOrigin = isProduction
       ? sedes.find((sede) => sede.city === "bodega")
-      : sedes.find((sede) => sede.id === origin);
+      : userSede || sedes.find((sede) => sede.id === origin);
 
     if (!selectedOrigin?.id) {
       toast.error("Sede de origen inválida");
@@ -165,7 +169,7 @@ export const NewOrder = ({
       isProduction,
       userId,
       note,
-      dispatchData
+      dispatchData,
     };
 
     const { ok, message } = await createNewOrder(data);
@@ -192,7 +196,11 @@ export const NewOrder = ({
         title={`Crear nuevo pedido ${isProduction ? "de producción" : ""}`}
         description="Los campos marcados con * son obligatorios"
         trigger={
-          <CustomTooltip text={`Hacer un nuevo pedido ${isProduction ? "de producción" : ""}`}>
+          <CustomTooltip
+            text={`Hacer un nuevo pedido ${
+              isProduction ? "de producción" : ""
+            }`}
+          >
             <button
               type="button"
               onClick={() => setOpen(true)}
@@ -209,8 +217,8 @@ export const NewOrder = ({
       >
         {/* Formulario principal */}
         <form className="grid grid-cols-1 md:grid-cols-2 gap-5">
-          {/* Selector de sede (solo para pedidos no productivos) */}
-          {!isProduction && (
+          {/* Selector de sede (solo para pedidos no productivos) o en caso de que el usuario no este asociado a una sede */}
+          {!isProduction && !userSede ? (
             <div className="flex flex-col gap-2">
               <label htmlFor="origin" className="font-bold">
                 ¿Para cual sede es el pedido? <b className="text-red-500">*</b>
@@ -232,7 +240,7 @@ export const NewOrder = ({
                 )}
               </select>
             </div>
-          )}
+          ) : null}
           {/* Selector de fecha límite */}
           <div className="flex flex-col gap-2">
             <label className="font-bold" htmlFor="date">
@@ -341,19 +349,19 @@ export const NewOrder = ({
                   })
                 }
               />
-                <Input
-                  id="recipient-document"
-                  name="recipientDocument"
-                  type="text"
-                  placeholder="Documento del destinatario"
-                  value={dispatchData?.document || ""}
-                  onChange={(e) =>
-                    setDispatchData({
-                      ...dispatchData,
-                      document: e.target.value,
-                    })
-                  }
-                />
+              <Input
+                id="recipient-document"
+                name="recipientDocument"
+                type="text"
+                placeholder="Documento del destinatario"
+                value={dispatchData?.document || ""}
+                onChange={(e) =>
+                  setDispatchData({
+                    ...dispatchData,
+                    document: e.target.value,
+                  })
+                }
+              />
               <Input
                 id="recipient-city"
                 name="recipientCity"
@@ -367,20 +375,20 @@ export const NewOrder = ({
                   })
                 }
               />
-                <Input
-                  id="recipient-address"
-                  name="recipientAddress"
-                  type="text"
-                  placeholder="Dirección de envío"
-                  value={dispatchData?.address || ""}
-                  onChange={(e) =>
-                    setDispatchData({
-                      ...dispatchData,
-                      address: e.target.value,
-                    })
-                  }
-                  className="col-span-2"
-                />
+              <Input
+                id="recipient-address"
+                name="recipientAddress"
+                type="text"
+                placeholder="Dirección de envío"
+                value={dispatchData?.address || ""}
+                onChange={(e) =>
+                  setDispatchData({
+                    ...dispatchData,
+                    address: e.target.value,
+                  })
+                }
+                className="col-span-2"
+              />
             </div>
           </div>
           <textarea

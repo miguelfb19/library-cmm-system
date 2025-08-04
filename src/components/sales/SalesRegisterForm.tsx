@@ -89,9 +89,9 @@ export const SalesRegisterForm = ({ sedes, books }: Props) => {
     const result = await submitAlert({
       title: "Registro de Venta",
       html: `<b style="color: #0050b3;">¿Desea registrar esta venta?</b> <br><br> <b>Sede:</b> ${capitalizeWords(
-        !session?.user.sede
+        !session?.user.Sede
           ? data.origin.split("/")[1].replaceAll("_", " ")
-          : session.user.sede.city
+          : session.user.Sede.city
       )}<br> <b>Categoría:</b> ${capitalizeWords(
         data.category.replaceAll("_", " ")
       )}<br> <b>Libro:</b> ${capitalizeWords(
@@ -113,9 +113,9 @@ export const SalesRegisterForm = ({ sedes, books }: Props) => {
 
     // Procesar el registro de la venta
     const res = await registerSaleBySede({
-      origin: !session?.user.sede
+      origin: !session?.user.Sede
         ? data.origin.split("/")[0]
-        : session.user.sede.id,
+        : session.user.Sede.id,
       book: data.book.split("/")[0], // Extraer solo el ID del libro
       quantity: data.quantity,
     });
@@ -139,7 +139,7 @@ export const SalesRegisterForm = ({ sedes, books }: Props) => {
       onSubmit={handleSubmit(onSubmit)}
     >
       {/* Campo de selección de sede */}
-      {!session?.user.sede && (
+      {!session?.user.Sede && (
         <div className="flex flex-col gap-2">
           <label htmlFor="origin" className="font-semibold">
             Sede

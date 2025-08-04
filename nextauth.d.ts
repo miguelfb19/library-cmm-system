@@ -8,7 +8,7 @@ declare module "next-auth" {
       role: string;
       phone: string | null;
       city: string; 
-      sede: Sede | null;
+      Sede: Sede | null;
     } & DefaultSession["user"];
   }
 }
