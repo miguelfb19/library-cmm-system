@@ -1,6 +1,5 @@
 "use client";
 
-import React from "react";
 import { DialogContent, DialogHeader, DialogTitle } from "../ui/dialog";
 import { Input } from "../ui/input";
 import { useForm } from "react-hook-form";
@@ -8,6 +7,13 @@ import { createUser } from "@/actions/users/create-user";
 import { LoadingSpinner } from "../ui/LoadingSpinner";
 import { toast } from "sonner";
 import { capitalizeWords } from "@/utils/capitalize";
+import { useSession } from "next-auth/react";
+import { Sede } from "@/interfaces/Sede";
+import { useState } from "react";
+
+interface Props {
+  sedes: Sede[];
+}
 
 interface FormInputs {
   name: string;
@@ -15,15 +21,21 @@ interface FormInputs {
   phone: string;
   city: string;
   role: boolean;
+  sedeId: string | null;
 }
 
-export const CreateUserDialog = () => {
+export const CreateUserDialog = ({ sedes }: Props) => {
   const {
     register,
     handleSubmit,
     reset,
+    watch,
     formState: { errors, isSubmitting },
   } = useForm<FormInputs>();
+
+  const [hasSede, setHasSede] = useState(false);
+
+  const { data: session } = useSession();
 
   const onSubmit = async (data: FormInputs) => {
     const { name, email, phone, city, role } = data;
@@ -35,6 +47,8 @@ export const CreateUserDialog = () => {
       phone,
       city: capitalizeWords(city),
       role: formattedRole as "admin" | "productor" | "leader",
+      sedeId:
+        data.sedeId === "all" || !hasSede || watch("role") ? null : data.sedeId,
     };
 
     const { ok, message } = await createUser(userData);
@@ -65,6 +79,7 @@ export const CreateUserDialog = () => {
             type="text"
             placeholder="Nombre del usuario"
             {...register("name", { required: "Este campo es obligatorio" })}
+            disabled={isSubmitting}
           />
           {errors.name && (
             <span className="text-red-500 text-xs">{errors.name.message}</span>
@@ -76,6 +91,7 @@ export const CreateUserDialog = () => {
             type="email"
             placeholder="Correo electrónico"
             {...register("email", { required: "Este campo es obligatorio" })}
+            disabled={isSubmitting}
           />
           {errors.email && (
             <span className="text-red-500 text-xs">{errors.email.message}</span>
@@ -97,6 +113,7 @@ export const CreateUserDialog = () => {
                 },
               },
             })}
+            disabled={isSubmitting}
           />
           {errors.phone && (
             <span className="text-red-500 text-xs">{errors.phone.message}</span>
@@ -108,21 +125,62 @@ export const CreateUserDialog = () => {
             type="text"
             placeholder="Ciudad"
             {...register("city", { required: "Este campo es obligatorio" })}
+            disabled={isSubmitting}
           />
           {errors.city && (
             <span className="text-red-500 text-xs">{errors.city.message}</span>
           )}
         </div>
 
-        <div className=" flex items-center gap-2 md:col-span-2">
-          <input
-            type="checkbox"
-            id="role"
-            className="cursor-pointer"
-            {...register("role")}
-          />
-          <label htmlFor="role">¿Es Administrador?</label>
+        <div className="flex max-md:flex-col gap-2 md:gap-5">
+          <div className=" flex items-center gap-2 md:col-span-2">
+            <input
+              type="checkbox"
+              id="role"
+              className="cursor-pointer"
+              {...register("role")}
+              disabled={isSubmitting}
+            />
+            <label htmlFor="role">¿Es Administrador?</label>
+          </div>
+          {!watch("role") ? (
+            <div className=" flex items-center gap-2 md:col-span-2">
+              <input
+                type="checkbox"
+                id="has-sede"
+                className="cursor-pointer"
+                checked={hasSede}
+                onChange={() => setHasSede(!hasSede)}
+                disabled={isSubmitting}
+              />
+              <label htmlFor="role">¿Asociar a sede?</label>
+            </div>
+          ) : null}
         </div>
+        {hasSede && !watch("role") ? (
+          <div className="flex flex-col gap-1">
+            <select
+              id="sedeId"
+              className="custom-select"
+              disabled={session?.user.role !== "admin"}
+              {...register("sedeId", { required: "Seleccione una sede" })}
+            >
+              {sedes.map((sede) =>
+                sede.city !== "bodega" ? (
+                  <option key={sede.id} value={sede.id}>
+                    {capitalizeWords(sede.city)}
+                  </option>
+                ) : null
+              )}
+              <option value="all">Todas</option>
+            </select>
+            {errors.sedeId && (
+              <span className="text-red-500 text-xs">
+                {errors.sedeId.message}
+              </span>
+            )}
+          </div>
+        ) : null}
 
         <button
           className={`btn-blue md:col-span-2 !w-1/2 justify-self-center ${

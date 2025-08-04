@@ -20,7 +20,7 @@ export default async function AdminUsersPage() {
       <h2 className="font-bold">Usuarios registrados</h2>
       <Dialog>
         <UserTable users={users.data} sedes={sedes.sedes || []} />
-        <CreateUserDialog />
+        <CreateUserDialog sedes={sedes.sedes || []} />
       </Dialog>
     </div>
   );

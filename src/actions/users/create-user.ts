@@ -5,7 +5,7 @@ import prisma from "@/lib/prisma";
 import bcrypt from "bcryptjs";
 import { revalidatePath } from "next/cache";
 
-export const createUser = async (data: Omit<User, "id" | "password">) => {
+export const createUser = async (data: Omit<User, "id" | "password" | "Sede">) => {
   try {
     const { ok, message, status } = await verifyNewUser(data.email, data.phone);
     if (!ok) {
@@ -17,7 +17,11 @@ export const createUser = async (data: Omit<User, "id" | "password">) => {
     }
 
     const newUser = await prisma.user.create({
-      data: { ...data, password: bcrypt.hashSync(data.phone) },
+      data: {
+        ...data,
+        password: bcrypt.hashSync(data.phone),
+        sedeId: data.sedeId,
+      },
     });
 
     revalidatePath("/dashboard");

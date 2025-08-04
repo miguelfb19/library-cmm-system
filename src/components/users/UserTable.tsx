@@ -9,10 +9,11 @@ import { useSession } from "next-auth/react";
 import { toast } from "sonner";
 import { Input } from "../ui/input";
 import { useState } from "react";
-import { Loader2, Trash } from "lucide-react";
+import { Loader2, Trash, UserPlus } from "lucide-react";
 import { Sede } from "@/interfaces/Sede";
 import { capitalizeWords } from "../../utils/capitalize";
 import { changeSede } from "@/actions/users/change-link-sede";
+import { DialogTrigger } from "../ui/dialog";
 
 interface Props {
   users: User[];
@@ -107,14 +108,21 @@ export const UserTable = ({ users, sedes }: Props) => {
 
   return (
     <div>
-      <Input
-        id="search-users-name"
-        name="searchUsersName"
-        placeholder="Buscar por nombre..."
-        value={searchTerm}
-        onChange={(e) => setSearchTerm(e.target.value)}
-        className="md:max-w-sm mb-7"
-      />
+      <div className="flex justify-between">
+        <Input
+          id="search-users-name"
+          name="searchUsersName"
+          placeholder="Buscar por nombre..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className="md:max-w-sm mb-7"
+        />
+        <DialogTrigger>
+          <button className="btn-blue">
+            <UserPlus />
+          </button>
+        </DialogTrigger>
+      </div>
       <div className="overflow-auto flex-1">
         <table className="min-w-[50rem] md:min-w-full text-sm text-center">
           {/* Encabezados de la tabla con campos principales */}
@@ -174,13 +182,13 @@ export const UserTable = ({ users, sedes }: Props) => {
                     disabled={session?.user.role !== "admin"}
                     onChange={(event) => handleChangeSede(user, event)}
                   >
-                    {sedes.map((sede) => (
+                    {sedes.map((sede) =>
                       sede.city !== "bodega" ? (
                         <option key={sede.id} value={sede.id}>
                           {capitalizeWords(sede.city)}
                         </option>
                       ) : null
-                    ))}
+                    )}
                     <option value="all">Todas</option>
                   </select>
                 </td>
