@@ -62,6 +62,7 @@ export const authConfig = {
     async session({ session, token }) {
       const user = await prisma.user.findUnique({
         where: { email: token.email! },
+        include: { Sede: true }, // Include the Sede relation
       });
 
       if (!user) {
@@ -79,6 +80,7 @@ export const authConfig = {
         session.user.name = user.name;
         session.user.phone = user.phone;
         session.user.city = user.city;
+        session.user.sede = user.Sede;
         (session.user as any).password = user.password;
         /* eslint-enable */
       }

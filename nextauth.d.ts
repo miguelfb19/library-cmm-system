@@ -1,3 +1,4 @@
+import { Sede } from "@/interfaces/Sede";
 import { DefaultSession } from "next-auth";
 
 declare module "next-auth" {
@@ -7,6 +8,7 @@ declare module "next-auth" {
       role: string;
       phone: string | null;
       city: string; 
+      sede: Sede | null;
     } & DefaultSession["user"];
   }
 }

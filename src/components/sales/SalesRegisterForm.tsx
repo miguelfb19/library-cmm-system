@@ -10,6 +10,7 @@ import { toast } from "sonner";
 import { useState } from "react";
 import { LoadingSpinner } from "../ui/LoadingSpinner";
 import { registerSaleBySede } from "@/actions/sales/register-sale-by-sede";
+import { useSession } from "next-auth/react";
 
 /**
  * Props para el componente SalesRegisterForm
@@ -37,11 +38,11 @@ interface FormData {
 
 /**
  * Componente de formulario para registrar ventas de libros por sede
- * 
+ *
  * @description Este componente permite a los usuarios registrar ventas de libros
  * específicos en diferentes sedes. Incluye validaciones, confirmación del usuario
  * y actualización automática del inventario tras la venta.
- * 
+ *
  * @features
  * - Selección de sede (excluye bodega)
  * - Filtrado de libros por categoría
@@ -54,7 +55,8 @@ interface FormData {
 export const SalesRegisterForm = ({ sedes, books }: Props) => {
   // Estado para manejar el loading durante la operación
   const [isLoading, setIsLoading] = useState(false);
-  
+  const { data: session } = useSession();
+
   // Configuración del formulario con react-hook-form
   const {
     register,
@@ -70,24 +72,26 @@ export const SalesRegisterForm = ({ sedes, books }: Props) => {
 
   /**
    * Maneja el envío del formulario de registro de ventas
-   * 
+   *
    * @description Proceso completo de registro:
    * 1. Muestra confirmación al usuario con los datos de la venta
    * 2. Valida que exista stock suficiente
    * 3. Descuenta del inventario de la sede
    * 4. Muestra notificación de éxito o error
    * 5. Resetea el formulario si es exitoso
-   * 
+   *
    * @param data - Datos del formulario validados
    */
   const onSubmit = async (data: FormData) => {
     setIsLoading(true);
-    
+
     // Mostrar confirmación al usuario con resumen de la venta
     const result = await submitAlert({
       title: "Registro de Venta",
       html: `<b style="color: #0050b3;">¿Desea registrar esta venta?</b> <br><br> <b>Sede:</b> ${capitalizeWords(
-        data.origin.split("/")[1].replaceAll("_", " ")
+        !session?.user.sede
+          ? data.origin.split("/")[1].replaceAll("_", " ")
+          : session.user.sede.city
       )}<br> <b>Categoría:</b> ${capitalizeWords(
         data.category.replaceAll("_", " ")
       )}<br> <b>Libro:</b> ${capitalizeWords(
@@ -109,8 +113,10 @@ export const SalesRegisterForm = ({ sedes, books }: Props) => {
 
     // Procesar el registro de la venta
     const res = await registerSaleBySede({
-      origin: data.origin.split("/")[0], // Extraer solo el ID de la sede
-      book: data.book.split("/")[0],     // Extraer solo el ID del libro
+      origin: !session?.user.sede
+        ? data.origin.split("/")[0]
+        : session.user.sede.id,
+      book: data.book.split("/")[0], // Extraer solo el ID del libro
       quantity: data.quantity,
     });
 
@@ -133,30 +139,34 @@ export const SalesRegisterForm = ({ sedes, books }: Props) => {
       onSubmit={handleSubmit(onSubmit)}
     >
       {/* Campo de selección de sede */}
-      <div className="flex flex-col gap-2">
-        <label htmlFor="origin" className="font-semibold">
-          Sede
-        </label>
-        <select
-          id="origin"
-          className="custom-select"
-          {...register("origin", { required: true })}
-        >
-          <option value="">Seleccione una sede</option>
-          {sedes.map((sede) =>
-            // Excluir la bodega de las opciones disponibles
-            sede.city === "bodega" ? null : (
-              <option key={sede.id} value={sede.id + "/" + sede.city}>
-                {capitalizeWords(sede.city.replaceAll("_", " "))}
-              </option>
-            )
+      {!session?.user.sede && (
+        <div className="flex flex-col gap-2">
+          <label htmlFor="origin" className="font-semibold">
+            Sede
+          </label>
+          <select
+            id="origin"
+            className="custom-select"
+            {...register("origin", { required: true })}
+          >
+            <option value="">Seleccione una sede</option>
+            {sedes.map((sede) =>
+              // Excluir la bodega de las opciones disponibles
+              sede.city === "bodega" ? null : (
+                <option key={sede.id} value={sede.id + "/" + sede.city}>
+                  {capitalizeWords(sede.city.replaceAll("_", " "))}
+                </option>
+              )
+            )}
+          </select>
+          {errors.origin && (
+            <span className="text-red-500 text-xs">
+              Este campo es requerido
+            </span>
           )}
-        </select>
-        {errors.origin && (
-          <span className="text-red-500 text-xs">Este campo es requerido</span>
-        )}
-      </div>
-      
+        </div>
+      )}
+
       {/* Campo de selección de categoría */}
       <div className="flex flex-col gap-2">
         <label htmlFor="category" className="font-semibold">
@@ -178,7 +188,7 @@ export const SalesRegisterForm = ({ sedes, books }: Props) => {
           <span className="text-red-500 text-xs">Este campo es requerido</span>
         )}
       </div>
-      
+
       {/* Campo de selección de libro (filtrado por categoría) */}
       <div className="flex flex-col gap-2">
         <label htmlFor="book" className="font-semibold">
@@ -203,7 +213,7 @@ export const SalesRegisterForm = ({ sedes, books }: Props) => {
           <span className="text-red-500 text-xs">Este campo es requerido</span>
         )}
       </div>
-      
+
       {/* Campo de cantidad */}
       <div className="flex flex-col gap-2">
         <label htmlFor="quantity" className="font-semibold">
@@ -219,7 +229,7 @@ export const SalesRegisterForm = ({ sedes, books }: Props) => {
           <span className="text-red-500 text-xs">Este campo es requerido</span>
         )}
       </div>
-      
+
       {/* Botón de envío con estado de carga */}
       <button
         type="submit"
