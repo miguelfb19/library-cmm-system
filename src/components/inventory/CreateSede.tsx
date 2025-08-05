@@ -1,13 +1,13 @@
 "use client";
 
 import { useState } from "react";
-import { Input } from "../../ui/input";
+import { Input } from "../ui/input";
 import { submitAlert } from "@/utils/submitAlert";
 import { toast } from "sonner";
 import { createNewSede } from "@/actions/inventory/create-new-sede";
 import { capitalizeWord, capitalizeWords } from "@/utils/capitalize";
-import { LoadingSpinner } from "../../ui/LoadingSpinner";
-import { CustomDialog } from "../../ui/CustomDialog";
+import { LoadingSpinner } from "../ui/LoadingSpinner";
+import { CustomDialog } from "../ui/CustomDialog";
 
 /**
  * Componente para crear nuevas sedes

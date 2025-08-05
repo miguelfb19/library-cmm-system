@@ -101,7 +101,7 @@ export const DispatchOrder = ({ order, booksList }: Props) => {
 
   return (
     <>
-      {isLoading && <Loading />}
+      {isLoading && <Loading size={10}/>}
       <CustomDialog
         trigger={
           <button className="btn-blue !w-auto self-center !min-h-auto">

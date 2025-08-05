@@ -409,7 +409,7 @@ export const NewOrder = ({
           </button>
         </form>
       </CustomDialog>
-      {isLoading && <Loading />}
+      {isLoading && <Loading size={10} />}
     </>
   );
 };

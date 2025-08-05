@@ -5,11 +5,12 @@ import { getAllCategoriesInventory } from "./utils/get-all-categories-inventory"
 import { useState } from "react";
 import { submitAlert } from "@/utils/submitAlert";
 import { toast } from "sonner";
-import { Check, X } from "lucide-react";
+import { BookOpenCheck, Check, X } from "lucide-react";
 import { capitalizeWords } from "@/utils/capitalize";
 import { editStockLevelsByCategory } from "@/actions/inventory/edit-stock-levels-by-category";
 import { Category } from "@/generated/prisma";
 import { CustomDialog } from "../ui/CustomDialog";
+import { CustomTooltip } from "../ui/CustomTooltip";
 
 /**
  * Interface que define las propiedades del componente
@@ -26,11 +27,13 @@ interface Props {
 export const UpdateStockLevelsBySede = ({ sede }: Props) => {
   // Estado para controlar qué item está siendo editado
   const [editingItem, setEditingItem] = useState<string | number | null>(null);
-  
+
   // Estados para almacenar los nuevos valores de stock
-  const [newCriticalStocks, setNewCriticalStocks] = useState<Record<string, string>>({});
+  const [newCriticalStocks, setNewCriticalStocks] = useState<
+    Record<string, string>
+  >({});
   const [newLowStocks, setNewLowStocks] = useState<Record<string, string>>({});
-  
+
   // Estado para controlar la visibilidad del modal
   const [openModal, setOpenModal] = useState(false);
 
@@ -93,7 +96,11 @@ export const UpdateStockLevelsBySede = ({ sede }: Props) => {
   return (
     <CustomDialog
       trigger={
-        <button className="btn-blue !w-auto">Cambiar niveles de stock</button>
+        <CustomTooltip text="Cambiar niveles de stock">
+          <button className="btn-blue !w-auto">
+            <BookOpenCheck />
+          </button>
+        </CustomTooltip>
       }
       title={`Cambiar niveles de stock en ${sede.city}`}
       onOpenChange={setOpenModal}
@@ -170,7 +177,7 @@ export const UpdateStockLevelsBySede = ({ sede }: Props) => {
                   >
                     <Check size={15} />
                   </button>
-                  
+
                   {/* Botón para cancelar la edición */}
                   <button
                     className="p-1 bg-red-500 rounded hover:bg-red-300 transition-colors text-white cursor-pointer"

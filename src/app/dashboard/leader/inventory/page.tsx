@@ -1,7 +1,7 @@
 import { getSedesWithInventory } from "@/actions/inventory/get-sedes-with-inventory";
 import { auth } from "@/auth.config";
 import { SedeCard } from "@/components/inventory/SedeCard";
-import { CreateSede } from "@/components/inventory/ui/CreateSede";
+import { CreateSede } from "@/components/inventory/CreateSede";
 import { Title } from "@/components/ui/Title";
 import { Fragment } from "react";
 
@@ -14,10 +14,14 @@ export default async function InventoryPage() {
     <div>
       <Title title="Sedes CMM" />
       <div className="flex flex-col gap-5">
-        {session?.user?.role === "admin" && (
+        {/* CREAR SEDE */}
+        {session?.user?.role === "admin" && <CreateSede />}
+
+        {/* Mostrar sede principal solo para admins o usuario asociados a la sede */}
+        {session?.user?.role === "admin" ||
+        session?.user.Sede?.city === "manizales" ? (
           <>
-            {/* CREAR SEDE */}
-            <CreateSede />
+            {/* Sede principal */}
             <h3 className="text-primary text-xl font-bold">Sede principal</h3>
             <div className="flex gap-5 w-full">
               {sedes
@@ -31,7 +35,7 @@ export default async function InventoryPage() {
                 ))}
             </div>
           </>
-        )}
+        ) : null}
 
         <h3 className="text-primary text-xl font-bold">Otras sedes</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">

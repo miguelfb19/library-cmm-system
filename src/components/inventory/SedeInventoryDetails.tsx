@@ -81,7 +81,7 @@ export const SedeInventoryDetails = ({ inventory, sede }: Props) => {
       setEditingItem(null);
       return toast.success("Stock del libro editado correctamente");
     }
-    toast.info("Cambios cancelados");
+    toast.error("Cambios cancelados");
     setEditingItem(null);
   };
 
@@ -90,7 +90,7 @@ export const SedeInventoryDetails = ({ inventory, sede }: Props) => {
     session.user.role === "admin" || session.user.name!.includes(sede.leader);
 
   return (
-    <div>
+    <>
       <div className="flex flex-col gap-3">
         {/* Título de la categoría */}
         <h3 className="font-bold text-primary text-xl">
@@ -180,6 +180,6 @@ export const SedeInventoryDetails = ({ inventory, sede }: Props) => {
           </tbody>
         </table>
       </div>
-    </div>
+    </>
   );
 };

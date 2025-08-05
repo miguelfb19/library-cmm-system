@@ -1,13 +1,15 @@
 import { getSedeById } from "@/actions/inventory/get-sede-by-id";
-import { SedeInventoryDetails } from "@/components/inventory/SedeInventoryDetails";
 import { UpdateStockLevelsBySede } from "@/components/inventory/UpdateStockLevelsBySede";
-import { getAllCategoriesInventory } from "@/components/inventory/utils/get-all-categories-inventory";
 import { Title } from "@/components/ui/Title";
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { EditSedeLeader } from "@/components/inventory/ui/EditSedeLeader";
 import { auth } from "@/auth.config";
 import { redirect } from "next/navigation";
+import { HandlerParishProcessButton } from "@/components/inventory/parish-processes/HandlerParishProcessButton";
+import { getParishProcessSales } from "@/actions/sales/get-parish-process-sales";
+import { SedeInventoryHandler } from "@/components/inventory/SedeInventoryHandler";
+import { getAllBooks } from "@/actions/product/get-all-books";
 
 /**
  * Interface para las props de la página
@@ -34,7 +36,11 @@ export default async function SedeDetailsPage({ params }: Props) {
   if (!session || !session.user) redirect("/auth/login");
 
   // Obtiene los datos de la sede
-  const { sede, ok, message } = await getSedeById(id);
+  const [{ sede, ok, message }, parishSales, { books }] = await Promise.all([
+    getSedeById(id),
+    getParishProcessSales(id),
+    getAllBooks(),
+  ]);
 
   /**
    * Validación de acceso a la sede "Bodega"
@@ -67,6 +73,12 @@ export default async function SedeDetailsPage({ params }: Props) {
     );
   }
 
+  // Habilita el botón de ver procesos parroquiales solo para administradores, encargado de sede o usuarios asociado a la sede
+  const enableViewParishProcesses =
+    session.user.role === "admin" ||
+    session.user.name!.includes(sede.leader) ||
+    session.user.Sede?.id === sede.id;
+
   return (
     <div className="flex flex-col gap-5">
       <div className="flex items-center justify-between">
@@ -81,11 +93,15 @@ export default async function SedeDetailsPage({ params }: Props) {
           <ArrowLeft />
         </Link>
 
-        {/* EDITAR NIVELES DE STOCK */}
-        {(session.user.role === "admin" ||
-          session.user.name!.includes(sede.leader)) && (
-          <UpdateStockLevelsBySede sede={sede} />
-        )}
+        <div className="flex gap-2 items-center">
+          {/* VER VENTAS EN PROCESOS PARROQUIALES */}
+          {enableViewParishProcesses && <HandlerParishProcessButton />}
+          {/* EDITAR NIVELES DE STOCK */}
+          {(session.user.role === "admin" ||
+            session.user.name!.includes(sede.leader)) && (
+            <UpdateStockLevelsBySede sede={sede} />
+          )}
+        </div>
       </div>
       <div className="flex items-center justify-between bg-gradient-to-br from-slate-300 via-white via-70% to-slate-300 rounded p-5 shadow-lg overflow-auto">
         <div className="flex max-md:flex-col md:items-end gap-2">
@@ -95,11 +111,11 @@ export default async function SedeDetailsPage({ params }: Props) {
         <EditSedeLeader sedeId={sede.id} />
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-        {getAllCategoriesInventory(sede).map((inventory, index) => (
-          <SedeInventoryDetails inventory={inventory} sede={sede} key={index} />
-        ))}
-      </div>
+      <SedeInventoryHandler
+        sede={sede}
+        parishSales={parishSales.data ?? []}
+        books={books}
+      />
     </div>
   );
 }

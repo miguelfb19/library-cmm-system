@@ -86,7 +86,7 @@ export const ReceiveOrder = ({ order, bookList }: Props) => {
 
   return (
     <>
-      {isLoading && <Loading />}
+      {isLoading && <Loading size={10}/>}
       <CustomDialog
         title="Recibir Pedido"
         onOpenChange={setIsOpen}
