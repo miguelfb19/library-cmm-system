@@ -98,7 +98,10 @@ export const SalesRegisterForm = ({ sedes, books }: Props) => {
         !session?.user.Sede
           ? data.origin.split("/")[1].replaceAll("_", " ")
           : session.user.Sede.city
-      )}<br> <b>Categoría:</b> ${capitalizeWords(
+      )}${
+        data.isParishProcess ? `<br> <b>Parroquia:</b> ${data.parishName}` : ""
+      }<br>
+      <b>Categoría:</b> ${capitalizeWords(
         data.category.replaceAll("_", " ")
       )}<br> <b>Libro:</b> ${capitalizeWords(
         data.book.split("/")[1].replaceAll("_", " ")
@@ -119,11 +122,13 @@ export const SalesRegisterForm = ({ sedes, books }: Props) => {
 
     // Procesar el registro de la venta
     const res = await registerSaleBySede({
-      origin: !session?.user.Sede
+      sedeId: !session?.user.Sede
         ? data.origin.split("/")[0]
         : session.user.Sede.id,
-      book: data.book.split("/")[0], // Extraer solo el ID del libro
+      bookId: data.book.split("/")[0], // Extraer solo el ID del libro
       quantity: data.quantity,
+      parishName: data.isParishProcess ? data.parishName : undefined,
+      parishManager: data.isParishProcess ? data.parishManager : undefined,
     });
 
     // Manejar respuesta del servidor
