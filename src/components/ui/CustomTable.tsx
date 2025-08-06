@@ -86,7 +86,7 @@ export const CustomTable = <T extends Record<string, any>>({
           {data.map((row, rowIndex) => (
             <tr
               key={row.id || rowIndex} // Usa row.id si existe, sino el índice
-              className={`border-b h-10 hover:bg-stone-100 ${rowClassName}`}
+              className={`border-b h-10 hover:bg-stone-100 active:bg-stone-100 focus:bg-stone-100 ${rowClassName}`}
             >
               {/* Renderiza cada celda de la fila actual */}
               {columns.map((column) => (

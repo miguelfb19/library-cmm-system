@@ -3,7 +3,9 @@ type Category =
   | "seminario_armadura"
   | "seminario_como_vivir"
   | "cartilla"
-  | "libro";
+  | "libro"
+  | "paquetes"
+  | "folleto_serie";
 
 export interface SedeWithInventory {
   id: string;

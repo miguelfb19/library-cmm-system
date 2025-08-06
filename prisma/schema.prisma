@@ -26,6 +26,8 @@ enum Category {
   seminario_como_vivir
   cartilla
   libro
+  paquetes
+  folleto_serie
 }
 
 enum OrderState {

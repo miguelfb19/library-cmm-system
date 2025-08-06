@@ -1,6 +1,6 @@
 import { User } from "../interfaces/User";
 
-export const users: User[] = [
+export const users: Omit<User, 'Sede'>[] = [
   {
     id: "fsjg8-fd9djsn-gf8ssndsf-f99sd",
     name: "Miguel Fernandez",
@@ -10,7 +10,6 @@ export const users: User[] = [
     city: "Pereira",
     phone: "+573225289202",
     sedeId: null, // null si tiene acceso a todas las sedes
-    Sede: null, // Relación opcional con la sede
   },
   {
     id: "83jfn-8dusjsn-8rwjndud7-7qwnsa",
@@ -21,7 +20,6 @@ export const users: User[] = [
     city: "Manizales",
     phone: "+573225987654",
     sedeId: null, // null si tiene acceso a todas las sedes
-    Sede: null, // Relación opcional con la sede
   },
   {
     id: "fjsnau-1hfnxks-21jfnai2-872843",
@@ -32,7 +30,6 @@ export const users: User[] = [
     city: "Medellin",
     phone: "+573132774411",
     sedeId: null, // null si tiene acceso a todas las sedes
-    Sede: null, // Relación opcional con la sede
   },
   {
     id: "isaifn-7sykjbfds-8s8fjcx-jdjsah",
@@ -43,7 +40,6 @@ export const users: User[] = [
     city: "Manizales",
     phone: "+573104378294",
     sedeId: null, // null si tiene acceso a todas las sedes
-    Sede: null, // Relación opcional con la sede
   },
 ];
 

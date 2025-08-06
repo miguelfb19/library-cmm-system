@@ -2,7 +2,7 @@
 
 import { ShortSede } from "@/interfaces/Sede";
 import { getAllCategoriesInventory } from "./utils/get-all-categories-inventory";
-import { useState } from "react";
+import { Fragment, useState } from "react";
 import { submitAlert } from "@/utils/submitAlert";
 import { toast } from "sonner";
 import { BookOpenCheck, Check, X } from "lucide-react";
@@ -115,82 +115,88 @@ export const UpdateStockLevelsBySede = ({ sede }: Props) => {
       <div className="max-h-[60vh] overflow-y-auto">
         {/* Mapeo de categorías de inventario */}
         {getAllCategoriesInventory(sede).map((inventory, index) => (
-          <div key={index} className="flex flex-col gap-2 mb-5">
-            <div className="flex flex-col gap-2">
-              <h3 className="font-bold text-primary text-xl">
-                {capitalizeWords(
-                  inventory[0]?.book.category.replaceAll("_", " ")
-                )}
-              </h3>
-              <div className="flex items-center gap-2">
+          <Fragment key={index}>
+            {inventory.length > 0 ? (
+              <div className="flex flex-col gap-2 mb-5">
                 <div className="flex flex-col gap-2">
+                  <h3 className="font-bold text-primary text-xl">
+                    {capitalizeWords(
+                      inventory[0]?.book.category.replaceAll("_", " ") ?? ""
+                    )}
+                  </h3>
                   <div className="flex items-center gap-2">
-                    <p className="font-bold text-yellow-600">Stock bajo:</p>
-                    <input
-                      id={`low-stock-${inventory[0].id}`}
-                      name={`lowStock-${inventory[0].id}`}
-                      className="w-20 pl-5"
-                      type="number"
-                      defaultValue={inventory[0].lowStock || 0}
-                      onChange={(e) =>
-                        handleLowStockChange(inventory[0].id, e.target.value)
-                      }
-                    />
+                    <div className="flex flex-col gap-2">
+                      <div className="flex items-center gap-2">
+                        <p className="font-bold text-yellow-600">Stock bajo:</p>
+                        <input
+                          id={`low-stock-${inventory[0].id}`}
+                          name={`lowStock-${inventory[0].id}`}
+                          className="w-20 pl-5"
+                          type="number"
+                          defaultValue={inventory[0].lowStock || 0}
+                          onChange={(e) =>
+                            handleLowStockChange(
+                              inventory[0].id,
+                              e.target.value
+                            )
+                          }
+                        />
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <p className="font-bold text-red-600">Stock crítico:</p>
+                        <input
+                          id={`critical-stock-${inventory[0].id}`}
+                          name={`criticalStock-${inventory[0].id}`}
+                          className="w-20 pl-5"
+                          type="number"
+                          defaultValue={inventory[0].criticalStock || 0}
+                          onChange={(e) =>
+                            handleCriticalStockChange(
+                              inventory[0].id,
+                              e.target.value
+                            )
+                          }
+                        />
+                      </div>
+                    </div>
+                    <div
+                      className="flex items-center gap-1"
+                      hidden={editingItem !== inventory[0].id}
+                    >
+                      <button
+                        className="p-1 bg-green-500 rounded hover:bg-green-300 transition-colors text-white cursor-pointer"
+                        onClick={() => {
+                          handleChangeStock(
+                            inventory[0].book.category as Category,
+                            {
+                              // Usa el nuevo valor si existe, sino mantiene el valor actual
+                              criticalStock:
+                                newCriticalStocks[inventory[0].id] ||
+                                inventory[0].criticalStock.toString(),
+                              lowStock:
+                                newLowStocks[inventory[0].id] ||
+                                inventory[0].lowStock.toString(),
+                            }
+                          );
+                        }}
+                      >
+                        <Check size={15} />
+                      </button>
+                      {/* Botón para cancelar la edición */}
+                      <button
+                        className="p-1 bg-red-500 rounded hover:bg-red-300 transition-colors text-white cursor-pointer"
+                        onClick={() => {
+                          setEditingItem(null); // Resetea el estado de edición
+                        }}
+                      >
+                        <X size={15} />
+                      </button>
+                    </div>
                   </div>
-                  <div className="flex items-center gap-2">
-                    <p className="font-bold text-red-600">Stock crítico:</p>
-                    <input
-                      id={`critical-stock-${inventory[0].id}`}
-                      name={`criticalStock-${inventory[0].id}`}
-                      className="w-20 pl-5"
-                      type="number"
-                      defaultValue={inventory[0].criticalStock || 0}
-                      onChange={(e) =>
-                        handleCriticalStockChange(
-                          inventory[0].id,
-                          e.target.value
-                        )
-                      }
-                    />
-                  </div>
-                </div>
-                <div
-                  className="flex items-center gap-1"
-                  hidden={editingItem !== inventory[0].id}
-                >
-                  <button
-                    className="p-1 bg-green-500 rounded hover:bg-green-300 transition-colors text-white cursor-pointer"
-                    onClick={() => {
-                      handleChangeStock(
-                        inventory[0].book.category as Category,
-                        {
-                          // Usa el nuevo valor si existe, sino mantiene el valor actual
-                          criticalStock:
-                            newCriticalStocks[inventory[0].id] ||
-                            inventory[0].criticalStock.toString(),
-                          lowStock:
-                            newLowStocks[inventory[0].id] ||
-                            inventory[0].lowStock.toString(),
-                        }
-                      );
-                    }}
-                  >
-                    <Check size={15} />
-                  </button>
-
-                  {/* Botón para cancelar la edición */}
-                  <button
-                    className="p-1 bg-red-500 rounded hover:bg-red-300 transition-colors text-white cursor-pointer"
-                    onClick={() => {
-                      setEditingItem(null); // Resetea el estado de edición
-                    }}
-                  >
-                    <X size={15} />
-                  </button>
                 </div>
               </div>
-            </div>
-          </div>
+            ) : null}
+          </Fragment>
         ))}
       </div>
     </CustomDialog>

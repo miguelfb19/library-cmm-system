@@ -16,6 +16,12 @@ export const getAllCategoriesInventory = (sede: ShortSede) => {
   const librosInventory = sede.inventory.filter(
     (item) => item.book.category === "libro"
   );
+  const paquetesInventory = sede.inventory.filter(
+    (item) => item.book.category === "paquetes"
+  );
+  const folletoSerieInventory = sede.inventory.filter(
+    (item) => item.book.category === "folleto_serie"
+  );
 
   return [
     sanacionInventory,
@@ -23,5 +29,7 @@ export const getAllCategoriesInventory = (sede: ShortSede) => {
     comoVivirInventory,
     cartillasInventory,
     librosInventory,
+    paquetesInventory,
+    folletoSerieInventory,
   ];
 };

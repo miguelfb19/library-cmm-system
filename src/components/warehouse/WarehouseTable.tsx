@@ -162,6 +162,8 @@ export const WarehouseTable = ({ warehouse, ordersDetails }: Props) => {
         columns={columns}
         data={filteredInventoryByCategory}
         rowClassName="!h-7"
+        tableClassName="max-md:!min-w-[40rem]"
+        headerClassName="max-md:!text-xs"
       />
     </>
   );

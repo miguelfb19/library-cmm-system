@@ -206,7 +206,7 @@ export const UserTable = ({ users, sedes }: Props) => {
 
   return (
     <div>
-      <div className="flex justify-between">
+      <div className="flex justify-between max-md:gap-3">
         <Input
           id="search-users-name"
           name="searchUsersName"

@@ -219,7 +219,7 @@ export const NewOrder = ({
         <form className="grid grid-cols-1 md:grid-cols-2 gap-5">
           {/* Selector de sede (solo para pedidos no productivos) o en caso de que el usuario no este asociado a una sede */}
           {!isProduction && !userSede ? (
-            <div className="flex flex-col gap-2">
+            <div className="flex flex-col gap-2 max-md:col-span-2">
               <label htmlFor="origin" className="font-bold">
                 ¿Para cual sede es el pedido? <b className="text-red-500">*</b>
               </label>
@@ -242,7 +242,7 @@ export const NewOrder = ({
             </div>
           ) : null}
           {/* Selector de fecha límite */}
-          <div className="flex flex-col gap-2">
+          <div className="flex flex-col gap-2 max-md:col-span-2">
             <label className="font-bold" htmlFor="date">
               ¿Cual es la fecha límite de recepción?
             </label>
@@ -255,7 +255,7 @@ export const NewOrder = ({
           </div>
 
           {/* LISTADO DE LIBROS A PEDIR */}
-          <div className="h-48 max-h-48 overflow-y-auto md:col-span-2">
+          <div className="h-48 max-h-48 overflow-y-auto col-span-2">
             {detail.map((item, index) => (
               <div className="flex gap-2" key={index}>
                 <div className="flex flex-col gap-2">
