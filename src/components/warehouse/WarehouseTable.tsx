@@ -1,12 +1,13 @@
 "use client";
 
 // Importaciones necesarias para el componente
-import { Warehouse } from "@/interfaces/Warehouse";
+import { InventoryItem, Warehouse } from "@/interfaces/Warehouse";
 import { capitalizeWords } from "@/utils/capitalize";
 import { Input } from "../ui/input";
 import { useState, useEffect } from "react";
 import { OrderDetails } from "@/interfaces/Order";
 import { toast } from "sonner";
+import { CustomTable } from "../ui/CustomTable";
 
 /**
  * Interface que define las propiedades del componente
@@ -71,6 +72,68 @@ export const WarehouseTable = ({ warehouse, ordersDetails }: Props) => {
       .reduce((total, detail) => total + detail.quantity, 0);
   };
 
+  const columns = [
+    {
+      key: "book.name",
+      header: "Libro",
+      render: (_: string, item: InventoryItem) => (
+        <div className="text-start w-60 md:w-80">
+          {capitalizeWords(item.book.name.replaceAll("_", " "))}
+        </div>
+      ),
+    },
+    {
+      key: "book.category",
+      header: "Categoría",
+      render: (_: string, item: InventoryItem) => (
+        <div className="text-center">
+          {capitalizeWords(item.book.category.replaceAll("_", " "))}
+        </div>
+      ),
+    },
+    {
+      key: "stock",
+      header: "Actual",
+      render: (value: number, _: InventoryItem) => <div>{value}</div>,
+    },
+    {
+      key: "production",
+      header: "Producción",
+      render: (_: number, item: InventoryItem) => (
+        <div className="text-purple-500">
+          {getProductionQuantity(item.book.id, { isProduction: true })}
+        </div>
+      ),
+    },
+    {
+      key: "orders",
+      header: "Pedidos",
+      render: (_: number, item: InventoryItem) => (
+        <div className="text-yellow-500">
+          {getProductionQuantity(item.book.id, { isProduction: false })}
+        </div>
+      ),
+    },
+    {
+      key: "expected",
+      header: "Esperado",
+      render: (_: number, item: InventoryItem) => {
+        const finalInventory =
+          item.stock +
+          getProductionQuantity(item.book.id, { isProduction: true }) -
+          getProductionQuantity(item.book.id, { isProduction: false });
+        return (
+          <div
+            className={`${
+              finalInventory < 0 ? "text-red-500" : "text-green-500"
+            } font-bold`}
+          >
+            {finalInventory}
+          </div>
+        );
+      },
+    },
+  ];
   return (
     <>
       {/* Contenedor de campos de búsqueda */}
@@ -95,61 +158,11 @@ export const WarehouseTable = ({ warehouse, ordersDetails }: Props) => {
         />
       </div>
 
-      {/* Contenedor de la tabla con scroll horizontal */}
-      <div className="overflow-x-auto">
-        <table className="min-w-[50rem] md:min-w-full text-sm">
-          {/* Encabezados de la tabla */}
-          <thead className="bg-secondary">
-            <tr className="border-b h-10">
-              <th>Libro</th>
-              <th>Categoría</th>
-              <th>Actual</th>
-              <th>Producción</th>
-              <th>Pedidos</th>
-              <th>Esperado</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filteredInventoryByCategory.map((item) => {
-              const finalInventory =
-                item.stock +
-                getProductionQuantity(item.book.id, { isProduction: true }) -
-                getProductionQuantity(item.book.id, { isProduction: false });
-              return (
-                <tr
-                  key={item.id}
-                  className="text-center border-b hover:bg-secondary h-7"
-                >
-                  <td className="text-start w-60 md:w-80">
-                    {capitalizeWords(item.book.name.replaceAll("_", " "))}
-                  </td>
-                  <td className="text-center">
-                    {capitalizeWords(item.book.category.replaceAll("_", " "))}
-                  </td>
-                  <td>{item.stock}</td>
-                  <td className="text-purple-500">
-                    {getProductionQuantity(item.book.id, {
-                      isProduction: true,
-                    })}
-                  </td>
-                  <td className="text-yellow-500">
-                    {getProductionQuantity(item.book.id, {
-                      isProduction: false,
-                    })}
-                  </td>
-                  <td
-                    className={`${
-                      finalInventory < 0 ? "text-red-500" : "text-green-500"
-                    } font-bold`}
-                  >
-                    {finalInventory}
-                  </td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
-      </div>
+      <CustomTable
+        columns={columns}
+        data={filteredInventoryByCategory}
+        rowClassName="!h-7"
+      />
     </>
   );
 };

@@ -74,10 +74,12 @@ export default async function SedeDetailsPage({ params }: Props) {
   }
 
   // Habilita el botón de ver procesos parroquiales solo para administradores, encargado de sede o usuarios asociado a la sede
+  // Lo deshabilita para bodega
   const enableViewParishProcesses =
-    session.user.role === "admin" ||
-    session.user.name!.includes(sede.leader) ||
-    session.user.Sede?.id === sede.id;
+    (session.user.role === "admin" ||
+      session.user.name!.includes(sede.leader) ||
+      session.user.Sede?.id === sede.id) &&
+    sede.city.toLowerCase() !== "bodega";
 
   return (
     <div className="flex flex-col gap-5">

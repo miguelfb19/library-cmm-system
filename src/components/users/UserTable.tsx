@@ -8,12 +8,13 @@ import { submitAlert } from "@/utils/submitAlert";
 import { useSession } from "next-auth/react";
 import { toast } from "sonner";
 import { Input } from "../ui/input";
-import { useState } from "react";
+import { ReactNode, useState } from "react";
 import { Loader2, Trash, UserPlus } from "lucide-react";
 import { Sede } from "@/interfaces/Sede";
 import { capitalizeWords } from "../../utils/capitalize";
 import { changeSede } from "@/actions/users/change-link-sede";
 import { DialogTrigger } from "../ui/dialog";
+import { CustomTable } from "../ui/CustomTable";
 
 interface Props {
   users: User[];
@@ -106,6 +107,103 @@ export const UserTable = ({ users, sedes }: Props) => {
     update();
   };
 
+  const columns = [
+    {
+      key: "name",
+      header: "Nombre",
+      render: (value: string) => <div className="!text-start pl-2">{value}</div>,
+    },
+    {
+      key: "role",
+      header: "Rol",
+      render: (value: string, user: User) => (
+        <select
+          key={`role-select-${user.id}`}
+          id={`role-${user.id}`}
+          name="role"
+          className={`border ${
+            session?.user.role === "admin"
+              ? "border-primary/40"
+              : "border-white"
+          } rounded focus-visible:outline-primary/50 p-1`}
+          value={value}
+          disabled={session?.user.role !== "admin"}
+          onChange={(event) => handleChangeRole(user, event)}
+        >
+          {roles.map((role) => (
+            <option key={role} value={role}>
+              {role}
+            </option>
+          ))}
+        </select>
+      ),
+    },
+    {
+      key: "email",
+      header: "Correo electrónico",
+    },
+    {
+      key: "phone",
+      header: "Teléfono",
+    },
+    {
+      key: "city",
+      header: "Ciudad",
+    },
+    {
+      key: "sedeId",
+      header: "Sede asociada",
+      render: (_: string, user: User) => (
+        <select
+          name="sede"
+          id={`sede-${user.id}`}
+          className={`border ${
+            session?.user.role === "admin"
+              ? "border-primary/40"
+              : "border-white"
+          } rounded focus-visible:outline-primary/50 p-1`}
+          value={
+            user.sedeId
+              ? sedes.filter((sede) => sede.id === user.sedeId)[0]?.id
+              : "all"
+          }
+          disabled={session?.user.role !== "admin"}
+          onChange={(event) => handleChangeSede(user, event)}
+        >
+          {sedes.map((sede) =>
+            sede.city !== "bodega" ? (
+              <option key={sede.id} value={sede.id}>
+                {capitalizeWords(sede.city)}
+              </option>
+            ) : null
+          )}
+          <option value="all">Todas</option>
+        </select>
+      ),
+    },
+    {
+      key: "actions",
+      header: "Acciones",
+      render: (_: ReactNode, user: User) => (
+        <div className="flex items-center justify-center gap-2">
+          {session?.user.role === "admin" && (
+            <button
+              onClick={() => handleDeleteUser(user.id)}
+              className="text-red-500 cursor-pointer bg-red-500/20 rounded p-1 hover:bg-red-500/10 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+              disabled={loadingUsers.has(user.id)}
+            >
+              {loadingUsers.has(user.id) ? (
+                <Loader2 size={20} className="animate-spin" />
+              ) : (
+                <Trash size={20} />
+              )}
+            </button>
+          )}
+        </div>
+      ),
+    },
+  ];
+
   return (
     <div>
       <div className="flex justify-between">
@@ -117,103 +215,17 @@ export const UserTable = ({ users, sedes }: Props) => {
           onChange={(e) => setSearchTerm(e.target.value)}
           className="md:max-w-sm mb-7"
         />
-        <DialogTrigger asChild className="flex justify-center self-start !w-auto">
+        <DialogTrigger
+          asChild
+          className="flex justify-center self-start !w-auto"
+        >
           <button className="btn-blue">
             <UserPlus />
           </button>
         </DialogTrigger>
       </div>
-      <div className="overflow-auto flex-1">
-        <table className="min-w-[50rem] md:min-w-full text-sm text-center">
-          {/* Encabezados de la tabla con campos principales */}
-          <thead className="bg-secondary font-bold">
-            <tr className="border-b h-10">
-              <td>Nombre</td>
-              <td>Rol</td>
-              <td>Correo electrónico</td>
-              <td>Teléfono</td>
-              <td>Ciudad</td>
-              <td>Sede asociada</td>
-              <td>Acciones</td>
-            </tr>
-          </thead>
-          <tbody>
-            {filteredUsers.map((user) => (
-              <tr key={user.id} className="border-b h-10">
-                <td className="!text-start pl-2">{user.name}</td>
-                <td>
-                  <select
-                    key={`role-select-${user.id}`}
-                    id={`role-${user.id}`}
-                    name="role"
-                    className={`border ${
-                      session?.user.role === "admin"
-                        ? "border-primary/40"
-                        : "border-white"
-                    } rounded focus-visible:outline-primary/50 p-1`}
-                    value={user.role}
-                    disabled={session?.user.role !== "admin"}
-                    onChange={(event) => handleChangeRole(user, event)}
-                  >
-                    {roles.map((role) => (
-                      <option key={role} value={role}>
-                        {role}
-                      </option>
-                    ))}
-                  </select>
-                </td>
-                <td>{user.email}</td>
-                <td>{user.phone}</td>
-                <td>{user.city}</td>
-                <td>
-                  <select
-                    name="sede"
-                    id={`sede-${user.id}`}
-                    className={`border ${
-                      session?.user.role === "admin"
-                        ? "border-primary/40"
-                        : "border-white"
-                    } rounded focus-visible:outline-primary/50 p-1`}
-                    value={
-                      user.sedeId
-                        ? sedes.filter((sede) => sede.id === user.sedeId)[0]?.id
-                        : "all"
-                    }
-                    disabled={session?.user.role !== "admin"}
-                    onChange={(event) => handleChangeSede(user, event)}
-                  >
-                    {sedes.map((sede) =>
-                      sede.city !== "bodega" ? (
-                        <option key={sede.id} value={sede.id}>
-                          {capitalizeWords(sede.city)}
-                        </option>
-                      ) : null
-                    )}
-                    <option value="all">Todas</option>
-                  </select>
-                </td>
-                <td>
-                  <div className="flex items-center justify-center gap-2">
-                    {session?.user.role === "admin" && (
-                      <button
-                        onClick={() => handleDeleteUser(user.id)}
-                        className="text-red-500 cursor-pointer bg-red-500/20 rounded p-1 hover:bg-red-500/10 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
-                        disabled={loadingUsers.has(user.id)}
-                      >
-                        {loadingUsers.has(user.id) ? (
-                          <Loader2 size={20} className="animate-spin" />
-                        ) : (
-                          <Trash size={20} />
-                        )}
-                      </button>
-                    )}
-                  </div>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+
+      <CustomTable columns={columns} data={filteredUsers} />
     </div>
   );
 };

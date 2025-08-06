@@ -8,7 +8,7 @@ export interface Warehouse {
   inventory: InventoryItem[];
 }
 
-interface InventoryItem {
+export interface InventoryItem {
   id: string;
   sedeId: string;
   bookId: string;

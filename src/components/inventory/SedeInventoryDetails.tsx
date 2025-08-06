@@ -10,6 +10,7 @@ import { Check, X } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { useState } from "react";
 import { toast } from "sonner";
+import { CustomTable } from '../ui/CustomTable';
 
 /**
  * Interface que define la estructura del inventario y la sede
@@ -89,6 +90,82 @@ export const SedeInventoryDetails = ({ inventory, sede }: Props) => {
   const enableEditing =
     session.user.role === "admin" || session.user.name!.includes(sede.leader);
 
+  /**
+   * Definición de columnas para la tabla de inventario
+   * Incluye columna de libro y columna de stock editable con controles
+   */
+  const columns = [
+    {
+      key: "book.name",
+      header: "Libro",
+      render: (_: string, item: Props['inventory'][0]) => (
+        <h4 className="text-sm text-start">{formatBookName(item.book.name)}</h4>
+      ),
+    },
+    {
+      key: "stock",
+      header: "Stock",
+      render: (_: number, item: Props['inventory'][0]) => {
+        const { stock, criticalStock, lowStock, book } = item;
+        return (
+          <div className="relative w-44">
+            <div
+              className={`text-sm ${
+                stock >= lowStock
+                  ? "text-primary"
+                  : stock >= criticalStock
+                  ? "text-yellow-500"
+                  : "text-red-500"
+              }`}
+            >
+              <div className="flex items-center px-2">
+                <div className="flex items-center gap-2">
+                  <span>Stock:</span>
+                  <input
+                    id={`stock-${book.id}`}
+                    name={`stock-${book.id}`}
+                    className="border-none rounded p-1 w-16"
+                    type="number"
+                    value={
+                      editingItem === book.id
+                        ? newStocks[book.id]
+                        : stock
+                    }
+                    onChange={(e) => {
+                      handleStockChange(book.id, e.target.value);
+                    }}
+                    disabled={!enableEditing}
+                  />
+                </div>
+                <div
+                  className="flex items-center gap-1 absolute right-0"
+                  hidden={editingItem !== book.id}
+                >
+                  <button
+                    className="p-1 bg-green-500 rounded hover:bg-green-300 transition-colors text-white cursor-pointer"
+                    onClick={() => {
+                      handleChangeStock(book.id, book.name);
+                    }}
+                  >
+                    <Check size={15} />
+                  </button>
+                  <button
+                    className="p-1 bg-red-500 rounded hover:bg-red-300 transition-colors text-white cursor-pointer"
+                    onClick={() => {
+                      setEditingItem(null);
+                    }}
+                  >
+                    <X size={15} />
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        );
+      },
+    },
+  ];
+
   return (
     <>
       <div className="flex flex-col gap-3">
@@ -97,88 +174,12 @@ export const SedeInventoryDetails = ({ inventory, sede }: Props) => {
           {capitalizeWords(inventory[0]?.book.category.replaceAll("_", " "))}
         </h3>
 
-        {/* Tabla de inventario */}
-        <table className="table-auto border-collapse">
-          {/* Encabezados de la tabla */}
-          <thead className="bg-secondary/70 border-b">
-            <tr>
-              <th className="font-extrabold text-start">Libro</th>
-              <th className="font-extrabold text-start">Stock</th>
-            </tr>
-          </thead>
-
-          {/* Cuerpo de la tabla con items de inventario */}
-          <tbody>
-            {inventory
-              .sort((a, b) => a.book.name.localeCompare(b.book.name))
-              .map(({ stock, criticalStock, lowStock, book, id }) => (
-                <tr
-                  key={id}
-                  className="hover:bg-secondary/50 transition-colors"
-                >
-                  <td className="border-b">
-                    <h4 className="text-sm">{formatBookName(book.name)}</h4>
-                  </td>
-
-                  {/* STOCK CELL */}
-                  <td className="border-b relative w-44">
-                    <div
-                      className={`text-sm ${
-                        stock >= lowStock
-                          ? "text-primary"
-                          : stock >= criticalStock
-                          ? "text-yellow-500"
-                          : "text-red-500"
-                      }`}
-                    >
-                      <div className="flex items-center px-2">
-                        <div className="flex items-center gap-2">
-                          <span>Stock:</span>
-                          <input
-                            id={`stock-${book.id}`}
-                            name={`stock-${book.id}`}
-                            // defaultValue={stock}
-                            className="border-none rounded p-1 w-16"
-                            type="number"
-                            value={
-                              editingItem === book.id
-                                ? newStocks[book.id]
-                                : stock
-                            }
-                            onChange={(e) => {
-                              handleStockChange(book.id, e.target.value);
-                            }}
-                            disabled={!enableEditing}
-                          />
-                        </div>
-                        <div
-                          className="flex items-center gap-1 absolute right-0"
-                          hidden={editingItem !== book.id}
-                        >
-                          <button
-                            className="p-1 bg-green-500 rounded hover:bg-green-300 transition-colors text-white cursor-pointer"
-                            onClick={() => {
-                              handleChangeStock(book.id, book.name);
-                            }}
-                          >
-                            <Check size={15} />
-                          </button>
-                          <button
-                            className="p-1 bg-red-500 rounded hover:bg-red-300 transition-colors text-white cursor-pointer"
-                            onClick={() => {
-                              setEditingItem(null);
-                            }}
-                          >
-                            <X size={15} />
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  </td>
-                </tr>
-              ))}
-          </tbody>
-        </table>
+        {/* Tabla de inventario usando CustomTable con datos ordenados alfabéticamente */}
+        <CustomTable 
+          columns={columns} 
+          data={inventory.sort((a, b) => a.book.name.localeCompare(b.book.name))}
+          rowClassName="!h-auto"
+        />
       </div>
     </>
   );
