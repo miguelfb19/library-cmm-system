@@ -14,7 +14,7 @@ export const HandlerParishProcessButton = () => {
       // Cleanup function to reset the state when the component unmounts
       closeProcesses();
     };
-  }, []);
+  }, [closeProcesses]);
 
   return (
     <CustomTooltip

@@ -94,7 +94,7 @@ export const WarehouseTable = ({ warehouse, ordersDetails }: Props) => {
     {
       key: "stock",
       header: "Actual",
-      render: (value: number, _: InventoryItem) => <div>{value}</div>,
+      render: (value: number) => <div>{value}</div>,
     },
     {
       key: "production",

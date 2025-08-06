@@ -18,6 +18,7 @@ import { ReactNode, useState } from "react";
 import { ReceiveOrder } from "./ReceiveOrder";
 import { History, ClipboardList } from "lucide-react";
 import { CustomTable } from "../ui/CustomTable";
+import { Sede } from "@/interfaces/Sede";
 
 interface Props {
   orders: Order[];
@@ -96,7 +97,7 @@ export const OrderList = ({
     {
       key: "origin",
       header: "Origen",
-      render: (_: any, order: Order) => (
+      render: (_: Sede, order: Order) => (
         <div>{capitalizeWords(order.origin.city.replaceAll("-", " "))}</div>
       ),
     },

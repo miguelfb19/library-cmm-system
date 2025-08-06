@@ -1,5 +1,7 @@
 "use client";
 
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 /**
  * Definición de una columna para la tabla
  * @interface Column
