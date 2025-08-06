@@ -140,51 +140,46 @@ export const SedeInventoryDetails = ({ inventory, sede }: Props) => {
             >
               <div className="flex items-center justify-center px-2 relative">
                 <div className="flex items-center gap-4">
-                  {isLoading[item.id] ? (
-                    <div className="flex items-center justify-center gap-2 pl-2">
-                      <div className="w-12 h-7 my-1 bg-primary/30 rounded animate-pulse" />
-                      <div className="w-7 h-7 my-1 bg-primary/30 rounded animate-pulse" />
-                      <div className="w-5 h-5 my-1 bg-primary/30 rounded animate-pulse" />
-                      <div className="w-7 h-7 my-1 bg-primary/30 rounded animate-pulse" />
-                    </div>
-                  ) : (
-                    <>
-                      <span>Stock:</span>
-                      <div className="flex items-center gap-2">
-                        <button
-                          className="border rounded border-primary bg-primary/10 my-1 hover:bg-primary/20 transition-colors cursor-pointer"
-                          onClick={() =>
-                            handleEditPaqueteStock(
-                              {
-                                ...item,
-                                sedeId: sede.id,
-                                bookId: item.book.id,
-                              },
-                              "decrement"
-                            )
-                          }
-                        >
-                          <Minus />
-                        </button>
-                        <span>{stock}</span>
-                        <button
-                          className="border rounded border-primary bg-primary/10 my-1 hover:bg-primary/20 transition-colors cursor-pointer"
-                          onClick={() =>
-                            handleEditPaqueteStock(
-                              {
-                                ...item,
-                                sedeId: sede.id,
-                                bookId: item.book.id,
-                              },
-                              "increment"
-                            )
-                          }
-                        >
-                          <Plus />
-                        </button>
-                      </div>
-                    </>
-                  )}
+                  <span>Stock:</span>
+                  <div className="flex items-center gap-2">
+                    <button
+                      className="border rounded border-primary bg-primary/10 my-1 hover:bg-primary/20 transition-colors cursor-pointer"
+                      onClick={() =>
+                        handleEditPaqueteStock(
+                          {
+                            ...item,
+                            sedeId: sede.id,
+                            bookId: item.book.id,
+                          },
+                          "decrement"
+                        )
+                      }
+                    >
+                      <Minus />
+                    </button>
+                    <span>
+                      {isLoading[item.id] ? (
+                        <div className="w-5 h-5 my-1 bg-primary/30 rounded animate-pulse" />
+                      ) : (
+                        item.stock
+                      )}
+                    </span>
+                    <button
+                      className="border rounded border-primary bg-primary/10 my-1 hover:bg-primary/20 transition-colors cursor-pointer"
+                      onClick={() =>
+                        handleEditPaqueteStock(
+                          {
+                            ...item,
+                            sedeId: sede.id,
+                            bookId: item.book.id,
+                          },
+                          "increment"
+                        )
+                      }
+                    >
+                      <Plus />
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
