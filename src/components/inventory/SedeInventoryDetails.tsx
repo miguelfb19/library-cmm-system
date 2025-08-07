@@ -142,21 +142,23 @@ export const SedeInventoryDetails = ({ inventory, sede }: Props) => {
                 <div className="flex items-center gap-4">
                   <span>Stock:</span>
                   <div className="flex items-center gap-2">
-                    <button
-                      className="border rounded border-primary bg-primary/10 my-1 hover:bg-primary/20 transition-colors cursor-pointer"
-                      onClick={() =>
-                        handleEditPaqueteStock(
-                          {
-                            ...item,
-                            sedeId: sede.id,
-                            bookId: item.book.id,
-                          },
-                          "decrement"
-                        )
-                      }
-                    >
-                      <Minus />
-                    </button>
+                    {!enableEditing && (
+                      <button
+                        className="border rounded border-primary bg-primary/10 my-1 hover:bg-primary/20 transition-colors cursor-pointer"
+                        onClick={() =>
+                          handleEditPaqueteStock(
+                            {
+                              ...item,
+                              sedeId: sede.id,
+                              bookId: item.book.id,
+                            },
+                            "decrement"
+                          )
+                        }
+                      >
+                        <Minus />
+                      </button>
+                    )}
                     <span>
                       {isLoading[item.id] ? (
                         <div className="w-5 h-5 my-1 bg-primary/30 rounded animate-pulse" />
@@ -164,21 +166,23 @@ export const SedeInventoryDetails = ({ inventory, sede }: Props) => {
                         item.stock
                       )}
                     </span>
-                    <button
-                      className="border rounded border-primary bg-primary/10 my-1 hover:bg-primary/20 transition-colors cursor-pointer"
-                      onClick={() =>
-                        handleEditPaqueteStock(
-                          {
-                            ...item,
-                            sedeId: sede.id,
-                            bookId: item.book.id,
-                          },
-                          "increment"
-                        )
-                      }
-                    >
-                      <Plus />
-                    </button>
+                    {!enableEditing && (
+                      <button
+                        className="border rounded border-primary bg-primary/10 my-1 hover:bg-primary/20 transition-colors cursor-pointer"
+                        onClick={() =>
+                          handleEditPaqueteStock(
+                            {
+                              ...item,
+                              sedeId: sede.id,
+                              bookId: item.book.id,
+                            },
+                            "increment"
+                          )
+                        }
+                      >
+                        <Plus />
+                      </button>
+                    )}
                   </div>
                 </div>
               </div>
