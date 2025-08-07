@@ -142,7 +142,7 @@ export const SedeInventoryDetails = ({ inventory, sede }: Props) => {
                 <div className="flex items-center gap-4">
                   <span>Stock:</span>
                   <div className="flex items-center gap-2">
-                    {!enableEditing && (
+                    {enableEditing && (
                       <button
                         className="border rounded border-primary bg-primary/10 my-1 hover:bg-primary/20 transition-colors cursor-pointer"
                         onClick={() =>
@@ -166,7 +166,7 @@ export const SedeInventoryDetails = ({ inventory, sede }: Props) => {
                         item.stock
                       )}
                     </span>
-                    {!enableEditing && (
+                    {enableEditing && (
                       <button
                         className="border rounded border-primary bg-primary/10 my-1 hover:bg-primary/20 transition-colors cursor-pointer"
                         onClick={() =>
