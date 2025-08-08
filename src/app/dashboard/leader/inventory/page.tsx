@@ -9,17 +9,17 @@ export default async function InventoryPage() {
   const { sedes, ok } = await getSedesWithInventory();
   const session = await auth();
 
-  if (!ok || !sedes) return null;
+  if (!ok || !sedes || !session) return null;
   return (
     <div>
       <Title title="Sedes CMM" />
       <div className="flex flex-col gap-5">
         {/* CREAR SEDE */}
-        {session?.user?.role === "admin" && <CreateSede />}
+        {session.user?.role === "admin" && <CreateSede />}
 
         {/* Mostrar sede principal solo para admins o usuario asociados a la sede */}
-        {session?.user?.role === "admin" ||
-        session?.user.Sede?.city === "manizales" ? (
+        {session.user?.role === "admin" ||
+        session.user.Sede?.city === "manizales" ? (
           <>
             {/* Sede principal */}
             <h3 className="text-primary text-xl font-bold">Sede principal</h3>

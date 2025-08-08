@@ -113,8 +113,8 @@ export const ParishProcessesTable = ({
                     : "N/A"}
                 </td>
                 <td className="flex justify-center items-center gap-2 h-12">
-                  {(normalizeString(session?.user.name!).includes(sedeLeader) ||
-                    session?.user.role === "admin") &&
+                  {(normalizeString(session!.user.name!).includes(sedeLeader) ||
+                    session!.user.role === "admin") &&
                   sale.isActive ? (
                     <CustomTooltip text="Devoluciones" withSpan>
                       <RefoundBooks
@@ -124,8 +124,8 @@ export const ParishProcessesTable = ({
                     </CustomTooltip>
                   ) : null}
                   {loadingRows[sale.id] && <Loading size={10} />}
-                  {(normalizeString(session?.user.name!).includes(sedeLeader) ||
-                    session?.user.role === "admin") &&
+                  {(normalizeString(session!.user.name!).includes(sedeLeader) ||
+                    session!.user.role === "admin") &&
                   !sale.isActive ? (
                     <CustomTooltip text="Eliminar registro">
                       <button
