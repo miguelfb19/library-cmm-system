@@ -8,6 +8,7 @@ import { useState, useEffect } from "react";
 import { OrderDetails } from "@/interfaces/Order";
 import { toast } from "sonner";
 import { CustomTable } from "../ui/CustomTable";
+import { normalizeString } from "@/utils/normalize-string";
 
 /**
  * Interface que define las propiedades del componente
@@ -30,7 +31,7 @@ export const WarehouseTable = ({ warehouse, ordersDetails }: Props) => {
    * Normaliza el texto eliminando guiones bajos y considerando mayúsculas/minúsculas
    */
   const filteredInventory = warehouse.inventory.filter((item) =>
-    item.book.name
+    normalizeString(item.book.name)
       .toLowerCase()
       .replaceAll("_", " ")
       .includes(searchTerm.toLowerCase())
@@ -41,7 +42,7 @@ export const WarehouseTable = ({ warehouse, ordersDetails }: Props) => {
    * Aplica el mismo proceso de normalización de texto
    */
   const filteredInventoryByCategory = filteredInventory.filter((item) =>
-    item.book.category
+    normalizeString(item.book.category)
       .toLowerCase()
       .replaceAll("_", " ")
       .includes(searchTerm2.toLowerCase())

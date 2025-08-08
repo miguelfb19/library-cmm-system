@@ -6,6 +6,7 @@ import { Input } from "../ui/input";
 import { useState } from "react";
 import { Title } from "../ui/Title";
 import { PopoverEditBookName } from "./PopoverEditBookName";
+import { normalizeString } from "@/utils/normalize-string";
 
 /**
  * Interface que define las props del componente
@@ -34,7 +35,7 @@ export const AllBooks = ({ books }: Props) => {
   // Filtra los libros basado en el término de búsqueda
   // Normaliza el texto removiendo guiones bajos y considerando mayúsculas/minúsculas
   const filteredBooks = books.filter((book) =>
-    book.name
+    normalizeString(book.name)
       .replaceAll("_", " ")
       .toLowerCase()
       .includes(searchTerm.toLowerCase())

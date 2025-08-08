@@ -15,6 +15,7 @@ import { capitalizeWords } from "../../utils/capitalize";
 import { changeSede } from "@/actions/users/change-link-sede";
 import { DialogTrigger } from "../ui/dialog";
 import { CustomTable } from "../ui/CustomTable";
+import { normalizeString } from "@/utils/normalize-string";
 
 interface Props {
   users: User[];
@@ -57,7 +58,7 @@ export const UserTable = ({ users, sedes }: Props) => {
     }
   };
   const filteredUsers = users.filter((user) =>
-    user.name.toLowerCase().includes(searchTerm.toLowerCase())
+    normalizeString(user.name).toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   const handleChangeRole = async (

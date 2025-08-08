@@ -19,6 +19,7 @@ import { ReceiveOrder } from "./ReceiveOrder";
 import { History, ClipboardList } from "lucide-react";
 import { CustomTable } from "../ui/CustomTable";
 import { Sede } from "@/interfaces/Sede";
+import { normalizeString } from "@/utils/normalize-string";
 
 interface Props {
   orders: Order[];
@@ -65,7 +66,9 @@ export const OrderList = ({
     order.id.toLowerCase().includes(idSearch.toLowerCase())
   );
   const filteredOrdersByUser = filteredOrdersById.filter((order) =>
-    getUserName(order.userId).toLowerCase().includes(userSearch.toLowerCase())
+    normalizeString(getUserName(order.userId))
+      .toLowerCase()
+      .includes(userSearch.toLowerCase())
   );
 
   const filteredOrdersByHistory = filteredOrdersByUser.filter((order) =>

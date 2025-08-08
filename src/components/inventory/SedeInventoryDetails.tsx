@@ -13,6 +13,7 @@ import { toast } from "sonner";
 import { CustomTable } from "../ui/CustomTable";
 import { InventoryItem } from "@/interfaces/Warehouse";
 import { editPaqueteStock } from "@/actions/inventory/edit-paquetes-stock";
+import { normalizeString } from "@/utils/normalize-string";
 
 /**
  * Interface que define la estructura del inventario y la sede
@@ -106,7 +107,8 @@ export const SedeInventoryDetails = ({ inventory, sede }: Props) => {
 
   // Determina si el usuario puede editar el inventario
   const enableEditing =
-    session.user.role === "admin" || session.user.name!.includes(sede.leader);
+    session.user.role === "admin" ||
+    normalizeString(session.user.name!).includes(sede.leader);
 
   /**
    * Definición de columnas para la tabla de inventario

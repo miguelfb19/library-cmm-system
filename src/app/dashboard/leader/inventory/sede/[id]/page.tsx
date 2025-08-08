@@ -10,6 +10,7 @@ import { HandlerParishProcessButton } from "@/components/inventory/parish-proces
 import { getParishProcessSales } from "@/actions/sales/get-parish-process-sales";
 import { SedeInventoryHandler } from "@/components/inventory/SedeInventoryHandler";
 import { getAllBooks } from "@/actions/product/get-all-books";
+import { normalizeString } from "@/utils/normalize-string";
 
 /**
  * Interface para las props de la página
@@ -77,7 +78,7 @@ export default async function SedeDetailsPage({ params }: Props) {
   // Lo deshabilita para bodega
   const enableViewParishProcesses =
     (session.user.role === "admin" ||
-      session.user.name!.includes(sede.leader) ||
+      normalizeString(session.user.name!).includes(sede.leader) ||
       session.user.Sede?.id === sede.id) &&
     sede.city.toLowerCase() !== "bodega";
 
@@ -100,7 +101,7 @@ export default async function SedeDetailsPage({ params }: Props) {
           {enableViewParishProcesses && <HandlerParishProcessButton />}
           {/* EDITAR NIVELES DE STOCK */}
           {(session.user.role === "admin" ||
-            session.user.name!.includes(sede.leader)) && (
+            normalizeString(session.user.name!).includes(sede.leader)) && (
             <UpdateStockLevelsBySede sede={sede} />
           )}
         </div>

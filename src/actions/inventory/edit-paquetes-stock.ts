@@ -2,6 +2,7 @@
 
 import { InventoryItem } from "@/interfaces/Warehouse";
 import prisma from "@/lib/prisma";
+import { normalizeString } from "@/utils/normalize-string";
 import { revalidatePath } from "next/cache";
 
 export const editPaqueteStock = async (
@@ -9,9 +10,10 @@ export const editPaqueteStock = async (
   action: "increment" | "decrement"
 ) => {
   try {
-    const whichCategory = data.book.name.toLowerCase().includes("sanacion")
+    const normalizedBookName = normalizeString(data.book.name.toLowerCase());
+    const whichCategory = normalizedBookName.includes("sanacion")
       ? "seminario_sanacion"
-      : data.book.name.toLowerCase().includes("armadura")
+      : normalizedBookName.includes("armadura")
       ? "seminario_armadura"
       : "seminario_como_vivir";
 

@@ -15,6 +15,7 @@ import { submitAlert } from "@/utils/submitAlert";
 import { deleteParishProcessSale } from "@/actions/sales/delete-parish-process-sale";
 import { toast } from "sonner";
 import Loading from "@/app/dashboard/loading";
+import { normalizeString } from "@/utils/normalize-string";
 
 interface Props {
   parishSales: ParishSale[];
@@ -32,7 +33,7 @@ export const ParishProcessesTable = ({
   const { data: session } = useSession();
 
   const filteredSales = parishSales.filter((sale) =>
-    sale.name.toLowerCase().includes(searchTerm.toLowerCase())
+    normalizeString(sale.name).toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   if (!parishSales || parishSales.length === 0) {
@@ -112,7 +113,7 @@ export const ParishProcessesTable = ({
                     : "N/A"}
                 </td>
                 <td className="flex justify-center items-center gap-2 h-12">
-                  {(session?.user.name!.includes(sedeLeader) ||
+                  {(normalizeString(session?.user.name!).includes(sedeLeader) ||
                     session?.user.role === "admin") &&
                   sale.isActive ? (
                     <CustomTooltip text="Devoluciones" withSpan>
@@ -123,7 +124,7 @@ export const ParishProcessesTable = ({
                     </CustomTooltip>
                   ) : null}
                   {loadingRows[sale.id] && <Loading size={10} />}
-                  {(session?.user.name!.includes(sedeLeader) ||
+                  {(normalizeString(session?.user.name!).includes(sedeLeader) ||
                     session?.user.role === "admin") &&
                   !sale.isActive ? (
                     <CustomTooltip text="Eliminar registro">
